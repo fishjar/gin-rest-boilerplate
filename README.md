@@ -55,7 +55,8 @@ cd $GOPATH/src/github.com/
 mkdir fishjar && cd $_
 
 # 克隆项目
-git clone && cd $_
+git clone https://github.com/fishjar/gin-rest-boilerplate.git
+cd gin-rest-boilerplate
 
 # 确认配置文件(尤其数据库相关配置)
 vi config/config.go
