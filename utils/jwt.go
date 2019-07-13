@@ -5,6 +5,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -49,13 +50,17 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 		return mySigningKey, nil
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	// 验证成功
 	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
 		return claims, nil
 	}
 
 	// 验证失败
-	return nil, err
+	return nil, errors.New("验证失败")
 }
 
 // 测试JWT功能是否正常
