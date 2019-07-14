@@ -50,13 +50,11 @@
 go version
 echo $GOPATH
 
-# 创建目录
-cd $GOPATH/src/github.com/
-mkdir fishjar && cd $_
+# 创建并进入目录
+mkdir -p $GOPATH/src/github.com/fishjar/gin-rest-boilerplate && cd "$_"
 
 # 克隆项目
-git clone https://github.com/fishjar/gin-rest-boilerplate.git
-cd gin-rest-boilerplate
+git clone https://github.com/fishjar/gin-rest-boilerplate.git .
 
 # 确认配置文件(尤其数据库相关配置)
 vi config/config.go
