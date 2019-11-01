@@ -15,19 +15,21 @@ import (
 
 // MyClaims JWT加密的结构体
 type MyClaims struct {
+	UserID   string `json:"userId"`   // 用户ID
 	UserName string `json:"userName"` // 用户名
 	UserType string `json:"userType"` // 用户类型
 	jwt.StandardClaims
 }
 
 // MakeToken 创建JWT的TOKEN
-func MakeToken(userName string, userType string) (string, error) {
+func MakeToken(userID string, userName string, userType string) (string, error) {
 
 	signKey := config.JWTSignKey     // JWT加密用的密钥
 	expiresAt := config.JWTExpiresAt // JWT过期时间，分钟为单位
 	mySigningKey := []byte(signKey)  // 密钥格式转换
 
 	claims := MyClaims{
+		userID,
 		userName,
 		userType,
 		jwt.StandardClaims{
@@ -66,7 +68,7 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 // 测试JWT功能是否正常
 func init() {
 	// 测试生成token
-	token, err := MakeToken("gabe", "admin")
+	token, err := MakeToken("123", "gabe", "admin")
 	if err != nil {
 		fmt.Println(err)
 		panic("JWT生成token出错")
@@ -81,6 +83,7 @@ func init() {
 	}
 
 	fmt.Println("JWT正常")
+	fmt.Println("UserID:", claims.UserID)
 	fmt.Println("UserName:", claims.UserName)
 	fmt.Println("UserType:", claims.UserType)
 }

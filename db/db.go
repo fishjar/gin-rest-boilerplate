@@ -12,8 +12,8 @@ import (
 	"github.com/fishjar/gin-rest-boilerplate/config"
 
 	"github.com/jinzhu/gorm"
-	// _ "github.com/jinzhu/gorm/dialects/sqlite" // 引入sqlite驱动
-	_ "github.com/jinzhu/gorm/dialects/mysql" // 引入mysql驱动
+	_ "github.com/jinzhu/gorm/dialects/sqlite" // 引入sqlite驱动
+	// _ "github.com/jinzhu/gorm/dialects/mysql" // 引入mysql驱动
 )
 
 // DB 为ORM全局实例
