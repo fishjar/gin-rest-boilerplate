@@ -46,25 +46,4 @@ func (User) TableName() string {
 
 func init() {
 	db.DB.AutoMigrate(&User{})
-
-	// 插入默认用户
-	// userName := "gabe"
-	// userType := "admin"
-	// passWord := "123456"
-	// user := User{
-	// 	UserName: userName,
-	// 	UserType: userType,
-	// 	PassWord: utils.MD5Pwd(passWord),
-	// }
-	// name := "Gabe Yuan"
-	// user.Name = &name
-	// // db.DB.Create(&user)
-	// if err := db.DB.Where(&user).FirstOrCreate(&user).Error; err != nil {
-	// 	fmt.Println("默认用户创建失败：", err)
-	// } else {
-	// 	fmt.Println("默认用户已创建")
-	// 	fmt.Println("用户名：", userName)
-	// 	fmt.Println("用户类型：", userType)
-	// 	fmt.Println("密码：", passWord)
-	// }
 }
