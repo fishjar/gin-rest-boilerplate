@@ -18,8 +18,8 @@ type Auth struct {
 	Base
 	UserID     uuid.UUID  `json:"userId" gorm:"column:user_id;not null"`                                  // 用户ID
 	User       *User      `json:"user" gorm:"foreignkey:UserID"`                                          // 用户
-	AuthType   *string    `json:"authType" gorm:"column:auth_type;type:VARCHAR(16);not null"`             // 鉴权类型
-	AuthName   *string    `json:"authName" gorm:"column:auth_name;type:VARCHAR(128);not null"`            // 鉴权名称
+	AuthType   string     `json:"authType" gorm:"column:auth_type;type:VARCHAR(16);not null"`             // 鉴权类型
+	AuthName   string     `json:"authName" gorm:"column:auth_name;type:VARCHAR(128);not null"`            // 鉴权名称
 	AuthCode   *string    `json:"authCode" gorm:"column:auth_code" binding:"omitempty"`                   // 鉴权识别码
 	VerifyTime *time.Time `json:"verifyTime" gorm:"column:verify_time;type:DATETIME" binding:"omitempty"` // 认证时间
 	ExpireTime *time.Time `json:"expireTime" gorm:"column:expire_time;type:DATETIME" binding:"omitempty"` // 过期时间

@@ -14,11 +14,11 @@ import (
 // 但是这样会造成binding验证失效，目前没有更好的实现办法，所以暂时全部使用指针类型
 type Menu struct {
 	Base
-	ParentId uuid.UUID `json:"parentId" gorm:"column:parent_id" binding:"omitempty"` // 父ID
-	Parent   *Menu     `json:"parent" gorm:"foreignkey:ParentId"`                    // 父菜单
-	Children []*Menu   `json:"children" gorm:"foreignkey:ParentId"`                  // 子菜单
-	Name     *string   `json:"name" gorm:"column:name;not null"`                     // 菜单名称
-	Path     *string   `json:"path" gorm:"column:path;not null"`                     // 菜单路径
+	ParentID uuid.UUID `json:"parentId" gorm:"column:parent_id" binding:"omitempty"` // 父ID
+	Parent   *Menu     `json:"parent" gorm:"foreignkey:ParentID"`                    // 父菜单
+	Children []*Menu   `json:"children" gorm:"foreignkey:ParentID"`                  // 子菜单
+	Name     string    `json:"name" gorm:"column:name;not null"`                     // 菜单名称
+	Path     string    `json:"path" gorm:"column:path;not null"`                     // 菜单路径
 	Icon     *string   `json:"icon" gorm:"column:icon" binding:"omitempty"`          // 菜单图标
 	Sort     *int      `json:"sort" gorm:"column:sort" binding:"omitempty"`          // 排序
 	Roles    []*Role   `json:"roles" gorm:"many2many:rolemenu;"`                     // 角色

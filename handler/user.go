@@ -23,7 +23,7 @@ func UserFindAndCountAll(c *gin.Context) {
 	// 查询数据
 	var rows []model.User
 	var count uint
-	if err := db.DB.Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("Auths").Find(&rows).Error; err != nil {
+	if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     err,
 			"message": "查询失败",
@@ -46,7 +46,7 @@ func UserFindByPk(c *gin.Context) {
 
 	// 查询
 	var data model.User
-	if err := db.DB.First(&data, id).Error; err != nil {
+	if err := db.DB.Where("id = ?", id).Preload("Auths").First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
 			"message": "查询失败",
@@ -92,7 +92,7 @@ func UserUpdateByPk(c *gin.Context) {
 
 	// 查询
 	var data model.User
-	if err := db.DB.First(&data, id).Error; err != nil {
+	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
 			"message": "查询失败",
@@ -101,8 +101,7 @@ func UserUpdateByPk(c *gin.Context) {
 	}
 
 	// 绑定新数据
-	var newData model.User
-	if err := c.ShouldBind(&newData); err != nil {
+	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
 			"message": "数据绑定失败",
@@ -111,7 +110,7 @@ func UserUpdateByPk(c *gin.Context) {
 	}
 
 	// 更新数据
-	if err := db.DB.Model(&data).Updates(&newData).Error; err != nil {
+	if err := db.DB.Model(&data).Updates(&data).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
 			"message": "更新失败",
@@ -131,7 +130,7 @@ func UserDestroyByPk(c *gin.Context) {
 
 	// 查询
 	var data model.User
-	if err := db.DB.First(&data, id).Error; err != nil {
+	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
 			"message": "查询失败",
@@ -166,7 +165,7 @@ func UserFindOrCreate(c *gin.Context) {
 	}
 
 	// 插入数据
-	if err := db.DB.FirstOrCreate(&data).Error; err != nil {
+	if err := db.DB.Where(&data).FirstOrCreate(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     err,
 			"message": "查询或创建数据失败",

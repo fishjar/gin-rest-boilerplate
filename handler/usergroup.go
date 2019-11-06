@@ -10,8 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AuthFindAndCountAll 查询多条信息
-func AuthFindAndCountAll(c *gin.Context) {
+// UserGroupFindAndCountAll 查询多条信息
+func UserGroupFindAndCountAll(c *gin.Context) {
 
 	// 获取参数
 	pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "1"))    // 页码
@@ -21,12 +21,12 @@ func AuthFindAndCountAll(c *gin.Context) {
 	offset := (pageNum - 1) * pageSize
 
 	// 查询数据
-	var rows []model.Auth
+	var rows []model.UserGroup
 	var count uint
-	if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("User").Find(&rows).Error; err != nil {
+	if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     err,
-			"message": "查询多条信息失败",
+			"message": "查询失败",
 		})
 		return
 	}
@@ -38,18 +38,18 @@ func AuthFindAndCountAll(c *gin.Context) {
 	})
 }
 
-// AuthFindByPk 根据主键查询单条信息
-func AuthFindByPk(c *gin.Context) {
+// UserGroupFindByPk 根据主键查询单条信息
+func UserGroupFindByPk(c *gin.Context) {
 
 	// 获取参数
 	id := c.Param("id")
 
 	// 查询
-	var data model.Auth
-	if err := db.DB.Where("id = ?", id).Preload("User").First(&data).Error; err != nil {
+	var data model.UserGroup
+	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
-			"message": "根据主键查询单条信息失败",
+			"message": "查询失败",
 		})
 		return
 	}
@@ -58,11 +58,11 @@ func AuthFindByPk(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-// AuthSingleCreate 创建单条信息
-func AuthSingleCreate(c *gin.Context) {
+// UserGroupSingleCreate 创建单条信息
+func UserGroupSingleCreate(c *gin.Context) {
 
 	// 绑定数据
-	var data model.Auth
+	var data model.UserGroup
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
@@ -84,14 +84,14 @@ func AuthSingleCreate(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-// AuthUpdateByPk 更新单条信息
-func AuthUpdateByPk(c *gin.Context) {
+// UserGroupUpdateByPk 更新单条信息
+func UserGroupUpdateByPk(c *gin.Context) {
 
 	// 获取参数
 	id := c.Param("id")
 
 	// 查询
-	var data model.Auth
+	var data model.UserGroup
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
@@ -122,14 +122,14 @@ func AuthUpdateByPk(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-// AuthDestroyByPk 删除单条信息
-func AuthDestroyByPk(c *gin.Context) {
+// UserGroupDestroyByPk 删除单条信息
+func UserGroupDestroyByPk(c *gin.Context) {
 
 	// 获取参数
 	id := c.Param("id")
 
 	// 查询
-	var data model.Auth
+	var data model.UserGroup
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
@@ -151,11 +151,11 @@ func AuthDestroyByPk(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-// AuthFindOrCreate 查询或创建单条信息
-func AuthFindOrCreate(c *gin.Context) {
+// UserGroupFindOrCreate 查询或创建单条信息
+func UserGroupFindOrCreate(c *gin.Context) {
 
 	// 绑定数据
-	var data model.Auth
+	var data model.UserGroup
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,

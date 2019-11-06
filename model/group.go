@@ -14,9 +14,9 @@ import (
 // 但是这样会造成binding验证失效，目前没有更好的实现办法，所以暂时全部使用指针类型
 type Group struct {
 	Base
-	Name     *string   `json:"name" gorm:"column:name;type:VARCHAR(32);not null" binding:"min=3,max=20"` // 组名称
-	LeaderId uuid.UUID `json:"leaderId" gorm:"column:leader_id;not null"`                                // 队长ID
-	Leader   *User     `json:"leader" gorm:"foreignkey:LeaderId"`                                        // 队长
+	Name     string    `json:"name" gorm:"column:name;type:VARCHAR(32);not null" binding:"min=3,max=20"` // 组名称
+	LeaderID uuid.UUID `json:"leaderId" gorm:"column:leader_id;not null"`                                // 队长ID
+	Leader   *User     `json:"leader" gorm:"foreignkey:LeaderID"`                                        // 队长
 	Users    []*User   `json:"users" gorm:"many2many:usergroup;"`                                        // 队员
 }
 

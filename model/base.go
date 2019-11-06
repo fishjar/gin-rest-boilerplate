@@ -13,7 +13,7 @@ import (
 
 // Base 给所有模型共用
 type Base struct {
-	ID        uuid.UUID  `json:"id" gorm:"column:id;primary_key;unique;not null"`                    // ID
+	ID        uuid.UUID  `json:"id" gorm:"column:id;primary_key;not null"`                           // ID
 	CreatedAt time.Time  `json:"createdAt" gorm:"column:created_at;not null"`                        // 创建时间
 	UpdatedAt time.Time  `json:"updatedAt" gorm:"column:update_at;not null"`                         // 更新时间
 	DeletedAt *time.Time `json:"deletedAt" sql:"index" gorm:"column:deleted_at" binding:"omitempty"` // 软删除时间

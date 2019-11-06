@@ -13,7 +13,7 @@ import (
 // 但是这样会造成binding验证失效，目前没有更好的实现办法，所以暂时全部使用指针类型
 type Role struct {
 	Base
-	Name  *string `json:"name" gorm:"column:name;type:VARCHAR(32);unique;not null" binding:"min=3,max=20"` // 角色名称
+	Name  string  `json:"name" gorm:"column:name;type:VARCHAR(32);unique;not null" binding:"min=3,max=20"` // 角色名称
 	Users []*User `json:"users" gorm:"many2many:userrole;"`                                                // 用户
 	Menus []*Menu `json:"menus" gorm:"many2many:rolemenu;"`                                                // 菜单
 }

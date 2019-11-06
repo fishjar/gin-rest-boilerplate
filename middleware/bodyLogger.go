@@ -18,7 +18,7 @@ type bodyLogWriter struct {
 
 func (w bodyLogWriter) Write(b []byte) (int, error) {
 	if n, err := w.body.Write(b); err != nil {
-		utils.LogError.Println(err)
+		utils.Log.Error.Println(err)
 		return n, err
 	}
 	return w.ResponseWriter.Write(b)
@@ -30,13 +30,13 @@ func BodyLogger() gin.HandlerFunc {
 		t := time.Now()
 		data, err := c.GetRawData()
 		if err != nil {
-			utils.LogError.Println("req body: ", err.Error())
+			utils.Log.Error.Println("req body: ", err.Error())
 		} else {
 			buffer := new(bytes.Buffer)
 			if err := json.Compact(buffer, data); err != nil {
-				utils.LogError.Println("req body: ", err.Error())
+				utils.Log.Error.Println("req body: ", err.Error())
 			} else {
-				utils.LogInfo.Println("req body: ", buffer)
+				utils.Log.Info.Println("req body: ", buffer)
 			}
 		}
 
@@ -49,14 +49,14 @@ func BodyLogger() gin.HandlerFunc {
 
 		// 请求后
 		latency := time.Since(t)
-		utils.LogInfo.Println("res latency: ", latency)
+		utils.Log.Info.Println("res latency: ", latency)
 
 		statusCode := c.Writer.Status()
-		utils.LogInfo.Println("res code: ", statusCode)
+		utils.Log.Info.Println("res code: ", statusCode)
 		if statusCode >= 400 {
-			utils.LogWarning.Println("res body: ", blw.body.String())
+			utils.Log.Warning.Println("res body: ", blw.body.String())
 		} else {
-			utils.LogInfo.Println("res body: ", blw.body.String())
+			utils.Log.Info.Println("res body: ", blw.body.String())
 		}
 
 	}

@@ -13,6 +13,6 @@ const (
 	HTTPPort     int    = 4000                                                       // 端口号
 	LogPath      string = "/src/github.com/fishjar/gin-rest-boilerplate/log/gin.log" // 日志目录
 	JWTSignKey   string = "123456"                                                   // JWT加密用的密钥
-	JWTExpiresAt int    = 60                                                         // JWT过期时间，分钟为单位
+	JWTExpiresAt int    = 60 * 24                                                    // JWT过期时间，分钟为单位
 	PWDSalt      string = "123456"                                                   // 密码哈希盐
 )

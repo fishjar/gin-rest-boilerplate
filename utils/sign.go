@@ -7,8 +7,8 @@ import (
 	"github.com/fishjar/gin-rest-boilerplate/config"
 )
 
-// Pwd 密码哈希函数
-func Pwd(username string, password string) string {
+// MD5Pwd 密码哈希函数
+func MD5Pwd(username string, password string) string {
 	salt := config.PWDSalt
 	m := md5.New()
 	m.Write([]byte(username))

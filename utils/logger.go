@@ -11,17 +11,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 定义日志记录器
-var (
-	LogFile    *os.File
-	LogDebug   *log.Logger
-	LogInfo    *log.Logger
-	LogWarning *log.Logger
-	LogError   *log.Logger
-)
+// logger 定义日志记录器
+type logger struct {
+	Debug   *log.Logger
+	Info    *log.Logger
+	Warning *log.Logger
+	Error   *log.Logger
+}
+
+// Log 日志记录器
+var Log logger
+
+// LogFile 日志文件
+var LogFile *os.File
 
 func init() {
-
 	// 测试环境
 	logPath := os.Getenv("GOPATH") + config.LogPath
 	LogFile, err := os.Create(logPath)
@@ -34,10 +38,10 @@ func init() {
 	}
 	fmt.Println("日志文件：", logPath)
 
-	LogDebug = log.New(LogFile, "[Debug]", log.LstdFlags)
-	LogInfo = log.New(LogFile, "[Info]", log.LstdFlags)
-	LogWarning = log.New(LogFile, "[Warning]", log.LstdFlags)
-	LogError = log.New(LogFile, "[Error]", log.LstdFlags)
+	Log.Debug = log.New(LogFile, "[Debug]", log.LstdFlags)
+	Log.Info = log.New(LogFile, "[Info]", log.LstdFlags)
+	Log.Warning = log.New(LogFile, "[Warning]", log.LstdFlags)
+	Log.Error = log.New(LogFile, "[Error]", log.LstdFlags)
 
 	// 配置gin的log
 	// 测试环境
