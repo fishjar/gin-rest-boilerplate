@@ -7,7 +7,6 @@ import (
 )
 
 // User 用户模型
-// Group 定义模型
 // gorm tags参考：https://gorm.io/docs/models.html
 // binding tags参考：https://godoc.org/gopkg.in/go-playground/validator.v8
 // 时间格式比较严格，参考：https://golang.org/pkg/time/#pkg-constants
