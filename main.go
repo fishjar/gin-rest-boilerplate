@@ -9,14 +9,18 @@ import (
 
 	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/db"
+	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/router"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 )
 
 func main() {
-	defer db.DB.Close()         // 关闭数据库连接
-	defer utils.LogFile.Close() // 关闭日志文件
+	defer db.DB.Close()          // 关闭数据库连接
+	defer logger.LogFile.Close() // 关闭日志文件
+	defer utils.LogFile.Close()  // 关闭日志文件
+
+	logger.Log.Warn("mian-------------")
 
 	r := router.InitRouter()                   // 获取gin对象
 	r.Run(fmt.Sprintf(":%d", config.HTTPPort)) // 启动服务

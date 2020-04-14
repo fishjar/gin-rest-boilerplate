@@ -20,6 +20,11 @@ func InitRouter() *gin.Engine {
 	r.Use(middleware.BodyLogger()) // 日志中间件
 	r.Use(middleware.JWTAuth())    // JWT验证中间件
 
+	// pingpong
+	r.GET("/ping", func(c *gin.Context) {
+		c.Data(200, "text/plain", []byte("pong"))
+	})
+
 	r.POST("/login/account", handler.LoginAccount) //登录
 
 	{

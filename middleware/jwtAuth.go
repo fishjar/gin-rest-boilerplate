@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
+	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/model"
 
 	"github.com/fishjar/gin-rest-boilerplate/utils"
@@ -19,6 +20,8 @@ import (
 // JWTAuth 验证中间件
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		logger.Log.Warn("JWTAuth 验证中间件")
 
 		// 登录链接不做验证
 		path := c.Request.URL.Path
