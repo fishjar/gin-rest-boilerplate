@@ -25,7 +25,7 @@ func LoginAccount(c *gin.Context) {
 
 	// 绑定数据
 	if err := c.ShouldBind(&login); err != nil {
-		utils.Log.Warning.Println("登录失败，参数有误：", err)
+		// utils.Log.Warning.Println("登录失败，参数有误：", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code":    401,
 			"message": "登录失败，参数有误",
@@ -42,7 +42,7 @@ func LoginAccount(c *gin.Context) {
 		AuthType: authType,
 		AuthCode: &passWord,
 	}).First(&auth).Error; err != nil {
-		utils.Log.Warning.Println("登录失败，用户名或密码错误：", err)
+		// utils.Log.Warning.Println("登录失败，用户名或密码错误：", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code":    401,
 			"message": "登录失败，用户名或密码错误",
@@ -54,7 +54,7 @@ func LoginAccount(c *gin.Context) {
 	id := auth.ID.String()
 	authtoken, err := utils.MakeToken(id, auth.AuthName, auth.AuthType)
 	if err != nil {
-		utils.Log.Warning.Println("登录失败，获取token失败：", err)
+		// utils.Log.Warning.Println("登录失败，获取token失败：", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code":    401,
 			"message": "登录失败，获取token失败",

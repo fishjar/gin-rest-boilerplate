@@ -6,7 +6,6 @@ package router
 
 import (
 	"github.com/fishjar/gin-rest-boilerplate/handler"
-	"github.com/fishjar/gin-rest-boilerplate/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,12 +16,14 @@ func InitRouter() *gin.Engine {
 	// r := gin.New()
 	r := gin.Default() // Default 使用 Logger 和 Recovery 中间件
 
-	r.Use(middleware.BodyLogger()) // 日志中间件
-	r.Use(middleware.JWTAuth())    // JWT验证中间件
+	// r.Use(middleware.BodyLogger()) // 日志中间件
+	// r.Use(middleware.JWTAuth()) // JWT验证中间件
 
 	// pingpong
 	r.GET("/ping", func(c *gin.Context) {
-		c.Data(200, "text/plain", []byte("pong"))
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
 	})
 
 	r.POST("/login/account", handler.LoginAccount) //登录
