@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/fishjar/gin-rest-boilerplate/utils"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +16,7 @@ type bodyLogWriter struct {
 
 func (w bodyLogWriter) Write(b []byte) (int, error) {
 	if n, err := w.body.Write(b); err != nil {
-		utils.Log.Error.Println(err)
+		// utils.Log.Error.Println(err)
 		return n, err
 	}
 	return w.ResponseWriter.Write(b)
@@ -28,15 +26,15 @@ func (w bodyLogWriter) Write(b []byte) (int, error) {
 func BodyLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		t := time.Now()
-		data, err := c.GetRawData()
+		data, err := c.GetRawData() // body数据只能获取一次
 		if err != nil {
-			utils.Log.Error.Println("req body: ", err.Error())
+			// utils.Log.Error.Println("req body: ", err.Error())
 		} else {
 			buffer := new(bytes.Buffer)
 			if err := json.Compact(buffer, data); err != nil {
-				utils.Log.Error.Println("req body: ", err.Error())
+				// utils.Log.Error.Println("req body: ", err.Error())
 			} else {
-				utils.Log.Info.Println("req body: ", buffer)
+				// utils.Log.Info.Println("req body: ", buffer)
 			}
 		}
 
@@ -49,14 +47,15 @@ func BodyLogger() gin.HandlerFunc {
 
 		// 请求后
 		latency := time.Since(t)
-		utils.Log.Info.Println("res latency: ", latency)
+		// utils.Log.Info.Println("res latency: ", latency)
+		_ = latency
 
 		statusCode := c.Writer.Status()
-		utils.Log.Info.Println("res code: ", statusCode)
+		// utils.Log.Info.Println("res code: ", statusCode)
 		if statusCode >= 400 {
-			utils.Log.Warning.Println("res body: ", blw.body.String())
+			// utils.Log.Warning.Println("res body: ", blw.body.String())
 		} else {
-			utils.Log.Info.Println("res body: ", blw.body.String())
+			// utils.Log.Info.Println("res body: ", blw.body.String())
 		}
 
 	}

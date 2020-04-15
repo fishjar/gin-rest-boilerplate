@@ -32,7 +32,7 @@ func JWTAuth() gin.HandlerFunc {
 
 		// 获取token
 		authorization := c.Request.Header.Get("Authorization")
-		utils.Log.Error.Println("req authorization: ", authorization)
+		// utils.Log.Error.Println("req authorization: ", authorization)
 		tokenString := strings.Replace(authorization, "Bearer ", "", 1)
 
 		if tokenString == "" {

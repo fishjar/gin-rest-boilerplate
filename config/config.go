@@ -21,8 +21,7 @@ const (
 // GetPort 获取端口号
 func GetPort() int {
 	port := HTTPPort
-	envPort := os.Getenv("PORT")
-	if len(envPort) > 0 {
+	if envPort := os.Getenv("PORT"); len(envPort) > 0 {
 		portInt, err := strconv.Atoi(envPort)
 		if err != nil {
 			panic("获取端口失败")
@@ -35,8 +34,7 @@ func GetPort() int {
 // GetEnv 获取运行环境
 func GetEnv() string {
 	env := "dev"
-	ginEnv := os.Getenv("GINENV")
-	if len(ginEnv) > 0 {
+	if ginEnv := os.Getenv("GINENV"); len(ginEnv) > 0 {
 		env = ginEnv
 	}
 	return env

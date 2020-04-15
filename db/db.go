@@ -25,8 +25,7 @@ func init() {
 	dbDriver := "mysql"
 	dbPath := config.MySQLURL
 
-	env := config.GetEnv()
-	if env == "dev" {
+	if env := config.GetEnv(); env == "dev" {
 		// dev环境使用sqlite
 		dbDriver = "sqlite3"
 		rootPath, _ := os.Getwd()
