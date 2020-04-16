@@ -62,5 +62,6 @@ func init() {
 	// 配置GIN日志文件
 	// gin.DefaultWriter = io.MultiWriter(LogGinFile)
 	gin.DefaultWriter = io.MultiWriter(LogGinFile, os.Stdout)
+	// gin.DebugPrintRouteFunc
 
 }

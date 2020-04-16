@@ -30,6 +30,9 @@ func InitRouter() *gin.Engine {
 
 	r.POST("/login/account", handler.LoginAccount) //登录
 
+	// authorized := r.Group("/admin")
+	// authorized.Use(AuthRequired())
+
 	{
 
 		r.GET("/auths", handler.AuthFindAndCountAll)    // 获取多条
