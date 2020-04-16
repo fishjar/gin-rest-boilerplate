@@ -14,10 +14,12 @@ import (
 func AuthFindAndCountAll(c *gin.Context) {
 
 	// 获取参数
+	// ShouldBindQuery
+	// db.Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
 	pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "1"))    // 页码
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10")) // 每页数目
 	order := c.DefaultQuery("sorter", "")                          // 排序
-	where := c.DefaultQuery("where", "")                           // 检索条件
+	where := c.DefaultQuery("where", "")                           // 检索条件 c.QueryMap("querys")
 	offset := (pageNum - 1) * pageSize
 
 	// 查询数据
@@ -42,6 +44,7 @@ func AuthFindAndCountAll(c *gin.Context) {
 func AuthFindByPk(c *gin.Context) {
 
 	// 获取参数
+	// c.ShouldBindUri
 	id := c.Param("id")
 
 	// 查询

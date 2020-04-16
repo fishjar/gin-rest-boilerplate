@@ -31,6 +31,11 @@ func (Auth) TableName() string {
 	return "auth"
 }
 
+// 自定义验证器
+// var bookableDate validator.Func = func(fl validator.FieldLevel) bool
+// v.RegisterValidation("bookabledate", bookableDate)
+// v.RegisterStructValidation(UserStructLevelValidation, User{})
+
 func init() {
 	db.DB.AutoMigrate(&Auth{}) // 同步表
 }
