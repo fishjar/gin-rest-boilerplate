@@ -65,8 +65,10 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 生成token
-	id := auth.ID.String()
-	authtoken, err := utils.MakeToken(id, auth.AuthName, auth.AuthType)
+	accessToken, err := utils.MakeToken(&schema.JWTUser{
+		AuthID: auth.ID.String(),
+		UserID: user.ID.String(),
+	})
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "登录失败，获取token失败",
@@ -75,10 +77,10 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 登录成功
-	c.JSON(http.StatusOK, gin.H{
-		"message":     "登录成功",
-		"tokenType":   "bearer",
-		"accessToken": authtoken,
+	c.JSON(http.StatusOK, schema.LoginRes{
+		Message:     "登录成功",
+		TokenType:   "bearer",
+		AccessToken: accessToken,
 	})
 
 }

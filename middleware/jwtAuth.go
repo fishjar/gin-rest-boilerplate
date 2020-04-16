@@ -5,13 +5,13 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
-	"github.com/fishjar/gin-rest-boilerplate/db"
+	"github.com/fishjar/gin-rest-boilerplate/schema"
+	"github.com/sirupsen/logrus"
+
 	"github.com/fishjar/gin-rest-boilerplate/logger"
-	"github.com/fishjar/gin-rest-boilerplate/model"
 
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
@@ -21,80 +21,69 @@ import (
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		logger.Log.Warn("JWTAuth 验证中间件")
-
-		// 登录链接不做验证
-		path := c.Request.URL.Path
-		if path == "/login/account" {
-			c.Next()
-			return
-		}
-
 		// 获取token
 		authorization := c.Request.Header.Get("Authorization")
-		// utils.Log.Error.Println("req authorization: ", authorization)
-		tokenString := strings.Replace(authorization, "Bearer ", "", 1)
+		accessToken := strings.Replace(authorization, "Bearer ", "", 1)
 
-		if tokenString == "" {
+		// token 为空
+		if accessToken == "" {
 			// 验证失败
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    401,
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "没有权限：token不能为空",
 			})
-			c.Abort() // 直接返回
 			return
 		}
 
 		// 解析token
-		claims, err := utils.ParseToken(tokenString)
+		claims, err := utils.ParseToken(accessToken)
 		if claims == nil || err != nil {
 			// 验证失败
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    401,
+			logger.Log.WithFields(logrus.Fields{
+				"accessToken": accessToken,
+			}).Warn("JWTAuth 认证失败")
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "没有权限：token解析错误",
 			})
-			c.Abort() // 直接返回
 			return
 		}
 
-		authID := claims.AuthID
-		authName := claims.AuthName
-		authType := claims.AuthType
-		var auth model.Auth
+		AuthID := claims.AuthID
+		UserID := claims.Subject
 
-		fmt.Println("authID", authID)
-
-		// 验证帐号
-		if err := db.DB.Where("id = ?", authID).First(&auth).Error; err != nil {
-			// 验证失败
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    401,
-				"message": "没有权限：帐号不存在",
-			})
-			c.Abort() // 直接返回
-			return
-		}
-
-		// 验证密码
-		if auth.AuthName != authName || auth.AuthType != authType {
-			// 验证失败
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    401,
-				"message": "没有权限：帐号或密码错误",
-			})
-			c.Abort() // 直接返回
-			return
-		}
+		// TODO: 认证 AuthID 和 UserID 有效性
+		// var auth model.Auth
+		// // 验证帐号
+		// if err := db.DB.Where("id = ?", authID).First(&auth).Error; err != nil {
+		// 	// 验证失败
+		// 	c.JSON(http.StatusUnauthorized, gin.H{
+		// 		"code":    401,
+		// 		"message": "没有权限：帐号不存在",
+		// 	})
+		// 	c.Abort() // 直接返回
+		// 	return
+		// }
+		// // 验证密码
+		// if auth.AuthName != authName || auth.AuthType != authType {
+		// 	// 验证失败
+		// 	c.JSON(http.StatusUnauthorized, gin.H{
+		// 		"code":    401,
+		// 		"message": "没有权限：帐号或密码错误",
+		// 	})
+		// 	c.Abort() // 直接返回
+		// 	return
+		// }
 
 		// 验证成功
 		// 挂载到全局
-		c.Set("authID", authID)
-		c.Set("authName", authName)
-		c.Set("authType", authType)
+		c.Set("AuthID", AuthID)
+		c.Set("UserID", UserID)
 
 		// 返回一个新token给客户端(未验证)
-		if newToken, err := utils.MakeToken(authID, authName, authType); err == nil {
-			c.Writer.Header().Set("authtoken", newToken)
+		if newToken, err := utils.MakeToken(&schema.JWTUser{
+			AuthID: AuthID,
+			UserID: UserID,
+		}); err == nil {
+			c.Writer.Header().Set("X-Authorization", newToken)
 		}
 
 		c.Next()
