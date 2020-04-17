@@ -15,14 +15,15 @@ import (
 func InitRouter() *gin.Engine {
 
 	// r := gin.New()
-	r := gin.Default()                             // Default 使用 Logger 和 Recovery 中间件
-	r.Use(middleware.LoggerToFile())               // 日志中间件
-	r.POST("/login/account", handler.LoginAccount) //登录
-	r.GET("/ping", func(c *gin.Context) {          // pingpong
+	r := gin.Default()                    // Default 使用 Logger 和 Recovery 中间件
+	r.Use(middleware.LoggerToFile())      // 日志中间件
+	r.GET("/ping", func(c *gin.Context) { // pingpong
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
+
+	r.POST("/login/account", handler.LoginAccount) //登录
 
 	authorized := r.Group("/admin")      // JWT验证路由组
 	authorized.Use(middleware.JWTAuth()) // JWT验证中间件

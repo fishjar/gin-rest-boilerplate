@@ -2,10 +2,10 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/schema"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,27 +16,63 @@ func AuthFindAndCountAll(c *gin.Context) {
 	// 获取参数
 	// ShouldBindQuery
 	// db.Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
-	pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "1"))    // 页码
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10")) // 每页数目
-	order := c.DefaultQuery("sorter", "")                          // 排序
-	where := c.DefaultQuery("where", "")                           // 检索条件 c.QueryMap("querys")
-	offset := (pageNum - 1) * pageSize
+	// pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "1"))    // 页码
+	// pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10")) // 每页数目
+	// order := c.DefaultQuery("sorter", "")                          // 排序
+	// where := c.DefaultQuery("where", "")                           // 检索条件 c.QueryMap("querys")
+	// offset := (pageNum - 1) * pageSize
 
-	// 查询数据
+	// // 查询数据
+	// var rows []model.Auth
+	// var count uint
+	// if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("User").Find(&rows).Error; err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"err":     err,
+	// 		"message": "查询多条信息失败",
+	// 	})
+	// 	return
+	// }
+
+	// // 返回数据
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"rows":  rows,
+	// 	"count": count,
+	// })
+	// var rows []model.Auth
+	// curd.FindAndCountAll(c, model.Auth)
+
+	var q *schema.PaginQueryIn
+	if err := c.ShouldBindQuery(&q); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err,
+			"msg": "参数有误",
+		})
+		return
+	}
+
+	params := c.QueryMap("params")
+	offset := (q.Page - 1) * q.Size
+	var total uint
 	var rows []model.Auth
-	var count uint
-	if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("User").Find(&rows).Error; err != nil {
+	where := make(map[string]interface{})
+	for k, v := range params {
+		where[k] = v
+	}
+
+	if err := db.DB.Model(&rows).Where(params).Count(&total).Limit(q.Size).Offset(offset).Order(q.Order).Preload("User").Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err,
-			"message": "查询多条信息失败",
+			"err": err,
+			"msg": "查询多条信息失败",
 		})
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, gin.H{
-		"rows":  rows,
-		"count": count,
+	c.JSON(http.StatusOK, schema.PaginQueryOut{
+		Page:  q.Page,
+		Size:  q.Size,
+		Total: total,
+		Rows:  rows,
 	})
 }
 

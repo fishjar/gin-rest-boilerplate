@@ -29,7 +29,7 @@ func JWTAuth() gin.HandlerFunc {
 		if accessToken == "" {
 			// 验证失败
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "没有权限：token不能为空",
+				"msg": "没有权限：token不能为空",
 			})
 			return
 		}
@@ -42,7 +42,7 @@ func JWTAuth() gin.HandlerFunc {
 				"accessToken": accessToken,
 			}).Warn("JWTAuth 认证失败")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "没有权限：token解析错误",
+				"msg": "没有权限：token解析错误",
 			})
 			return
 		}
@@ -50,14 +50,15 @@ func JWTAuth() gin.HandlerFunc {
 		AuthID := claims.AuthID
 		UserID := claims.Subject
 
-		// TODO: 认证 AuthID 和 UserID 有效性
+		// TODO: 从redis认证 AuthID 和 UserID 有效性
+
 		// var auth model.Auth
 		// // 验证帐号
 		// if err := db.DB.Where("id = ?", authID).First(&auth).Error; err != nil {
 		// 	// 验证失败
 		// 	c.JSON(http.StatusUnauthorized, gin.H{
 		// 		"code":    401,
-		// 		"message": "没有权限：帐号不存在",
+		// 		"msg": "没有权限：帐号不存在",
 		// 	})
 		// 	c.Abort() // 直接返回
 		// 	return
@@ -67,7 +68,7 @@ func JWTAuth() gin.HandlerFunc {
 		// 	// 验证失败
 		// 	c.JSON(http.StatusUnauthorized, gin.H{
 		// 		"code":    401,
-		// 		"message": "没有权限：帐号或密码错误",
+		// 		"msg": "没有权限：帐号或密码错误",
 		// 	})
 		// 	c.Abort() // 直接返回
 		// 	return

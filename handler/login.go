@@ -19,7 +19,7 @@ import (
 // LoginAccount 登录处理函数
 func LoginAccount(c *gin.Context) {
 
-	var loginForm schema.LoginForm
+	var loginForm schema.AccountLoginIn
 
 	// 绑定数据
 	if err := c.ShouldBind(&loginForm); err != nil {
@@ -76,8 +76,10 @@ func LoginAccount(c *gin.Context) {
 		return
 	}
 
+	// TODO：保存到redis
+
 	// 登录成功
-	c.JSON(http.StatusOK, schema.LoginRes{
+	c.JSON(http.StatusOK, schema.AccountLoginOut{
 		Message:     "登录成功",
 		TokenType:   "bearer",
 		AccessToken: accessToken,

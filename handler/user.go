@@ -2,10 +2,10 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/schema"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,28 +13,80 @@ import (
 // UserFindAndCountAll 查询多条信息
 func UserFindAndCountAll(c *gin.Context) {
 
-	// 获取参数
-	pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "1"))    // 页码
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10")) // 每页数目
-	order := c.DefaultQuery("sorter", "")                          // 排序
-	where := c.DefaultQuery("where", "")                           // 检索条件
-	offset := (pageNum - 1) * pageSize
+	// // 获取参数
+	// pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "1"))    // 页码
+	// pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10")) // 每页数目
+	// order := c.DefaultQuery("sorter", "")                          // 排序
+	// where := c.DefaultQuery("where", "")                           // 检索条件
+	// offset := (pageNum - 1) * pageSize
+
+	// // 查询数据
+	// var rows []model.User
+	// var count uint
+	// if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").Find(&rows).Error; err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"err":     err,
+	// 		"message": "查询失败",
+	// 	})
+	// 	return
+	// }
+
+	// // 返回数据
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"rows":  rows,
+	// 	"count": count,
+	// })
+
+	// 参数绑定
+	var q *schema.PaginQueryIn
+	if err := c.ShouldBindQuery(&q); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err,
+			"msg": "参数有误",
+		})
+		return
+	}
+
+	// 条件参数
+	params := c.QueryMap("params")
+	// map 参数
+	// 有不存在的key时，后面的查询会报错，需要过滤
+	where := make(map[string]interface{}, len(params))
+	for k, v := range params {
+		if k == "name" || k == "gender" {
+			where[k] = v
+		}
+	}
+	// struct 参数，后面使用指针
+	// var where model.User
+	// if err := mapstructure.Decode(params, &where); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"err": err,
+	// 		"msg": "查询参数有误",
+	// 	})
+	// 	return
+	// }
+
+	// 分页参数
+	offset := (q.Page - 1) * q.Size
+	var total uint
+	var rows []model.User
 
 	// 查询数据
-	var rows []model.User
-	var count uint
-	if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").Find(&rows).Error; err != nil {
+	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Order).Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err,
-			"message": "查询失败",
+			"err": err,
+			"msg": "查询多条信息失败",
 		})
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, gin.H{
-		"rows":  rows,
-		"count": count,
+	c.JSON(http.StatusOK, schema.PaginQueryOut{
+		Page:  q.Page,
+		Size:  q.Size,
+		Total: total,
+		Rows:  rows,
 	})
 }
 
