@@ -28,7 +28,7 @@ func AuthFindAndCountAll(c *gin.Context) {
 	// if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("User").Find(&rows).Error; err != nil {
 	// 	c.JSON(http.StatusInternalServerError, gin.H{
 	// 		"err":     err,
-	// 		"message": "查询多条信息失败",
+	// 		"msg": "查询多条信息失败",
 	// 	})
 	// 	return
 	// }
@@ -41,6 +41,10 @@ func AuthFindAndCountAll(c *gin.Context) {
 	// var rows []model.Auth
 	// curd.FindAndCountAll(c, model.Auth)
 
+	// user := c.MustGet("user").(schema.JWTUser)
+	// fmt.Println(user)
+
+	// 参数绑定
 	var q *schema.PaginQueryIn
 	if err := c.ShouldBindQuery(&q); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -50,16 +54,34 @@ func AuthFindAndCountAll(c *gin.Context) {
 		return
 	}
 
+	// 条件参数
 	params := c.QueryMap("params")
+	// map 参数，map[string]T 必须转为 map[string]interface{}
+	where := make(map[string]interface{}, len(params))
+	for k, v := range params {
+		// 有模型不存在的key时，后面的查询会报错，需要过滤掉
+		// if k == "name" || k == "gender" {
+		// 	where[k] = v
+		// }
+		where[k] = v
+	}
+	// struct 参数，后面使用指针
+	// var where model.User
+	// if err := mapstructure.Decode(params, &where); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"err": err,
+	// 		"msg": "查询参数有误",
+	// 	})
+	// 	return
+	// }
+
+	// 分页参数
 	offset := (q.Page - 1) * q.Size
 	var total uint
 	var rows []model.Auth
-	where := make(map[string]interface{})
-	for k, v := range params {
-		where[k] = v
-	}
 
-	if err := db.DB.Model(&rows).Where(params).Count(&total).Limit(q.Size).Offset(offset).Order(q.Order).Preload("User").Find(&rows).Error; err != nil {
+	// 查询数据
+	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("User").Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err,
 			"msg": "查询多条信息失败",
@@ -87,8 +109,8 @@ func AuthFindByPk(c *gin.Context) {
 	var data model.Auth
 	if err := db.DB.Where("id = ?", id).Preload("User").First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err":     err,
-			"message": "根据主键查询单条信息失败",
+			"err": err,
+			"msg": "根据主键查询单条信息失败",
 		})
 		return
 	}
@@ -104,8 +126,8 @@ func AuthSingleCreate(c *gin.Context) {
 	var data model.Auth
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err,
-			"message": "数据绑定失败",
+			"err": err,
+			"msg": "数据绑定失败",
 		})
 		return
 	}
@@ -113,8 +135,8 @@ func AuthSingleCreate(c *gin.Context) {
 	// 插入数据
 	if err := db.DB.Create(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err,
-			"message": "插入数据失败",
+			"err": err,
+			"msg": "插入数据失败",
 		})
 		return
 	}
@@ -133,8 +155,8 @@ func AuthUpdateByPk(c *gin.Context) {
 	var data model.Auth
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err":     err,
-			"message": "查询失败",
+			"err": err,
+			"msg": "查询失败",
 		})
 		return
 	}
@@ -142,8 +164,8 @@ func AuthUpdateByPk(c *gin.Context) {
 	// 绑定新数据
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err,
-			"message": "数据绑定失败",
+			"err": err,
+			"msg": "数据绑定失败",
 		})
 		return
 	}
@@ -151,8 +173,8 @@ func AuthUpdateByPk(c *gin.Context) {
 	// 更新数据
 	if err := db.DB.Model(&data).Updates(&data).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err,
-			"message": "更新失败",
+			"err": err,
+			"msg": "更新失败",
 		})
 		return
 	}
@@ -171,8 +193,8 @@ func AuthDestroyByPk(c *gin.Context) {
 	var data model.Auth
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err":     err,
-			"message": "查询失败",
+			"err": err,
+			"msg": "查询失败",
 		})
 		return
 	}
@@ -180,8 +202,8 @@ func AuthDestroyByPk(c *gin.Context) {
 	// 删除
 	if err := db.DB.Delete(&data).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err,
-			"message": "删除失败",
+			"err": err,
+			"msg": "删除失败",
 		})
 		return
 	}
@@ -197,8 +219,8 @@ func AuthFindOrCreate(c *gin.Context) {
 	var data model.Auth
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err,
-			"message": "数据绑定失败",
+			"err": err,
+			"msg": "数据绑定失败",
 		})
 		return
 	}
@@ -206,8 +228,8 @@ func AuthFindOrCreate(c *gin.Context) {
 	// 插入数据
 	if err := db.DB.Where(&data).FirstOrCreate(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err,
-			"message": "查询或创建数据失败",
+			"err": err,
+			"msg": "查询或创建数据失败",
 		})
 		return
 	}

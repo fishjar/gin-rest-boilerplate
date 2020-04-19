@@ -4,6 +4,8 @@
 
 package schema
 
+type omit *struct{}
+
 // AccountLoginIn 帐号登录表单
 type AccountLoginIn struct {
 	UserName string `form:"username" binding:"required"`
@@ -12,7 +14,7 @@ type AccountLoginIn struct {
 
 // AccountLoginOut 登录成功返回数据
 type AccountLoginOut struct {
-	Message     string `json:"message" binding:"required"`
+	Message     string `json:"msg" binding:"required"`
 	TokenType   string `json:"tokenType" binding:"required"`
 	AccessToken string `json:"accessToken" binding:"required"`
 }
@@ -25,9 +27,9 @@ type JWTUser struct {
 
 // PaginQueryIn 分页查询参数
 type PaginQueryIn struct {
-	Page  uint   `form:"page,default=1"`
-	Size  uint   `form:"size,default=10"`
-	Order string `form:"order"`
+	Page uint   `form:"page,default=1"`
+	Size uint   `form:"size,default=10"`
+	Sort string `form:"sort"`
 }
 
 // PaginQueryOut 分页查询结果

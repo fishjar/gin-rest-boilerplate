@@ -38,6 +38,15 @@ type User struct {
 	Friends      []*User    `json:"friends" gorm:"many2many:userfriend;association_jointable_foreignkey:user_id;jointable_foreignkey:friend_id;"` // 友
 }
 
+// PublicUser 公开用户信息
+type PublicUser struct {
+	*User
+	// Nickname *string `json:"nickname" binding:"-"`
+	// Gender   *int    `json:"gender,omitempty"`
+	// Nickname *string `json:"nickname,omitempty"`
+	Name string `json:"name" binding:"-"`
+}
+
 // TableName 自定义用户表名
 func (User) TableName() string {
 	return "user"

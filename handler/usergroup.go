@@ -26,7 +26,7 @@ func UserGroupFindAndCountAll(c *gin.Context) {
 	if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     err,
-			"message": "查询失败",
+			"msg": "查询失败",
 		})
 		return
 	}
@@ -49,7 +49,7 @@ func UserGroupFindByPk(c *gin.Context) {
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
-			"message": "查询失败",
+			"msg": "查询失败",
 		})
 		return
 	}
@@ -66,7 +66,7 @@ func UserGroupSingleCreate(c *gin.Context) {
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
-			"message": "数据绑定失败",
+			"msg": "数据绑定失败",
 		})
 		return
 	}
@@ -75,7 +75,7 @@ func UserGroupSingleCreate(c *gin.Context) {
 	if err := db.DB.Create(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     err,
-			"message": "插入数据失败",
+			"msg": "插入数据失败",
 		})
 		return
 	}
@@ -95,7 +95,7 @@ func UserGroupUpdateByPk(c *gin.Context) {
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
-			"message": "查询失败",
+			"msg": "查询失败",
 		})
 		return
 	}
@@ -104,7 +104,7 @@ func UserGroupUpdateByPk(c *gin.Context) {
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
-			"message": "数据绑定失败",
+			"msg": "数据绑定失败",
 		})
 		return
 	}
@@ -113,7 +113,7 @@ func UserGroupUpdateByPk(c *gin.Context) {
 	if err := db.DB.Model(&data).Updates(&data).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
-			"message": "更新失败",
+			"msg": "更新失败",
 		})
 		return
 	}
@@ -133,7 +133,7 @@ func UserGroupDestroyByPk(c *gin.Context) {
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err":     err,
-			"message": "查询失败",
+			"msg": "查询失败",
 		})
 		return
 	}
@@ -142,7 +142,7 @@ func UserGroupDestroyByPk(c *gin.Context) {
 	if err := db.DB.Delete(&data).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
-			"message": "删除失败",
+			"msg": "删除失败",
 		})
 		return
 	}
@@ -159,7 +159,7 @@ func UserGroupFindOrCreate(c *gin.Context) {
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     err,
-			"message": "数据绑定失败",
+			"msg": "数据绑定失败",
 		})
 		return
 	}
@@ -168,7 +168,7 @@ func UserGroupFindOrCreate(c *gin.Context) {
 	if err := db.DB.Where(&data).FirstOrCreate(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     err,
-			"message": "查询或创建数据失败",
+			"msg": "查询或创建数据失败",
 		})
 		return
 	}

@@ -76,8 +76,12 @@ func JWTAuth() gin.HandlerFunc {
 
 		// 验证成功
 		// 挂载到全局
-		c.Set("AuthID", AuthID)
-		c.Set("UserID", UserID)
+		// c.Set("AuthID", AuthID)
+		// c.Set("UserID", UserID)
+		c.Set("user", schema.JWTUser{
+			AuthID: AuthID,
+			UserID: UserID,
+		})
 
 		// 返回一个新token给客户端(未验证)
 		if newToken, err := utils.MakeToken(&schema.JWTUser{

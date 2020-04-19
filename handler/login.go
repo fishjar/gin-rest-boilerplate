@@ -24,7 +24,7 @@ func LoginAccount(c *gin.Context) {
 	// 绑定数据
 	if err := c.ShouldBind(&loginForm); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，参数有误",
+			"msg": "登录失败，参数有误",
 		})
 		return
 	}
@@ -38,7 +38,7 @@ func LoginAccount(c *gin.Context) {
 		AuthType: authType,
 	}).First(&auth).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，用户名或密码错误",
+			"msg": "登录失败，用户名或密码错误",
 		})
 		return
 	}
@@ -50,7 +50,7 @@ func LoginAccount(c *gin.Context) {
 			"password": loginForm.PassWord,
 		}).Warn("登录失败，密码错误")
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，用户名或密码错误",
+			"msg": "登录失败，用户名或密码错误",
 		})
 		return
 	}
@@ -59,7 +59,7 @@ func LoginAccount(c *gin.Context) {
 	var user model.User
 	if err := db.DB.Where("id = ?", auth.UserID).Preload("Roles").First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，用户数据有误",
+			"msg": "登录失败，用户数据有误",
 		})
 		return
 	}
@@ -71,7 +71,7 @@ func LoginAccount(c *gin.Context) {
 	})
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，获取token失败",
+			"msg": "登录失败，获取token失败",
 		})
 		return
 	}

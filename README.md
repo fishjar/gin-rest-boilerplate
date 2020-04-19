@@ -85,3 +85,31 @@ curl -X POST http://localhost:8000/foos \
 curl http://localhost:8000/foos \
 -H "Authorization: Bearer <token>"
 ```
+
+## TODO
+
+- 文件上传/下载，从 reader 读取数据
+- 静态文件服务
+- req，res记录
+- 原始 SQL 查询
+- 部署
+- 嵌套路由组
+- 在中间件中使用 Goroutine
+- 定义路由日志的格式
+- 模型的空字段
+- ShouldBindUri
+- Birthday time.Time `form:"birthday" time_format:"2006-01-02" time_utc:"1"`
+- 批量创建、更新
+- 绑定表单数据至自定义结构体
+- c.MustGet("example").(string)
+- 自定义验证器，结构体级别的验证器
+- 内部、外部重定向
+- 测试
+- Official CORS gin's middleware
+- 事物
+- https://colobu.com/2017/06/21/json-tricks-in-Go/
+- omitempty不会忽略某个字段，而是忽略空的字段，当字段的值为空值的时候，它不会出现在JSON数据中
+- 如果想忽略某个字段 Password bool `json:"-"`
+- https://zhuanlan.zhihu.com/p/91312616
+- https://www.tizi365.com/archives/343.html
+- JSON type https://github.com/jinzhu/gorm/issues/1935
