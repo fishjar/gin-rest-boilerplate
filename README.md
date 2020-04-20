@@ -90,7 +90,7 @@ curl http://localhost:8000/foos \
 
 - 文件上传/下载，从 reader 读取数据
 - 静态文件服务
-- req，res记录
+- req，res 记录
 - 原始 SQL 查询
 - 部署
 - 嵌套路由组
@@ -108,8 +108,19 @@ curl http://localhost:8000/foos \
 - Official CORS gin's middleware
 - 事物
 - https://colobu.com/2017/06/21/json-tricks-in-Go/
-- omitempty不会忽略某个字段，而是忽略空的字段，当字段的值为空值的时候，它不会出现在JSON数据中
+- omitempty 不会忽略某个字段，而是忽略空的字段，当字段的值为空值的时候，它不会出现在 JSON 数据中
 - 如果想忽略某个字段 Password bool `json:"-"`
 - https://zhuanlan.zhihu.com/p/91312616
 - https://www.tizi365.com/archives/343.html
 - JSON type https://github.com/jinzhu/gorm/issues/1935
+- https://github.com/gin-gonic/gin/issues/961
+- 结构体验证:https://github.com/go-playground/validator/issues/546
+
+## 问题
+
+// gorm tags 参考：https://gorm.io/docs/models.html
+// binding tags 参考：https://godoc.org/gopkg.in/go-playground/validator.v8
+// 时间格式比较严格，参考：https://golang.org/pkg/time/#pkg-constants
+// 模型定义中全部使用指针类型，是为了可以插入 null 值到数据库，但这样会造成一些使用的麻烦
+// 也可以使用"database/sql"或"github.com/guregu/null"包中封装的类型
+// 但是这样会造成 binding 验证失效，目前没有更好的实现办法，所以暂时全部使用指针类型
