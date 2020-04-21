@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/fishjar/gin-rest-boilerplate/schema"
 	"github.com/sirupsen/logrus"
 
 	"github.com/fishjar/gin-rest-boilerplate/logger"
+	"github.com/fishjar/gin-rest-boilerplate/model"
 
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
@@ -78,13 +78,13 @@ func JWTAuth() gin.HandlerFunc {
 		// 挂载到全局
 		// c.Set("AuthID", AuthID)
 		// c.Set("UserID", UserID)
-		c.Set("user", schema.JWTUser{
+		c.Set("user", model.UserJWT{
 			AuthID: AuthID,
 			UserID: UserID,
 		})
 
 		// 返回一个新token给客户端(未验证)
-		if newToken, err := utils.MakeToken(&schema.JWTUser{
+		if newToken, err := utils.MakeToken(&model.UserJWT{
 			AuthID: AuthID,
 			UserID: UserID,
 		}); err == nil {

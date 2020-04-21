@@ -7,7 +7,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/fishjar/gin-rest-boilerplate/config"
-	"github.com/fishjar/gin-rest-boilerplate/schema"
+	"github.com/fishjar/gin-rest-boilerplate/model"
 )
 
 // JWTClaims JWT加密的结构体
@@ -17,7 +17,7 @@ type JWTClaims struct {
 }
 
 // MakeToken 创建JWT的TOKEN
-func MakeToken(user *schema.JWTUser) (string, error) {
+func MakeToken(user *model.UserJWT) (string, error) {
 
 	signKey := config.JWTSignKey                                  // JWT加密用的密钥
 	expiresAt := time.Duration(config.JWTExpiresAt) * time.Minute // JWT过期时间，分钟为单位
@@ -64,7 +64,7 @@ func ParseToken(tokenString string) (*JWTClaims, error) {
 // 测试JWT功能是否正常
 func init() {
 	// 测试生成token
-	token, err := MakeToken(&schema.JWTUser{
+	token, err := MakeToken(&model.UserJWT{
 		AuthID: "123",
 		UserID: "456",
 	})

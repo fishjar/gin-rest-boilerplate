@@ -5,7 +5,6 @@ import (
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
-	"github.com/fishjar/gin-rest-boilerplate/schema"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,39 +12,8 @@ import (
 // AuthFindAndCountAll 查询多条信息
 func AuthFindAndCountAll(c *gin.Context) {
 
-	// 获取参数
-	// ShouldBindQuery
-	// db.Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
-	// pageNum, _ := strconv.Atoi(c.DefaultQuery("page_num", "1"))    // 页码
-	// pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10")) // 每页数目
-	// order := c.DefaultQuery("sorter", "")                          // 排序
-	// where := c.DefaultQuery("where", "")                           // 检索条件 c.QueryMap("querys")
-	// offset := (pageNum - 1) * pageSize
-
-	// // 查询数据
-	// var rows []model.Auth
-	// var count uint
-	// if err := db.DB.Model(&rows).Where(where).Count(&count).Limit(pageSize).Offset(offset).Order(order).Preload("User").Find(&rows).Error; err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"err":     err,
-	// 		"msg": "查询多条信息失败",
-	// 	})
-	// 	return
-	// }
-
-	// // 返回数据
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"rows":  rows,
-	// 	"count": count,
-	// })
-	// var rows []model.Auth
-	// curd.FindAndCountAll(c, model.Auth)
-
-	// user := c.MustGet("user").(schema.JWTUser)
-	// fmt.Println(user)
-
 	// 参数绑定
-	var q *schema.PaginQueryIn
+	var q *model.PaginQueryIn
 	if err := c.ShouldBindQuery(&q); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err,
@@ -90,7 +58,7 @@ func AuthFindAndCountAll(c *gin.Context) {
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, schema.PaginQueryOut{
+	c.JSON(http.StatusOK, model.PaginQueryOut{
 		Page:  q.Page,
 		Size:  q.Size,
 		Total: total,
@@ -107,10 +75,10 @@ func AuthFindByPk(c *gin.Context) {
 
 	// 查询
 	var data model.Auth
-	if err := db.DB.Where("id = ?", id).Preload("User").First(&data).Error; err != nil {
+	if err := db.DB.Preload("User").First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err": err,
-			"msg": "根据主键查询单条信息失败",
+			"msg": "查询失败",
 		})
 		return
 	}

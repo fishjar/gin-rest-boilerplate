@@ -26,6 +26,26 @@ type Auth struct {
 	IsEnabled  *bool      `json:"isEnabled" gorm:"column:is_enabled" binding:"omitempty"`                 // 是否启用
 }
 
+// AuthPublic 公开模型
+type AuthPublic struct {
+	*Auth
+	AuthName string  `json:"-" binding:"-"`
+	AuthCode *string `json:"-" binding:"-"`
+}
+
+// AuthLoginIn 帐号登录表单
+type AuthLoginIn struct {
+	UserName string `form:"username" binding:"required"`
+	PassWord string `form:"password" binding:"required"`
+}
+
+// AuthLoginOut 登录成功返回数据
+type AuthLoginOut struct {
+	Message     string `json:"msg" binding:"required"`
+	TokenType   string `json:"tokenType" binding:"required"`
+	AccessToken string `json:"accessToken" binding:"required"`
+}
+
 // TableName 自定义表名
 func (Auth) TableName() string {
 	return "auth"

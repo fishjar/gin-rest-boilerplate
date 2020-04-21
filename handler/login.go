@@ -10,7 +10,6 @@ import (
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/model"
-	"github.com/fishjar/gin-rest-boilerplate/schema"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -19,7 +18,7 @@ import (
 // LoginAccount 登录处理函数
 func LoginAccount(c *gin.Context) {
 
-	var loginForm schema.AccountLoginIn
+	var loginForm model.AuthLoginIn
 
 	// 绑定数据
 	if err := c.ShouldBind(&loginForm); err != nil {
@@ -65,7 +64,7 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 生成token
-	accessToken, err := utils.MakeToken(&schema.JWTUser{
+	accessToken, err := utils.MakeToken(&model.UserJWT{
 		AuthID: auth.ID.String(),
 		UserID: user.ID.String(),
 	})
@@ -79,7 +78,7 @@ func LoginAccount(c *gin.Context) {
 	// TODO：保存到redis
 
 	// 登录成功
-	c.JSON(http.StatusOK, schema.AccountLoginOut{
+	c.JSON(http.StatusOK, model.AuthLoginOut{
 		Message:     "登录成功",
 		TokenType:   "bearer",
 		AccessToken: accessToken,

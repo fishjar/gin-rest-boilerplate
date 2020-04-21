@@ -5,7 +5,6 @@ import (
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
-	"github.com/fishjar/gin-rest-boilerplate/schema"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +13,7 @@ import (
 func UserFindAndCountAll(c *gin.Context) {
 
 	// 参数绑定
-	var q *schema.PaginQueryIn
+	var q *model.PaginQueryIn
 	if err := c.ShouldBindQuery(&q); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err,
@@ -58,7 +57,7 @@ func UserFindAndCountAll(c *gin.Context) {
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, schema.PaginQueryOut{
+	c.JSON(http.StatusOK, model.PaginQueryOut{
 		Page:  q.Page,
 		Size:  q.Size,
 		Total: total,
@@ -73,15 +72,7 @@ func UserFindByPk(c *gin.Context) {
 	id := c.Param("id")
 
 	// 查询
-	// var data model.User
-	var data model.PublicUser
-	// if err := db.DB.Where("id = ?", id).Preload("Auths").First(&data).Error; err != nil {
-	// 	c.JSON(http.StatusNotFound, gin.H{
-	// 		"err": err,
-	// 		"msg": "查询失败",
-	// 	})
-	// 	return
-	// }
+	var data model.User
 	if err := db.DB.Preload("Auths").First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err": err,

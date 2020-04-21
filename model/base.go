@@ -27,3 +27,18 @@ func (base *Base) BeforeCreate(scope *gorm.Scope) error {
 	}
 	return scope.SetColumn("ID", uuid)
 }
+
+// PaginQueryIn 分页查询参数
+type PaginQueryIn struct {
+	Page uint   `form:"page,default=1"`
+	Size uint   `form:"size,default=10"`
+	Sort string `form:"sort"`
+}
+
+// PaginQueryOut 分页查询结果
+type PaginQueryOut struct {
+	Page  uint        `json:"page" binding:"required"`
+	Size  uint        `json:"size" binding:"required"`
+	Total uint        `json:"total" binding:"required"`
+	Rows  interface{} `json:"rows" binding:"required"`
+}
