@@ -32,6 +32,12 @@ type User struct {
 	Friends      []*User    `json:"friends" gorm:"many2many:userfriend;association_jointable_foreignkey:user_id;jointable_foreignkey:friend_id;"` // 友
 }
 
+// UserUpdate 更新用户信息
+type UserUpdate struct {
+	*User
+	Name *string `json:"name" form:"-"`
+}
+
 // UserPublic 公开用户信息
 type UserPublic struct {
 	*User

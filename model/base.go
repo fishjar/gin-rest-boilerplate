@@ -42,3 +42,14 @@ type PaginQueryOut struct {
 	Total uint        `json:"total" binding:"required"`
 	Rows  interface{} `json:"rows" binding:"required"`
 }
+
+// BulkDelete 批量删除
+type BulkDelete struct {
+	IDs []uuid.UUID `form:"ids" json:"ids" binding:"required"`
+}
+
+// BulkUpdate 批量更新
+type BulkUpdate struct {
+	IDs []uuid.UUID `form:"ids" json:"ids" binding:"required"`
+	Obj interface{} `form:"obj" json:"obj" binding:"required"`
+}

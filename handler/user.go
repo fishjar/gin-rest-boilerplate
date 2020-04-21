@@ -16,7 +16,7 @@ func UserFindAndCountAll(c *gin.Context) {
 	var q *model.PaginQueryIn
 	if err := c.ShouldBindQuery(&q); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "参数有误",
 		})
 		return
@@ -36,7 +36,7 @@ func UserFindAndCountAll(c *gin.Context) {
 	// var where model.User
 	// if err := mapstructure.Decode(params, &where); err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"err": err,
+	// 		"err": err.Error(),
 	// 		"msg": "查询参数有误",
 	// 	})
 	// 	return
@@ -50,7 +50,7 @@ func UserFindAndCountAll(c *gin.Context) {
 	// 查询数据
 	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "查询多条信息失败",
 		})
 		return
@@ -75,7 +75,7 @@ func UserFindByPk(c *gin.Context) {
 	var data model.User
 	if err := db.DB.Preload("Auths").First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "查询失败",
 		})
 		return
@@ -92,7 +92,7 @@ func UserSingleCreate(c *gin.Context) {
 	var data model.User
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "数据绑定失败",
 		})
 		return
@@ -101,7 +101,7 @@ func UserSingleCreate(c *gin.Context) {
 	// 插入数据
 	if err := db.DB.Create(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "插入数据失败",
 		})
 		return
@@ -119,16 +119,9 @@ func UserUpdateByPk(c *gin.Context) {
 
 	// 查询
 	var data model.User
-	// if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
-	// 	c.JSON(http.StatusNotFound, gin.H{
-	// 		"err": err,
-	// 		"msg": "查询失败",
-	// 	})
-	// 	return
-	// }
 	if err := db.DB.First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "查询失败",
 		})
 		return
@@ -137,7 +130,7 @@ func UserUpdateByPk(c *gin.Context) {
 	// 绑定新数据
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "数据绑定失败",
 		})
 		return
@@ -146,7 +139,7 @@ func UserUpdateByPk(c *gin.Context) {
 	// 更新数据
 	if err := db.DB.Model(&data).Updates(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "更新失败",
 		})
 		return
@@ -166,7 +159,7 @@ func UserDestroyByPk(c *gin.Context) {
 	var data model.User
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "查询失败",
 		})
 		return
@@ -175,7 +168,7 @@ func UserDestroyByPk(c *gin.Context) {
 	// 删除
 	if err := db.DB.Delete(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "删除失败",
 		})
 		return
@@ -192,7 +185,7 @@ func UserFindOrCreate(c *gin.Context) {
 	var data model.User
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "数据绑定失败",
 		})
 		return
@@ -201,8 +194,70 @@ func UserFindOrCreate(c *gin.Context) {
 	// 插入数据
 	if err := db.DB.Where(&data).FirstOrCreate(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err,
+			"err": err.Error(),
 			"msg": "查询或创建数据失败",
+		})
+		return
+	}
+
+	// 返回数据
+	c.JSON(http.StatusOK, data)
+}
+
+// UserUpdateBulk 批量更新
+func UserUpdateBulk(c *gin.Context) {
+
+	var data model.BulkUpdate
+
+	// 绑定数据
+	if err := c.ShouldBind(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+			"msg": "数据绑定失败",
+		})
+		return
+	}
+
+	// 判断ID列表是否为空
+	// if len(data.IDs) == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"msg": "ids列表不能空",
+	// 	})
+	// 	return
+	// }
+
+	// 更新数据
+	if err := db.DB.Model(model.User{}).Where("id IN (?)", data.IDs).Updates(data.Obj).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+			"msg": "更新失败",
+		})
+		return
+	}
+
+	// 返回数据
+	c.JSON(http.StatusOK, data)
+}
+
+// UserDestroyBulk 批量删除
+func UserDestroyBulk(c *gin.Context) {
+
+	var data model.BulkDelete
+
+	// 绑定数据
+	if err := c.ShouldBind(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+			"msg": "数据绑定失败",
+		})
+		return
+	}
+
+	// 删除数据
+	if err := db.DB.Where("id IN (?)", data.IDs).Delete(&model.User{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+			"msg": "删除失败",
 		})
 		return
 	}
