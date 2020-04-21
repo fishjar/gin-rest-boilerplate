@@ -15,10 +15,10 @@ import (
 // 也可以使用"database/sql"或"github.com/guregu/null"包中封装的类型
 // 但是这样会造成binding验证失效，目前没有更好的实现办法，所以暂时全部使用指针类型
 type UserGroup struct {
-	Base
+	// Base
 	UserID   uuid.UUID  `json:"userId" gorm:"column:user_id;not null"`                                // 用户ID
 	User     *User      `json:"user" gorm:"foreignkey:UserID"`                                        // 用户
-	GroupID  uuid.UUID  `json:"groupId" gorm:"column:user_id;not null"`                               // 组ID
+	GroupID  uuid.UUID  `json:"groupId" gorm:"column:group_id;not null"`                              // 组ID
 	Group    *Group     `json:"group" gorm:"foreignkey:GroupID"`                                      // 组
 	Level    *int       `json:"level" gorm:"column:level;type:TINYINT;default:0" binding:"omitempty"` // 级别
 	JoinTime *time.Time `json:"joinTime" gorm:"column:join_time;type:DATETIME" binding:"omitempty"`   // 加入时间

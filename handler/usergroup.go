@@ -48,7 +48,7 @@ func UserGroupFindAndCountAll(c *gin.Context) {
 	var rows []model.UserGroup
 
 	// 查询数据
-	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Find(&rows).Error; err != nil {
+	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("User").Preload("Group").Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 			"msg": "查询多条信息失败",
@@ -73,7 +73,7 @@ func UserGroupFindByPk(c *gin.Context) {
 
 	// 查询
 	var data model.UserGroup
-	if err := db.DB.First(&data, "id = ?", id).Error; err != nil {
+	if err := db.DB.Preload("User").Preload("Group").First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err": err.Error(),
 			"msg": "查询失败",

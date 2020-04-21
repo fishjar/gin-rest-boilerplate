@@ -28,8 +28,8 @@ type User struct {
 	Score        *int       `json:"score" gorm:"column:score;default:0" binding:"omitempty"`                                                      // 积分
 	Auths        []*Auth    `json:"auths" gorm:"foreignkey:UserID"`                                                                               // 帐号
 	Roles        []*Role    `json:"roles" gorm:"many2many:userrole;"`                                                                             // 角色
-	Groups       []*Group   `json:"groups" gorm:"many2many:usergroup;"`                                                                           // 组
 	Friends      []*User    `json:"friends" gorm:"many2many:userfriend;association_jointable_foreignkey:user_id;jointable_foreignkey:friend_id;"` // 友
+	Groups       []*Group   `json:"groups" gorm:"many2many:usergroup;"`                                                                           // 组
 }
 
 // UserUpdate 更新用户信息
