@@ -14,7 +14,7 @@ type User struct {
 	Gender       *int       `json:"gender" gorm:"column:gender;type:TINYINT;default:0" binding:"omitempty,eq=0|eq=1|eq=2"`                        // 性别
 	Avatar       *string    `json:"avatar" gorm:"column:avatar" binding:"omitempty"`                                                              // 昵称
 	Mobile       *string    `json:"mobile" gorm:"column:mobile;type:VARCHAR(16)" binding:"omitempty"`                                             // 手机
-	Email        *string    `json:"email" gorm:"column:email" binding:"omitempty,email"`                                                          // 邮箱
+	Email        *string    `json:"email" gorm:"column:email;unique" binding:"omitempty,email"`                                                   // 邮箱
 	Homepage     *string    `json:"homepage" gorm:"column:homepage" binding:"omitempty,url"`                                                      // 个人主页
 	Birthday     *time.Time `json:"birthday" gorm:"column:birthday;type:DATE" binding:"omitempty"`                                                // 生日
 	Height       *float32   `json:"height" gorm:"column:height;type:FLOAT" binding:"omitempty,min=0.01,max=300"`                                  // 身高(cm)
@@ -26,6 +26,7 @@ type User struct {
 	Tags         *string    `json:"tags" gorm:"column:tags;type:JSON" binding:"omitempty"`                                                        // 标签
 	LuckyNumbers *string    `json:"luckyNumbers" gorm:"column:lucky_numbers;type:JSON" binding:"omitempty"`                                       // 幸运数字
 	Score        *int       `json:"score" gorm:"column:score;default:0" binding:"omitempty"`                                                      // 积分
+	UserNo       int        `json:"userNo" gorm:"column:user_no;AUTO_INCREMENT"`                                                                  // 编号
 	Auths        []*Auth    `json:"auths" gorm:"foreignkey:UserID"`                                                                               // 帐号
 	Roles        []*Role    `json:"roles" gorm:"many2many:userrole;"`                                                                             // 角色
 	Friends      []*User    `json:"friends" gorm:"many2many:userfriend;association_jointable_foreignkey:user_id;jointable_foreignkey:friend_id;"` // 友

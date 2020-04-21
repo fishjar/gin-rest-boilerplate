@@ -73,7 +73,7 @@ func UserFindByPk(c *gin.Context) {
 
 	// 查询
 	var data model.User
-	if err := db.DB.Preload("Auths").First(&data, "id = ?", id).Error; err != nil {
+	if err := db.DB.Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err": err.Error(),
 			"msg": "查询失败",
