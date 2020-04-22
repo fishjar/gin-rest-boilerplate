@@ -115,11 +115,11 @@ curl http://localhost:8000/foos \
 - JSON type https://github.com/jinzhu/gorm/issues/1935
 - https://github.com/gin-gonic/gin/issues/961
 - 结构体验证:https://github.com/go-playground/validator/issues/546
-- 当使用 struct 更新时，GORM只会更新那些非零值的字段，"", 0, false 都是其类型的零值
+- 当使用 struct 更新时，GORM 只会更新那些非零值的字段，"", 0, false 都是其类型的零值
 - 如果你想更新或忽略某些字段，你可以使用 Select，Omit
 - 批量更新时 Hooks 不会运行
-- 记录createBy/updateBy/DeletedBy
-- 自动swagger
+- 记录 createBy/updateBy/DeletedBy
+- 自动 swagger
 - https://github.com/asaskevich/govalidator
 
 ## 问题
@@ -130,3 +130,67 @@ curl http://localhost:8000/foos \
 // 模型定义中全部使用指针类型，是为了可以插入 null 值到数据库，但这样会造成一些使用的麻烦
 // 也可以使用"database/sql"或"github.com/guregu/null"包中封装的类型
 // 但是这样会造成 binding 验证失效，目前没有更好的实现办法，所以暂时全部使用指针类型
+
+## sql
+
+```sql
+SELECT
+    *
+FROM
+    "menu"
+    INNER JOIN "rolemenu" ON "rolemenu"."menu_id" = "menu"."id"
+WHERE
+    "menu"."deleted_at" IS NULL
+    AND (
+        (
+            "rolemenu"."role_id" IN (
+                SELECT
+                    "id"
+                FROM
+                    "role"
+                    INNER JOIN "userrole" ON "userrole"."role_id" = "role"."id"
+                WHERE
+                    "role"."deleted_at" IS NULL
+                    AND (
+                        (
+                            "userrole"."user_id" IN (
+                                'eff9689b-3620-441c-a85a-ddae255a991e',
+                                '222cc7ca-98f8-4ebb-9891-e54eae67da30',
+                                'b63949d2-0a84-4893-a4a5-e27ee4622e18'
+                            )
+                        )
+                    )
+                GROUP BY
+                    "id"
+            )
+        )
+    )
+GROUP BY
+    "id"
+```
+
+```sql
+SELECT
+    *
+FROM
+    "menu"
+    INNER JOIN "rolemenu" ON "rolemenu"."menu_id" = "menu"."id"
+WHERE
+    "menu"."deleted_at" IS NULL
+    AND (
+        (
+            "rolemenu"."role_id" IN (
+                SELECT
+                    "id"
+                FROM
+                    "role"
+                    INNER JOIN "userrole" ON "userrole"."role_id" = "role"."id"
+                WHERE
+                    "role"."deleted_at" IS NULL
+                    AND "userrole"."user_id" = "cc58da0d-c62e-43c6-b38e-70dccf4220a4"
+            )
+        )
+    )
+GROUP BY
+    "id"
+```
