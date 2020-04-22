@@ -323,7 +323,8 @@ func UserFindMyMenus(c *gin.Context) {
 	// var roles []model.Role
 	var menus []model.Menu
 	// db.DB.Model(&user).Related(&roles, "Roles").Related(&menus, "Menus")
-	db.DB.Model(&user).Joins("JOIN userrole on userrole.user_id = user.id").Joins("JOIN rolemenu on rolemenu.role_id = role.id").Find(&menus)
+	// db.DB.Model(&user).Joins("JOIN userrole on userrole.user_id = user.id").Joins("JOIN rolemenu on rolemenu.role_id = role.id").Find(&menus)
+	db.DB.Preload("Roles").Preload("Roles.Users", "id = ?", "userID").Find(&menus)
 
 	// 返回数据
 	c.JSON(http.StatusOK, menus)
