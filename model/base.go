@@ -32,7 +32,7 @@ func (base *Base) BeforeCreate(scope *gorm.Scope) error {
 type PaginQueryIn struct {
 	Page uint   `form:"page,default=1"`
 	Size uint   `form:"size,default=10"`
-	Sort string `form:"sort"`
+	Sort string `form:"sort,default=created_at desc"`
 }
 
 // PaginQueryOut 分页查询结果
@@ -50,6 +50,6 @@ type BulkDelete struct {
 
 // BulkUpdate 批量更新
 type BulkUpdate struct {
-	IDs []uuid.UUID `form:"ids" json:"ids" binding:"required"`
-	Obj interface{} `form:"obj" json:"obj" binding:"required"`
+	IDs []uuid.UUID            `form:"ids" json:"ids" binding:"required"`
+	Obj map[string]interface{} `form:"obj" json:"obj" binding:"required"`
 }

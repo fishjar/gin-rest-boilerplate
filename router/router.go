@@ -77,6 +77,8 @@ func InitRouter() *gin.Engine {
 		authorized.POST("/user", handler.UserFindOrCreate)       // 查询或创建
 		authorized.PATCH("/users", handler.UserUpdateBulk)       // 批量更新
 		authorized.DELETE("/users", handler.UserDestroyBulk)     // 批量删除
+		authorized.GET("/user/roles", handler.UserFindMyRoles)   // 获取角色列表
+		authorized.GET("/user/menus", handler.UserFindMyMenus)   // 获取菜单列表
 	}
 	{
 		authorized.GET("/usergroups", handler.UserGroupFindAndCountAll)    // 获取多条

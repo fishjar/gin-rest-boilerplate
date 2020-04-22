@@ -115,6 +115,12 @@ curl http://localhost:8000/foos \
 - JSON type https://github.com/jinzhu/gorm/issues/1935
 - https://github.com/gin-gonic/gin/issues/961
 - 结构体验证:https://github.com/go-playground/validator/issues/546
+- 当使用 struct 更新时，GORM只会更新那些非零值的字段，"", 0, false 都是其类型的零值
+- 如果你想更新或忽略某些字段，你可以使用 Select，Omit
+- 批量更新时 Hooks 不会运行
+- 记录createBy/updateBy/DeletedBy
+- 自动swagger
+- https://github.com/asaskevich/govalidator
 
 ## 问题
 

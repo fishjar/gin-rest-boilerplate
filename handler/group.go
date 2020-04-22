@@ -128,7 +128,8 @@ func GroupUpdateByPk(c *gin.Context) {
 	}
 
 	// 绑定新数据
-	if err := c.ShouldBind(&data); err != nil {
+	var obj map[string]interface{}
+	if err := c.ShouldBind(&obj); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
 			"msg": "数据绑定失败",
@@ -137,7 +138,7 @@ func GroupUpdateByPk(c *gin.Context) {
 	}
 
 	// 更新数据
-	if err := db.DB.Model(&data).Updates(&data).Error; err != nil {
+	if err := db.DB.Model(&data).Updates(obj).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 			"msg": "更新失败",
@@ -192,7 +193,7 @@ func GroupFindOrCreate(c *gin.Context) {
 	}
 
 	// 插入数据
-	if err := db.DB.Where(&data).FirstOrCreate(&data).Error; err != nil {
+	if err := db.DB.FirstOrCreate(&data, data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 			"msg": "查询或创建数据失败",
@@ -254,7 +255,7 @@ func GroupDestroyBulk(c *gin.Context) {
 	}
 
 	// 删除数据
-	if err := db.DB.Where("id IN (?)", data.IDs).Delete(&model.Group{}).Error; err != nil {
+	if err := db.DB.Delete(model.Group{}, "id IN (?)", data.IDs).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 			"msg": "删除失败",

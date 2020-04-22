@@ -128,7 +128,8 @@ func UserUpdateByPk(c *gin.Context) {
 	}
 
 	// 绑定新数据
-	if err := c.ShouldBind(&data); err != nil {
+	var obj map[string]interface{}
+	if err := c.ShouldBind(&obj); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
 			"msg": "数据绑定失败",
@@ -137,7 +138,7 @@ func UserUpdateByPk(c *gin.Context) {
 	}
 
 	// 更新数据
-	if err := db.DB.Model(&data).Updates(&data).Error; err != nil {
+	if err := db.DB.Model(&data).Updates(obj).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 			"msg": "更新失败",
@@ -192,7 +193,7 @@ func UserFindOrCreate(c *gin.Context) {
 	}
 
 	// 插入数据
-	if err := db.DB.Where(&data).FirstOrCreate(&data).Error; err != nil {
+	if err := db.DB.FirstOrCreate(&data, data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 			"msg": "查询或创建数据失败",
@@ -254,7 +255,7 @@ func UserDestroyBulk(c *gin.Context) {
 	}
 
 	// 删除数据
-	if err := db.DB.Where("id IN (?)", data.IDs).Delete(&model.User{}).Error; err != nil {
+	if err := db.DB.Delete(model.User{}, "id IN (?)", data.IDs).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 			"msg": "删除失败",
@@ -264,4 +265,66 @@ func UserDestroyBulk(c *gin.Context) {
 
 	// 返回数据
 	c.JSON(http.StatusOK, data)
+}
+
+// UserFindMyRoles 查找本人角色
+func UserFindMyRoles(c *gin.Context) {
+	// userID := c.MustGet("UserID").(string)
+	userID, ok := c.Get("UserID")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "没有全局UserID",
+		})
+		return
+	}
+
+	user := model.User{}
+	if err := db.DB.First(&user, "id = ?", userID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+			"msg": "用户未登录？",
+		})
+		return
+	}
+
+	var roles []model.Role
+	if err := db.DB.Model(&user).Preload("Menus").Related(&roles, "Roles").Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+			"msg": "查询失败",
+		})
+		return
+	}
+
+	// 返回数据
+	c.JSON(http.StatusOK, roles)
+}
+
+// UserFindMyMenus 查找本人菜单
+func UserFindMyMenus(c *gin.Context) {
+	// userID := c.MustGet("UserID").(string)
+	userID, ok := c.Get("UserID")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "没有全局UserID",
+		})
+		return
+	}
+
+	user := model.User{}
+	if err := db.DB.First(&user, "id = ?", userID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+			"msg": "用户未登录？",
+		})
+		return
+	}
+
+	// var roles []model.Role
+	var menus []model.Menu
+	// db.DB.Model(&user).Related(&roles, "Roles").Related(&menus, "Menus")
+	db.DB.Model(&user).Joins("JOIN userrole on userrole.user_id = user.id").Joins("JOIN rolemenu on rolemenu.role_id = role.id").Find(&menus)
+
+	// 返回数据
+	c.JSON(http.StatusOK, menus)
 }
