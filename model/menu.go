@@ -23,6 +23,11 @@ func (Menu) TableName() string {
 	return "menu"
 }
 
+// GetUniqueIndex 实现 IFUniqueItem 接口
+func (m Menu) GetUniqueIndex() string {
+	return m.ID.String()
+}
+
 func init() {
 	db.DB.AutoMigrate(&Menu{}) // 同步表
 }

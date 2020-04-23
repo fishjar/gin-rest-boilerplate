@@ -17,7 +17,7 @@ type Auth struct {
 	AuthCode   *string    `json:"authCode" gorm:"column:auth_code" binding:"omitempty"`                   // 鉴权识别码
 	VerifyTime *time.Time `json:"verifyTime" gorm:"column:verify_time;type:DATETIME" binding:"omitempty"` // 认证时间
 	ExpireTime *time.Time `json:"expireTime" gorm:"column:expire_time;type:DATETIME" binding:"omitempty"` // 过期时间
-	IsEnabled  *bool      `json:"isEnabled" gorm:"column:is_enabled" binding:"omitempty"`                 // 是否启用
+	IsEnabled  bool       `json:"isEnabled" gorm:"column:is_enabled;default:true" binding:"omitempty"`    // 是否启用
 }
 
 // AuthPublic 公开模型
@@ -35,9 +35,10 @@ type AuthLoginIn struct {
 
 // AuthLoginOut 登录成功返回数据
 type AuthLoginOut struct {
-	Message     string `json:"msg" binding:"required"`
+	Message     string `json:"message" binding:"required"`
 	TokenType   string `json:"tokenType" binding:"required"`
 	AccessToken string `json:"accessToken" binding:"required"`
+	ExpiresIn   int    `json:"expiresIn" binding:"required"` // 过期时间（分钟）
 }
 
 // TableName 自定义表名

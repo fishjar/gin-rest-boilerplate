@@ -5,6 +5,7 @@ import (
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -269,29 +270,12 @@ func UserDestroyBulk(c *gin.Context) {
 
 // UserFindMyRoles 查找本人角色
 func UserFindMyRoles(c *gin.Context) {
-	// userID := c.MustGet("UserID").(string)
-	userID, ok := c.Get("UserID")
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "没有全局UserID",
-		})
-		return
-	}
-
-	user := model.User{}
-	if err := db.DB.First(&user, "id = ?", userID).Error; err != nil {
+	// 获取当前用户角色列表
+	roles, err := service.GetCurrentUserRoles(c)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
-			"msg": "用户未登录？",
-		})
-		return
-	}
-
-	var roles []model.Role
-	if err := db.DB.Model(&user).Preload("Menus").Related(&roles, "Roles").Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "查询失败",
+			"msg": "查询角色失败",
 		})
 		return
 	}
@@ -302,29 +286,15 @@ func UserFindMyRoles(c *gin.Context) {
 
 // UserFindMyMenus 查找本人菜单
 func UserFindMyMenus(c *gin.Context) {
-	// userID := c.MustGet("UserID").(string)
-	userID, ok := c.Get("UserID")
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": "没有全局UserID",
-		})
-		return
-	}
-
-	user := model.User{}
-	if err := db.DB.First(&user, "id = ?", userID).Error; err != nil {
+	// 获取当前用户菜单列表
+	menus, err := service.GetCurrentUserMenus(c)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
-			"msg": "用户未登录？",
+			"msg": "查询菜单失败",
 		})
 		return
 	}
-
-	// var roles []model.Role
-	var menus []model.Menu
-	// db.DB.Model(&user).Related(&roles, "Roles").Related(&menus, "Menus")
-	// db.DB.Model(&user).Joins("JOIN userrole on userrole.user_id = user.id").Joins("JOIN rolemenu on rolemenu.role_id = role.id").Find(&menus)
-	db.DB.Preload("Roles").Preload("Roles.Users", "id = ?", "userID").Find(&menus)
 
 	// 返回数据
 	c.JSON(http.StatusOK, menus)

@@ -18,7 +18,7 @@ const (
 	MySQLURL     string = "root:123456@(localhost)/testdb?charset=utf8mb4&parseTime=True&loc=Local" // 数据库链接
 	HTTPPort     int    = 4000                                                                      // 端口号
 	JWTSignKey   string = "123456"                                                                  // JWT加密用的密钥
-	JWTExpiresAt int    = 60 * 24                                                                   // JWT过期时间，分钟为单位
+	JWTExpiresIn int    = 60 * 24                                                                   // JWT过期时间，分钟为单位
 	PWDSalt      string = "123456"                                                                  // 密码哈希盐
 )
 

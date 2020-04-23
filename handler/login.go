@@ -7,15 +7,18 @@ package handler
 import (
 	"net/http"
 
+	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/service"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 // LoginAccount 登录处理函数
+// TODO：生产环境，错误信息不需要详细情况
 func LoginAccount(c *gin.Context) {
 
 	var loginForm model.AuthLoginIn
@@ -42,6 +45,14 @@ func LoginAccount(c *gin.Context) {
 		return
 	}
 
+	// 检查禁用或过期
+	if !service.AuthCheck(auth) {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"msg": "登录失败，帐号禁用或过期",
+		})
+		return
+	}
+
 	// 验证密码
 	if passWord != *auth.AuthCode {
 		logger.Log.WithFields(logrus.Fields{
@@ -55,8 +66,7 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 查询用户是否存在
-	var user model.User
-	if err := db.DB.Where("id = ?", auth.UserID).Preload("Roles").First(&user).Error; err != nil {
+	if _, err := service.GetUser(auth.UserID.String()); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"msg": "登录失败，用户数据有误",
 		})
@@ -66,7 +76,7 @@ func LoginAccount(c *gin.Context) {
 	// 生成token
 	accessToken, err := utils.MakeToken(&model.UserJWT{
 		AuthID: auth.ID.String(),
-		UserID: user.ID.String(),
+		UserID: auth.UserID.String(),
 	})
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -82,6 +92,31 @@ func LoginAccount(c *gin.Context) {
 		Message:     "登录成功",
 		TokenType:   "bearer",
 		AccessToken: accessToken,
+		ExpiresIn:   config.JWTExpiresIn,
 	})
 
+}
+
+// TokenRefresh 刷新token
+func TokenRefresh(c *gin.Context) {
+	AuthID := c.MustGet("AuthID").(string)
+	UserID := c.MustGet("UserID").(string)
+	newToken, err := utils.MakeToken(&model.UserJWT{
+		AuthID: AuthID,
+		UserID: UserID,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "刷新token失败",
+		})
+		return
+	}
+
+	// 更新成功
+	c.JSON(http.StatusOK, model.AuthLoginOut{
+		Message:     "刷新成功",
+		TokenType:   "bearer",
+		AccessToken: newToken,
+		ExpiresIn:   config.JWTExpiresIn,
+	})
 }

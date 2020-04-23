@@ -11,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/fishjar/gin-rest-boilerplate/logger"
-	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/service"
 
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
@@ -50,46 +50,34 @@ func JWTAuth() gin.HandlerFunc {
 		AuthID := claims.AuthID
 		UserID := claims.Subject
 
-		// TODO: 从redis认证 AuthID 和 UserID 有效性
+		// 从数据库验证 AuthID 和 UserID 有效性
+		if !service.AuthAndUserCheck(AuthID, UserID) {
+			// 验证失败
+			logger.Log.WithFields(logrus.Fields{
+				"accessToken": accessToken,
+				"authID":      AuthID,
+				"userID":      UserID,
+			}).Warn("用户 认证失败")
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"msg": "没有权限：用户验证失败",
+			})
+			return
+		}
 
-		// var auth model.Auth
-		// // 验证帐号
-		// if err := db.DB.Where("id = ?", authID).First(&auth).Error; err != nil {
-		// 	// 验证失败
-		// 	c.JSON(http.StatusUnauthorized, gin.H{
-		// 		"code":    401,
-		// 		"msg": "没有权限：帐号不存在",
-		// 	})
-		// 	c.Abort() // 直接返回
-		// 	return
-		// }
-		// // 验证密码
-		// if auth.AuthName != authName || auth.AuthType != authType {
-		// 	// 验证失败
-		// 	c.JSON(http.StatusUnauthorized, gin.H{
-		// 		"code":    401,
-		// 		"msg": "没有权限：帐号或密码错误",
-		// 	})
-		// 	c.Abort() // 直接返回
-		// 	return
-		// }
+		// TODO: 从redis认证 AuthID 和 UserID 有效性
 
 		// 验证成功
 		// 挂载到全局
 		c.Set("AuthID", AuthID)
 		c.Set("UserID", UserID)
-		// c.Set("user", model.UserJWT{
-		// 	AuthID: AuthID,
-		// 	UserID: UserID,
-		// })
 
 		// 返回一个新token给客户端(未验证)
-		if newToken, err := utils.MakeToken(&model.UserJWT{
-			AuthID: AuthID,
-			UserID: UserID,
-		}); err == nil {
-			c.Writer.Header().Set("X-Authorization", newToken)
-		}
+		// if newToken, err := utils.MakeToken(&model.UserJWT{
+		// 	AuthID: AuthID,
+		// 	UserID: UserID,
+		// }); err == nil {
+		// 	c.Writer.Header().Set("X-Authorization", newToken)
+		// }
 
 		c.Next()
 

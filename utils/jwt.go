@@ -20,7 +20,7 @@ type JWTClaims struct {
 func MakeToken(user *model.UserJWT) (string, error) {
 
 	signKey := config.JWTSignKey                                  // JWT加密用的密钥
-	expiresAt := time.Duration(config.JWTExpiresAt) * time.Minute // JWT过期时间，分钟为单位
+	expiresAt := time.Duration(config.JWTExpiresIn) * time.Minute // JWT过期时间，分钟为单位
 	mySigningKey := []byte(signKey)                               // 密钥格式转换
 
 	claims := JWTClaims{
