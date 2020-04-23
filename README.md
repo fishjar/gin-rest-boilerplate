@@ -90,6 +90,7 @@ curl http://localhost:8000/foos \
 
 - logout
 - fresh token
+- 角色中间件
 - 文件上传/下载，从 reader 读取数据
 - 静态文件服务
 - req，res 记录

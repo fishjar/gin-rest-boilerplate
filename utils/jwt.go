@@ -12,7 +12,7 @@ import (
 
 // JWTClaims JWT加密的结构体
 type JWTClaims struct {
-	AuthID string `json:"aid" binding:"required"`
+	UserID string `json:"uid" binding:"required"`
 	jwt.StandardClaims
 }
 
@@ -24,12 +24,12 @@ func MakeToken(user *model.UserJWT) (string, error) {
 	mySigningKey := []byte(signKey)                               // 密钥格式转换
 
 	claims := JWTClaims{
-		user.AuthID,
+		user.UserID,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(expiresAt).Unix(), // 过期时间
 			IssuedAt:  time.Now().Unix(),                // 签发时间
 			Issuer:    "gin",                            // 签发主体
-			Subject:   user.UserID,                      // 主题
+			Subject:   user.AuthID,                      // 主题
 			// Id:        user.UserID,                      // 编号是JWT的唯一标识
 		},
 	}

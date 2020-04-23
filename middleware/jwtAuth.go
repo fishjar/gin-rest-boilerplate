@@ -5,6 +5,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -42,36 +43,53 @@ func JWTAuth() gin.HandlerFunc {
 				"accessToken": accessToken,
 			}).Warn("JWTAuth 认证失败")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：token解析错误",
+				"msg": "没有权限：JWT验证失败",
 			})
 			return
 		}
 
-		AuthID := claims.AuthID
-		UserID := claims.Subject
+		AuthID := claims.Subject
+		UserID := claims.UserID
 
 		// 从数据库验证 AuthID 和 UserID 有效性
-		if !service.AuthAndUserCheck(AuthID, UserID) {
-			// 验证失败
-			logger.Log.WithFields(logrus.Fields{
-				"accessToken": accessToken,
-				"authID":      AuthID,
-				"userID":      UserID,
-			}).Warn("用户 认证失败")
+		auth, err := service.GetAuthWithRoles(AuthID)
+		if err != nil { // 帐号不存在
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：用户验证失败",
+				"msg": "没有权限：帐号不存在",
 			})
 			return
+		}
+		if !service.AuthCheck(auth) { // 禁用或过期
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"msg": "没有权限：禁用或过期",
+			})
+			return
+		}
+		if auth.User.ID.String() != UserID { // 用户数据有误
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"msg": "没有权限：用户数据有误",
+			})
+			return
+		}
+		// 获取用户角色列表
+		roles := make([]string, len(auth.User.Roles))
+		for _, role := range auth.User.Roles {
+			roles = append(roles, role.Name)
 		}
 
 		// TODO: 从redis认证 AuthID 和 UserID 有效性
 
 		// 验证成功
 		// 挂载到全局
+		fmt.Println("--------")
+		fmt.Println(AuthID)
+		fmt.Println(UserID)
+		fmt.Println(roles)
 		c.Set("AuthID", AuthID)
 		c.Set("UserID", UserID)
+		c.Set("UserRoles", roles)
 
-		// 返回一个新token给客户端(未验证)
+		// 返回一个新token给客户端(暂不需要)
 		// if newToken, err := utils.MakeToken(&model.UserJWT{
 		// 	AuthID: AuthID,
 		// 	UserID: UserID,
