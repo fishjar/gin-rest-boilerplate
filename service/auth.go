@@ -53,10 +53,11 @@ func AuthCheck(auth model.Auth) error {
 
 // CreateAuthAccount 创建帐号
 func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
+	// 开始事务
 	tx := db.DB.Begin()
 	defer func() {
 		if r := recover(); r != nil {
-			tx.Rollback()
+			tx.Rollback() // 回滚
 		}
 	}()
 
@@ -64,6 +65,7 @@ func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
 		return err
 	}
 
+	// 创建用户
 	user := model.User{
 		Name:     data.UserName,
 		Nickname: &data.Nickname,
@@ -74,6 +76,7 @@ func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
 		return err
 	}
 
+	// 创建帐号
 	passWord := utils.MD5Pwd(data.UserName, data.PassWord)
 	auth := model.Auth{
 		User:     &user,
