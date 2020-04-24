@@ -81,7 +81,7 @@ func JWTAuth() gin.HandlerFunc {
 
 		// 验证成功
 		// 挂载到全局
-		fmt.Println("--------")
+		fmt.Println("----token auth info----")
 		fmt.Println(AuthID)
 		fmt.Println(UserID)
 		fmt.Println(roles)

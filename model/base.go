@@ -5,6 +5,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -52,4 +53,18 @@ type BulkDelete struct {
 type BulkUpdate struct {
 	IDs []uuid.UUID            `form:"ids" json:"ids" binding:"required"`
 	Obj map[string]interface{} `form:"obj" json:"obj" binding:"required"`
+}
+
+// BeforeUpdate 钩子
+func (base *Base) BeforeUpdate() (err error) {
+	fmt.Println("-------BeforeUpdate Hooks--------")
+	fmt.Println(base.ID)
+	return
+}
+
+// BeforeDelete 钩子
+func (base *Base) BeforeDelete() (err error) {
+	fmt.Println("-------BeforeDelete Hooks--------")
+	fmt.Println(base.ID)
+	return
 }

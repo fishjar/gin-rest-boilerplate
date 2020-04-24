@@ -112,6 +112,8 @@ func TokenRefresh(c *gin.Context) {
 		return
 	}
 
+	// TODO：保存到redis
+
 	// 更新成功
 	c.JSON(http.StatusOK, model.AuthAccountLoginRes{
 		Message:     "刷新成功",
