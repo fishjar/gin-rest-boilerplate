@@ -118,6 +118,7 @@ curl http://localhost:8000/foos \
   - https://github.com/swaggo/swag
 - https://github.com/asaskevich/govalidator
 - 统一返回code
+- readonly clomn
 
 ## Done
 
