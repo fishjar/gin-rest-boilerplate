@@ -21,31 +21,31 @@ import (
 var DB *gorm.DB
 
 func init() {
-	// 默认MYSQL
-	dbDriver := "mysql"
-	dbPath := config.MySQLURL
-
+	// 获取数据库参数
+	dbDriver := "mysql"       // 数据库驱动，默认MYSQL
+	dbPath := config.MySQLURL // 数据库地址
 	if env := config.GetEnv(); env == "dev" {
-		// dev环境使用sqlite
-		dbDriver = "sqlite3"
+
+		dbDriver = "sqlite3" // dev环境使用sqlite
 		rootPath, _ := os.Getwd()
 		dbDir := path.Join(rootPath, "tmp/db")
-		// 创建数据库目录
-		err := os.MkdirAll(dbDir, 0755)
+
+		err := os.MkdirAll(dbDir, 0755) // 创建数据库目录
 		if err != nil {
 			panic("创建数据库目录失败")
 		}
 		dbPath = path.Join(dbDir, "sqlite.db")
 	}
 
+	// 创建数据库连接
 	db, err := gorm.Open(dbDriver, dbPath)
 	if err != nil {
 		fmt.Println("打开数据库错误：", err)
 		panic("连接数据库失败")
 	}
-
 	db.LogMode(true) // 生产环境建议关闭
 
+	// 测试数据库连接
 	if db.DB() == nil { // 如果数据库底层连接的不是一个 *sql.DB，那么该方法会返回 nil
 		fmt.Println("获取数据库接口错误")
 		panic("连接数据库失败")
