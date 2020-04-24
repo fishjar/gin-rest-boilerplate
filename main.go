@@ -19,7 +19,6 @@ func main() {
 	defer logger.LogFile.Close()    // 关闭日志文件
 	defer logger.LogGinFile.Close() // 关闭日志文件
 	defer logger.LogReqFile.Close() // 关闭日志文件
-	defer logger.LogFile.Close()    // 关闭日志文件
 
 	port := config.GetPort()        // 获取端口号
 	r := router.InitRouter()        // 获取gin对象
