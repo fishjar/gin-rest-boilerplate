@@ -43,3 +43,8 @@ func GetEnv() string {
 	}
 	return env
 }
+
+// // 返回的状态码
+// const (
+// 	CODEOK = 0 // 一切正常
+// )

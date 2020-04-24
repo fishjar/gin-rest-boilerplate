@@ -89,27 +89,19 @@ curl http://localhost:8000/foos \
 ## TODO
 
 - logout
-- fresh token
-- 角色中间件
+- redis
 - 文件上传/下载，从 reader 读取数据
 - 静态文件服务
 - req，res 记录
 - 原始 SQL 查询
 - 部署
-- 嵌套路由组
-- 在中间件中使用 Goroutine
 - 定义路由日志的格式
 - 模型的空字段
-- ShouldBindUri
 - Birthday time.Time `form:"birthday" time_format:"2006-01-02" time_utc:"1"`
-- 批量创建、更新
-- 绑定表单数据至自定义结构体
-- c.MustGet("example").(string)
 - 自定义验证器，结构体级别的验证器
 - 内部、外部重定向
 - 测试
 - Official CORS gin's middleware
-- 事物
 - https://colobu.com/2017/06/21/json-tricks-in-Go/
 - omitempty 不会忽略某个字段，而是忽略空的字段，当字段的值为空值的时候，它不会出现在 JSON 数据中
 - 如果想忽略某个字段 Password bool `json:"-"`
@@ -118,12 +110,27 @@ curl http://localhost:8000/foos \
 - JSON type https://github.com/jinzhu/gorm/issues/1935
 - https://github.com/gin-gonic/gin/issues/961
 - 结构体验证:https://github.com/go-playground/validator/issues/546
-- 当使用 struct 更新时，GORM 只会更新那些非零值的字段，"", 0, false 都是其类型的零值
 - 如果你想更新或忽略某些字段，你可以使用 Select，Omit
 - 批量更新时 Hooks 不会运行
 - 记录 createBy/updateBy/DeletedBy
 - 自动 swagger
+  - https://github.com/swaggo/gin-swagger
+  - https://github.com/swaggo/swag
 - https://github.com/asaskevich/govalidator
+- 统一返回code
+
+## Done
+
+- fresh token
+- 角色中间件
+- 在中间件中使用 Goroutine
+- 事务
+- 批量创建、更新
+- 绑定表单数据至自定义结构体
+- c.MustGet("example").(string)
+- ShouldBindUri
+- 嵌套路由组
+- 当使用 struct 更新时，GORM 只会更新那些非零值的字段，"", 0, false 都是其类型的零值
 
 ## 问题
 
