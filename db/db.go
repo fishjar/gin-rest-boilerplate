@@ -46,13 +46,19 @@ func init() {
 
 	db.LogMode(true) // 生产环境建议关闭
 
-	db.DB()
-	db.DB().Ping()
+	if db.DB() == nil { // 如果数据库底层连接的不是一个 *sql.DB，那么该方法会返回 nil
+		fmt.Println("获取数据库接口错误")
+		panic("连接数据库失败")
+	}
+	if err := db.DB().Ping(); err != nil {
+		fmt.Println("Ping数据库错误：", err)
+		panic("连接数据库失败")
+	}
 
 	// 链接池设置
-	db.DB().SetMaxIdleConns(10)
-	db.DB().SetMaxOpenConns(100)
-	db.DB().SetConnMaxLifetime(time.Hour)
+	db.DB().SetMaxIdleConns(10)           // 设置连接池中的最大闲置连接数
+	db.DB().SetMaxOpenConns(100)          // 设置数据库的最大连接数量
+	db.DB().SetConnMaxLifetime(time.Hour) // 设置连接的最大可复用时间
 
 	DB = db
 }
