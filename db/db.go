@@ -55,10 +55,11 @@ func init() {
 		panic("连接数据库失败")
 	}
 
-	// 链接池设置
+	// db设置
 	db.DB().SetMaxIdleConns(10)           // 设置连接池中的最大闲置连接数
 	db.DB().SetMaxOpenConns(100)          // 设置数据库的最大连接数量
 	db.DB().SetConnMaxLifetime(time.Hour) // 设置连接的最大可复用时间
+	// db.SetLogger(log.New(os.Stdout, "\r\n", 0)) // log设置
 
 	DB = db
 }
