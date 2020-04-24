@@ -78,3 +78,63 @@ func RemoveDuplicateElemt(items []IFUniqueItem) []IFUniqueItem {
 	}
 	return result
 }
+
+// Union 求并集
+func Union(slice1, slice2 []string) []string {
+	m := make(map[string]struct{}) // slice1 转为 map
+	for _, v := range slice1 {
+		m[v] = struct{}{}
+	}
+	for _, v := range slice2 {
+		if _, ok := m[v]; !ok {
+			slice1 = append(slice1, v)
+		}
+	}
+	return slice1
+}
+
+// Intersect 求交集
+func Intersect(slice1, slice2 []string) []string {
+	m := make(map[string]struct{}) // slice1 转为 map
+	n := make([]string, 0)         // 结果 slice
+	for _, v := range slice1 {
+		m[v] = struct{}{}
+	}
+	for _, v := range slice2 {
+		if _, ok := m[v]; ok {
+			n = append(n, v)
+		}
+	}
+	return n
+}
+
+// func Intersect(slice1, slice2 []string) []string {
+// 	m := make(map[string]int)
+// 	nn := make([]string, 0)
+// 	for _, v := range slice1 {
+// 		m[v]++
+// 	}
+
+// 	for _, v := range slice2 {
+// 		times, _ := m[v]
+// 		if times == 1 {
+// 			nn = append(nn, v)
+// 		}
+// 	}
+// 	return nn
+// }
+
+// Difference 求差集，slice1-slice2
+func Difference(slice1, slice2 []string) []string {
+	m := make(map[string]struct{}) // slice2 转为 map
+	n := make([]string, 0)         // 结果 slice
+	for _, v := range slice2 {
+		m[v] = struct{}{}
+	}
+	for _, v := range slice1 {
+		if _, ok := m[v]; !ok {
+			n = append(n, v)
+		}
+	}
+	return n
+}

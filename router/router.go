@@ -27,6 +27,7 @@ func InitRouter() *gin.Engine {
 
 	admin := r.Group("/admin")      // JWT验证路由组
 	admin.Use(middleware.JWTAuth()) // JWT验证中间件
+	rc := middleware.RoleCheck      // 角色检查中间件，TODO:角色权限可以做到数据库里面管理
 	{
 		admin.POST("/token/refresh", handler.TokenRefresh) // 刷新token
 	}
@@ -73,16 +74,16 @@ func InitRouter() *gin.Engine {
 		admin.DELETE("/roles", handler.RoleDestroyBulk)     // 批量删除
 	}
 	{
-		admin.GET("/users", handler.UserFindAndCountAll)    // 获取多条
-		admin.GET("/users/:id", handler.UserFindByPk)       // 按ID查找
-		admin.POST("/users", handler.UserSingleCreate)      // 创建单条
-		admin.PATCH("/users/:id", handler.UserUpdateByPk)   // 按ID更新
-		admin.DELETE("/users/:id", handler.UserDestroyByPk) // 按ID删除
-		admin.POST("/user", handler.UserFindOrCreate)       // 查询或创建
-		admin.PATCH("/users", handler.UserUpdateBulk)       // 批量更新
-		admin.DELETE("/users", handler.UserDestroyBulk)     // 批量删除
-		admin.GET("/user/roles", handler.UserFindMyRoles)   // 获取角色列表
-		admin.GET("/user/menus", handler.UserFindMyMenus)   // 获取菜单列表
+		admin.GET("/users", rc([]string{"admin"}), handler.UserFindAndCountAll) // 获取多条
+		admin.GET("/users/:id", handler.UserFindByPk)                           // 按ID查找
+		admin.POST("/users", handler.UserSingleCreate)                          // 创建单条
+		admin.PATCH("/users/:id", handler.UserUpdateByPk)                       // 按ID更新
+		admin.DELETE("/users/:id", handler.UserDestroyByPk)                     // 按ID删除
+		admin.POST("/user", handler.UserFindOrCreate)                           // 查询或创建
+		admin.PATCH("/users", handler.UserUpdateBulk)                           // 批量更新
+		admin.DELETE("/users", handler.UserDestroyBulk)                         // 批量删除
+		admin.GET("/user/roles", handler.UserFindMyRoles)                       // 获取角色列表
+		admin.GET("/user/menus", handler.UserFindMyMenus)                       // 获取菜单列表
 	}
 	{
 		admin.GET("/usergroups", handler.UserGroupFindAndCountAll)    // 获取多条
