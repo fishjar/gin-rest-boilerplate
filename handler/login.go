@@ -55,7 +55,7 @@ func LoginAccount(c *gin.Context) {
 
 	// 验证密码
 	if passWord != *auth.AuthCode {
-		logger.Log.WithFields(logrus.Fields{
+		go logger.Log.WithFields(logrus.Fields{
 			"username": loginForm.UserName,
 			"password": loginForm.PassWord,
 		}).Warn("登录失败，密码错误")

@@ -39,7 +39,7 @@ func JWTAuth() gin.HandlerFunc {
 		claims, err := utils.ParseToken(accessToken)
 		if claims == nil || err != nil {
 			// 验证失败
-			logger.Log.WithFields(logrus.Fields{
+			go logger.Log.WithFields(logrus.Fields{
 				"accessToken": accessToken,
 			}).Warn("JWTAuth 认证失败")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
