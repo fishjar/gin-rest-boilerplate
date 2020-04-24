@@ -25,13 +25,10 @@ func init() {
 	dbDriver := "mysql"       // 数据库驱动，默认MYSQL
 	dbPath := config.MySQLURL // 数据库地址
 	if env := config.GetEnv(); env == "dev" {
-
 		dbDriver = "sqlite3" // dev环境使用sqlite
 		rootPath, _ := os.Getwd()
 		dbDir := path.Join(rootPath, "tmp/db")
-
-		err := os.MkdirAll(dbDir, 0755) // 创建数据库目录
-		if err != nil {
+		if err := os.MkdirAll(dbDir, 0755); err != nil {
 			panic("创建数据库目录失败")
 		}
 		dbPath = path.Join(dbDir, "sqlite.db")
