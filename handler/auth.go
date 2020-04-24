@@ -5,6 +5,7 @@ import (
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -266,4 +267,32 @@ func AuthDestroyBulk(c *gin.Context) {
 
 	// 返回数据
 	c.JSON(http.StatusOK, data)
+}
+
+// AuthAccountCreate 创建帐号
+func AuthAccountCreate(c *gin.Context) {
+	var data model.AuthAccountCreateReq
+
+	// 绑定数据
+	if err := c.ShouldBind(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+			"msg": "数据绑定失败",
+		})
+		return
+	}
+
+	// 创建帐号
+	if err := service.CreateAuthAccount(&data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+			"msg": "帐号创建失败",
+		})
+		return
+	}
+
+	// 返回数据
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "帐号创建成功",
+	})
 }

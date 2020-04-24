@@ -21,7 +21,7 @@ import (
 // TODO：生产环境，错误信息不需要详细情况
 func LoginAccount(c *gin.Context) {
 
-	var loginForm model.AuthLoginIn
+	var loginForm model.AuthAccountLoginReq
 
 	// 绑定数据
 	if err := c.ShouldBind(&loginForm); err != nil {
@@ -88,7 +88,7 @@ func LoginAccount(c *gin.Context) {
 	// TODO：保存到redis
 
 	// 登录成功
-	c.JSON(http.StatusOK, model.AuthLoginOut{
+	c.JSON(http.StatusOK, model.AuthAccountLoginRes{
 		Message:     "登录成功",
 		TokenType:   "bearer",
 		AccessToken: accessToken,
@@ -113,7 +113,7 @@ func TokenRefresh(c *gin.Context) {
 	}
 
 	// 更新成功
-	c.JSON(http.StatusOK, model.AuthLoginOut{
+	c.JSON(http.StatusOK, model.AuthAccountLoginRes{
 		Message:     "刷新成功",
 		TokenType:   "bearer",
 		AccessToken: newToken,

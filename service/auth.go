@@ -5,6 +5,7 @@ import (
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/utils"
 )
 
 // GetAuth 获取指定ID认证帐号
@@ -49,3 +50,41 @@ func AuthCheck(auth model.Auth) error {
 // 	}
 // 	return true
 // }
+
+// CreateAuthAccount 创建帐号
+func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
+	tx := db.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	user := model.User{
+		Name:     data.UserName,
+		Nickname: &data.Nickname,
+		Mobile:   &data.Mobile,
+	}
+	if err := tx.Create(&user).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	passWord := utils.MD5Pwd(data.UserName, data.PassWord)
+	auth := model.Auth{
+		User:     &user,
+		AuthType: "account",
+		AuthName: data.UserName,
+		AuthCode: &passWord,
+	}
+	if err := tx.Create(&auth).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}

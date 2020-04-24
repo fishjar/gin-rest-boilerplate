@@ -27,18 +27,26 @@ type AuthPublic struct {
 	AuthCode *string `json:"-" binding:"-"`
 }
 
-// AuthLoginIn 帐号登录表单
-type AuthLoginIn struct {
+// AuthAccountLoginReq 帐号登录表单
+type AuthAccountLoginReq struct {
 	UserName string `form:"username" binding:"required"`
 	PassWord string `form:"password" binding:"required"`
 }
 
-// AuthLoginOut 登录成功返回数据
-type AuthLoginOut struct {
+// AuthAccountLoginRes 登录成功返回数据
+type AuthAccountLoginRes struct {
 	Message     string `json:"message" binding:"required"`
 	TokenType   string `json:"tokenType" binding:"required"`
 	AccessToken string `json:"accessToken" binding:"required"`
 	ExpiresIn   int    `json:"expiresIn" binding:"required"` // 过期时间（分钟）
+}
+
+// AuthAccountCreateReq 创建帐号
+type AuthAccountCreateReq struct {
+	UserName string `form:"username" binding:"required"` // 帐号
+	PassWord string `form:"password" binding:"required"` // 密码
+	Nickname string `form:"nickname" binding:"required"` // 昵称
+	Mobile   string `form:"mobile" binding:"required"`   // 手机
 }
 
 // TableName 自定义表名

@@ -32,14 +32,15 @@ func InitRouter() *gin.Engine {
 	}
 	{
 
-		admin.GET("/auths", handler.AuthFindAndCountAll)    // 获取多条
-		admin.GET("/auths/:id", handler.AuthFindByPk)       // 按ID查找
-		admin.POST("/auths", handler.AuthSingleCreate)      // 创建单条
-		admin.PATCH("/auths/:id", handler.AuthUpdateByPk)   // 按ID更新
-		admin.DELETE("/auths/:id", handler.AuthDestroyByPk) // 按ID删除
-		admin.POST("/auth", handler.AuthFindOrCreate)       // 查询或创建
-		admin.PATCH("/auths", handler.AuthUpdateBulk)       // 批量更新
-		admin.DELETE("/auths", handler.AuthDestroyBulk)     // 批量删除
+		admin.GET("/auths", handler.AuthFindAndCountAll)              // 获取多条
+		admin.GET("/auths/:id", handler.AuthFindByPk)                 // 按ID查找
+		admin.POST("/auths", handler.AuthSingleCreate)                // 创建单条
+		admin.PATCH("/auths/:id", handler.AuthUpdateByPk)             // 按ID更新
+		admin.DELETE("/auths/:id", handler.AuthDestroyByPk)           // 按ID删除
+		admin.POST("/auth", handler.AuthFindOrCreate)                 // 查询或创建
+		admin.PATCH("/auths", handler.AuthUpdateBulk)                 // 批量更新
+		admin.DELETE("/auths", handler.AuthDestroyBulk)               // 批量删除
+		admin.POST("/auth/account/create", handler.AuthAccountCreate) // 创建帐号
 	}
 	{
 		admin.GET("/groups", handler.GroupFindAndCountAll)    // 获取多条
