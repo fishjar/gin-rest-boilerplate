@@ -8,7 +8,10 @@ import (
 	"github.com/fishjar/gin-rest-boilerplate/handler"
 	"github.com/fishjar/gin-rest-boilerplate/middleware"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // InitRouter 注入路由，及返回一个gin对象
@@ -17,12 +20,16 @@ func InitRouter() *gin.Engine {
 	// r := gin.New()
 	r := gin.Default()                    // Default 使用 Logger 和 Recovery 中间件
 	r.Use(middleware.LoggerToFile())      // 日志中间件
+	r.Use(cors.Default())                 // 跨域中间件
 	r.GET("/ping", func(c *gin.Context) { // pingpong
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
 
+	r.GET("/swagger/*any", gin.BasicAuth(gin.Accounts{
+		"foo": "bar",
+	}), ginSwagger.WrapHandler(swaggerFiles.Handler)) // swagger
 	r.POST("/admin/login/account", handler.LoginAccount) //登录
 
 	admin := r.Group("/admin")      // JWT验证路由组

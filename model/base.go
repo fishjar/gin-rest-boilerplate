@@ -22,22 +22,19 @@ type Base struct {
 
 // BeforeCreate 在创建前给ID赋值一个UUID
 func (base *Base) BeforeCreate(scope *gorm.Scope) error {
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		return err
-	}
+	uuid := uuid.NewV4()
 	return scope.SetColumn("ID", uuid)
 }
 
-// PaginQueryIn 分页查询参数
-type PaginQueryIn struct {
+// PaginReq 分页查询参数
+type PaginReq struct {
 	Page uint   `form:"page,default=1"`
 	Size uint   `form:"size,default=10"`
 	Sort string `form:"sort,default=created_at desc"`
 }
 
-// PaginQueryOut 分页查询结果
-type PaginQueryOut struct {
+// PaginRes 分页查询结果
+type PaginRes struct {
 	Page  uint        `json:"page" binding:"required"`
 	Size  uint        `json:"size" binding:"required"`
 	Total uint        `json:"total" binding:"required"`

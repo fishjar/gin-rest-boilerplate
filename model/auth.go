@@ -29,8 +29,8 @@ type AuthPublic struct {
 
 // AuthAccountLoginReq 帐号登录表单
 type AuthAccountLoginReq struct {
-	UserName string `form:"username" binding:"required"`
-	PassWord string `form:"password" binding:"required"`
+	UserName string `json:"username" form:"username" binding:"required"`
+	PassWord string `json:"password" form:"password" binding:"required"`
 }
 
 // AuthAccountLoginRes 登录成功返回数据

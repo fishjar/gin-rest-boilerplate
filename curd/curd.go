@@ -6,7 +6,7 @@ package curd
 
 // // FindAndCountAll 分页查询
 // func FindAndCountAll(c *gin.Context, rows interface{}) {
-// 	var q *model.PaginQueryIn
+// 	var q *model.PaginReq
 // 	if err := c.ShouldBindQuery(&q); err != nil {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"err": err,
@@ -29,7 +29,7 @@ package curd
 // 	}
 
 // 	// 返回数据
-// 	c.JSON(http.StatusOK, model.PaginQueryOut{
+// 	c.JSON(http.StatusOK, model.PaginRes{
 // 		Page:  q.Page,
 // 		Size:  q.Size,
 // 		Total: total,

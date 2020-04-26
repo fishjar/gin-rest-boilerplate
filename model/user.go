@@ -54,6 +54,12 @@ type UserJWT struct {
 	UserID string `json:"uid" binding:"required"`
 }
 
+// UserListRes 用户列表
+type UserListRes struct {
+	PaginRes
+	Rows []User `json:"rows"`
+}
+
 // TableName 自定义用户表名
 func (User) TableName() string {
 	return "user"

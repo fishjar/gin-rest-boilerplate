@@ -11,10 +11,19 @@ import (
 )
 
 // UserFindAndCountAll 查询多条信息
+// @Summary				用户列表
+// @Description			用户列表...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				q query model.PaginReq false "name search by q"
+// @Success				200 {object} model.UserListRes
+// @Router				/admin/users [get]
+// @Security			ApiKeyAuth
 func UserFindAndCountAll(c *gin.Context) {
 
 	// 参数绑定
-	var q *model.PaginQueryIn
+	var q *model.PaginReq
 	if err := c.ShouldBindQuery(&q); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
@@ -58,11 +67,19 @@ func UserFindAndCountAll(c *gin.Context) {
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, model.PaginQueryOut{
-		Page:  q.Page,
-		Size:  q.Size,
-		Total: total,
-		Rows:  rows,
+	// c.JSON(http.StatusOK, model.PaginRes{
+	// 	Page:  q.Page,
+	// 	Size:  q.Size,
+	// 	Total: total,
+	// 	Rows:  rows,
+	// })
+	c.JSON(http.StatusOK, model.UserListRes{
+		PaginRes: model.PaginRes{
+			Page:  q.Page,
+			Size:  q.Size,
+			Total: total,
+		},
+		Rows: rows,
 	})
 }
 

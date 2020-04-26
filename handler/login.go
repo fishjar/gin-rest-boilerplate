@@ -19,6 +19,14 @@ import (
 
 // LoginAccount 登录处理函数
 // TODO：生产环境，错误信息不需要详细情况
+// @Summary 帐号登录
+// @Description 帐号登录...
+// @Tags admin
+// @Accept  json
+// @Produce  json
+// @Param 参数 body model.AuthAccountLoginReq true "登录"
+// @Success 200 {object} model.AuthAccountLoginRes
+// @Router /admin/login/account [post]
 func LoginAccount(c *gin.Context) {
 
 	var loginForm model.AuthAccountLoginReq
@@ -40,7 +48,7 @@ func LoginAccount(c *gin.Context) {
 		AuthType: authType,
 	}).First(&auth).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"msg": "登录失败，用户名或密码错误",
+			"msg": "登录失败，用户名不存在",
 		})
 		return
 	}
@@ -60,7 +68,7 @@ func LoginAccount(c *gin.Context) {
 			"password": loginForm.PassWord,
 		}).Warn("登录失败，密码错误")
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"msg": "登录失败，用户名或密码错误",
+			"msg": "登录失败，密码错误",
 		})
 		return
 	}

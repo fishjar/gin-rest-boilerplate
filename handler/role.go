@@ -13,7 +13,7 @@ import (
 func RoleFindAndCountAll(c *gin.Context) {
 
 	// 参数绑定
-	var q *model.PaginQueryIn
+	var q *model.PaginReq
 	if err := c.ShouldBindQuery(&q); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
@@ -57,7 +57,7 @@ func RoleFindAndCountAll(c *gin.Context) {
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, model.PaginQueryOut{
+	c.JSON(http.StatusOK, model.PaginRes{
 		Page:  q.Page,
 		Size:  q.Size,
 		Total: total,
