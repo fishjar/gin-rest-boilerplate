@@ -10,7 +10,7 @@ package curd
 // 	if err := c.ShouldBindQuery(&q); err != nil {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"err": err,
-// 			"msg": "参数有误",
+// 			"message": "参数有误",
 // 		})
 // 		return
 // 	}
@@ -23,7 +23,7 @@ package curd
 // 	if err := db.DB.Model(&model.Auth{}).Count(&total).Limit(q.Size).Offset(offset).Order(q.Order).Preload("User").Find(&rows).Error; err != nil {
 // 		c.JSON(http.StatusInternalServerError, gin.H{
 // 			"err": err,
-// 			"msg": "查询多条信息失败",
+// 			"message": "查询多条信息失败",
 // 		})
 // 		return
 // 	}

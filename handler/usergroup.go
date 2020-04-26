@@ -16,8 +16,8 @@ func UserGroupFindAndCountAll(c *gin.Context) {
 	var q *model.PaginReq
 	if err := c.ShouldBindQuery(&q); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-			"msg": "参数有误",
+			"err":     err.Error(),
+			"message": "参数有误",
 		})
 		return
 	}
@@ -37,7 +37,7 @@ func UserGroupFindAndCountAll(c *gin.Context) {
 	// if err := mapstructure.Decode(params, &where); err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{
 	// 		"err": err.Error(),
-	// 		"msg": "查询参数有误",
+	// 		"message": "查询参数有误",
 	// 	})
 	// 	return
 	// }
@@ -50,8 +50,8 @@ func UserGroupFindAndCountAll(c *gin.Context) {
 	// 查询数据
 	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("User").Preload("Group").Find(&rows).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "查询多条信息失败",
+			"err":     err.Error(),
+			"message": "查询多条信息失败",
 		})
 		return
 	}
@@ -75,8 +75,8 @@ func UserGroupFindByPk(c *gin.Context) {
 	var data model.UserGroup
 	if err := db.DB.Preload("User").Preload("Group").First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err": err.Error(),
-			"msg": "查询失败",
+			"err":     err.Error(),
+			"message": "查询失败",
 		})
 		return
 	}
@@ -92,8 +92,8 @@ func UserGroupSingleCreate(c *gin.Context) {
 	var data model.UserGroup
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-			"msg": "数据绑定失败",
+			"err":     err.Error(),
+			"message": "数据绑定失败",
 		})
 		return
 	}
@@ -101,8 +101,8 @@ func UserGroupSingleCreate(c *gin.Context) {
 	// 插入数据
 	if err := db.DB.Create(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "插入数据失败",
+			"err":     err.Error(),
+			"message": "插入数据失败",
 		})
 		return
 	}
@@ -121,8 +121,8 @@ func UserGroupUpdateByPk(c *gin.Context) {
 	var data model.UserGroup
 	if err := db.DB.First(&data, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err": err.Error(),
-			"msg": "查询失败",
+			"err":     err.Error(),
+			"message": "查询失败",
 		})
 		return
 	}
@@ -131,8 +131,8 @@ func UserGroupUpdateByPk(c *gin.Context) {
 	var obj map[string]interface{}
 	if err := c.ShouldBind(&obj); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-			"msg": "数据绑定失败",
+			"err":     err.Error(),
+			"message": "数据绑定失败",
 		})
 		return
 	}
@@ -140,8 +140,8 @@ func UserGroupUpdateByPk(c *gin.Context) {
 	// 更新数据
 	if err := db.DB.Model(&data).Updates(obj).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "更新失败",
+			"err":     err.Error(),
+			"message": "更新失败",
 		})
 		return
 	}
@@ -160,8 +160,8 @@ func UserGroupDestroyByPk(c *gin.Context) {
 	var data model.UserGroup
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err": err.Error(),
-			"msg": "查询失败",
+			"err":     err.Error(),
+			"message": "查询失败",
 		})
 		return
 	}
@@ -169,8 +169,8 @@ func UserGroupDestroyByPk(c *gin.Context) {
 	// 删除
 	if err := db.DB.Delete(&data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "删除失败",
+			"err":     err.Error(),
+			"message": "删除失败",
 		})
 		return
 	}
@@ -186,8 +186,8 @@ func UserGroupFindOrCreate(c *gin.Context) {
 	var data model.UserGroup
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-			"msg": "数据绑定失败",
+			"err":     err.Error(),
+			"message": "数据绑定失败",
 		})
 		return
 	}
@@ -195,8 +195,8 @@ func UserGroupFindOrCreate(c *gin.Context) {
 	// 插入数据
 	if err := db.DB.FirstOrCreate(&data, data).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "查询或创建数据失败",
+			"err":     err.Error(),
+			"message": "查询或创建数据失败",
 		})
 		return
 	}
@@ -213,8 +213,8 @@ func UserGroupUpdateBulk(c *gin.Context) {
 	// 绑定数据
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-			"msg": "数据绑定失败",
+			"err":     err.Error(),
+			"message": "数据绑定失败",
 		})
 		return
 	}
@@ -222,7 +222,7 @@ func UserGroupUpdateBulk(c *gin.Context) {
 	// 判断ID列表是否为空
 	// if len(data.IDs) == 0 {
 	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"msg": "ids列表不能空",
+	// 		"message": "ids列表不能空",
 	// 	})
 	// 	return
 	// }
@@ -230,8 +230,8 @@ func UserGroupUpdateBulk(c *gin.Context) {
 	// 更新数据
 	if err := db.DB.Model(model.UserGroup{}).Where("id IN (?)", data.IDs).Updates(data.Obj).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "更新失败",
+			"err":     err.Error(),
+			"message": "更新失败",
 		})
 		return
 	}
@@ -248,8 +248,8 @@ func UserGroupDestroyBulk(c *gin.Context) {
 	// 绑定数据
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-			"msg": "数据绑定失败",
+			"err":     err.Error(),
+			"message": "数据绑定失败",
 		})
 		return
 	}
@@ -257,8 +257,8 @@ func UserGroupDestroyBulk(c *gin.Context) {
 	// 删除数据
 	if err := db.DB.Delete(model.UserGroup{}, "id IN (?)", data.IDs).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-			"msg": "删除失败",
+			"err":     err.Error(),
+			"message": "删除失败",
 		})
 		return
 	}

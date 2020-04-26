@@ -19,19 +19,19 @@ func RoleCheck(allowedRoles []string) gin.HandlerFunc {
 
 		if len(allowedRoles) == 0 { // 不允许任何角色
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：不允许任何角色",
+				"message": "没有权限：不允许任何角色",
 			})
 			return
 		}
 		if len(userRoles) == 0 { // 用户未授予角色
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：用户未授予角色",
+				"message": "没有权限：用户未授予角色",
 			})
 			return
 		}
 		if len(utils.Intersect(allowedRoles, userRoles)) == 0 { // 用户角色未授权
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：用户角色未授权",
+				"message": "没有权限：用户角色未授权",
 			})
 			return
 		}

@@ -52,6 +52,20 @@ type BulkUpdate struct {
 	Obj map[string]interface{} `form:"obj" json:"obj" binding:"required"`
 }
 
+// HTTPError 错误
+type HTTPError struct {
+	Code    int           `json:"code" binding:"required default:1"`        // 错误码
+	Message string        `json:"message" binding:"required default:error"` // 错误提示
+	Errors  []interface{} `json:"errors"`                                   // 详细错误信息
+}
+
+// HTTPSuccess http返回
+type HTTPSuccess struct {
+	Code    int         `json:"code" binding:"required default:0"`          // 状态码
+	Message string      `json:"message" binding:"required default:success"` // 提示
+	Data    interface{} `json:"data"`                                       // 返回数据
+}
+
 // BeforeUpdate 钩子
 func (base *Base) BeforeUpdate() (err error) {
 	fmt.Println("-------BeforeUpdate Hooks--------")

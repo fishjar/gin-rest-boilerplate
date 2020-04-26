@@ -1642,7 +1642,7 @@ definitions:
       errcode:
         type: integer
         description: 错误代码
-      errmsg:
+      errmessage:
         type: string
         description: 错误信息
 x-associations:

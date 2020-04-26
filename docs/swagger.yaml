@@ -91,6 +91,20 @@ definitions:
           $ref: '#/definitions/model.User'
         type: array
     type: object
+  model.HTTPError:
+    properties:
+      code:
+        description: 错误码
+        type: integer
+      errors:
+        description: 详细错误信息
+        items:
+          type: object
+        type: array
+      message:
+        description: 错误提示
+        type: string
+    type: object
   model.Menu:
     properties:
       children:
@@ -328,6 +342,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.UserListRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HTTPError'
       security:
       - ApiKeyAuth: []
       summary: 用户列表

@@ -12,6 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/fishjar/gin-rest-boilerplate/logger"
+	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/service"
 
 	"github.com/fishjar/gin-rest-boilerplate/utils"
@@ -30,8 +31,9 @@ func JWTAuth() gin.HandlerFunc {
 		// token 为空
 		if len(accessToken) == 0 {
 			// 验证失败
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：token不能为空",
+			c.AbortWithStatusJSON(http.StatusUnauthorized, model.HTTPError{
+				Code:    401,
+				Message: "没有权限：token不能为空!",
 			})
 			return
 		}
@@ -44,7 +46,7 @@ func JWTAuth() gin.HandlerFunc {
 				"accessToken": accessToken,
 			}).Warn("JWTAuth 认证失败")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：JWT验证失败",
+				"message": "没有权限：JWT验证失败",
 			})
 			return
 		}
@@ -56,19 +58,19 @@ func JWTAuth() gin.HandlerFunc {
 		auth, err := service.GetAuthWithRoles(AuthID)
 		if err != nil { // 帐号不存在
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：帐号不存在",
+				"message": "没有权限：帐号不存在",
 			})
 			return
 		}
 		if err := service.AuthCheck(auth); err != nil { // 禁用或过期
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：禁用或过期",
+				"message": "没有权限：禁用或过期",
 			})
 			return
 		}
 		if auth.User.ID.String() != UserID { // 用户数据有误
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"msg": "没有权限：用户数据有误",
+				"message": "没有权限：用户数据有误",
 			})
 			return
 		}
