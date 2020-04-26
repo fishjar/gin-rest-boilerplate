@@ -47,8 +47,13 @@
 
 ```sh
 # 确保已安装go，及$GOPATH环境变量已配置
+# Go 1.13 and above
 go version
 echo $GOPATH
+
+# 设置代理
+go env -w GO111MODULE=on
+go env -w GOPROXY=https://goproxy.cn,direct
 
 # 创建并进入目录
 mkdir -p $GOPATH/src/github.com/fishjar/gin-rest-boilerplate && cd "$_"
