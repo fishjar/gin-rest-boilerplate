@@ -23,11 +23,12 @@ func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// 获取token
-		authorization := c.Request.Header.Get("Authorization")
+		// authorization := c.Request.Header.Get("Authorization")
+		authorization := c.GetHeader("Authorization")
 		accessToken := strings.Replace(authorization, "Bearer ", "", 1)
 
 		// token 为空
-		if accessToken == "" {
+		if len(accessToken) == 0 {
 			// 验证失败
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"msg": "没有权限：token不能为空",
