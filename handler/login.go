@@ -41,10 +41,10 @@ func LoginAccount(c *gin.Context) {
 
 	// 查询帐号名是否存在
 	authType := "account"
-	passWord := utils.MD5Pwd(loginForm.UserName, loginForm.PassWord)
+	password := utils.MD5Pwd(loginForm.Username, loginForm.Password)
 	var auth model.Auth
 	if err := db.DB.Where(&model.Auth{
-		AuthName: loginForm.UserName,
+		AuthName: loginForm.Username,
 		AuthType: authType,
 	}).First(&auth).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -62,10 +62,10 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 验证密码
-	if passWord != *auth.AuthCode {
+	if password != *auth.AuthCode {
 		go logger.Log.WithFields(logrus.Fields{
-			"username": loginForm.UserName,
-			"password": loginForm.PassWord,
+			"username": loginForm.Username,
+			"password": loginForm.Password,
 		}).Warn("登录失败，密码错误")
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "登录失败，密码错误",

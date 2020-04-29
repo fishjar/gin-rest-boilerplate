@@ -76,9 +76,9 @@ go get
 go run main.go
 
 # 测试：登录
-curl -X POST http://localhost:4000/login/account \
+curl -X POST http://localhost:4000/admin/login/account \
 -H "Content-Type: application/json" \
--d '{"userName":"gabe","userType":"admin","password":"123456"}'
+-d '{"username":"gabe","password":"123456"}'
 
 # 测试：创建记录，注意替换<token>为实际值
 curl -X POST http://localhost:8000/foos \

@@ -67,7 +67,7 @@ func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
 
 	// 创建用户
 	user := model.User{
-		Name:     data.UserName,
+		Name:     data.Username,
 		Nickname: &data.Nickname,
 		Mobile:   &data.Mobile,
 	}
@@ -77,12 +77,12 @@ func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
 	}
 
 	// 创建帐号
-	passWord := utils.MD5Pwd(data.UserName, data.PassWord)
+	password := utils.MD5Pwd(data.Username, data.Password)
 	auth := model.Auth{
 		User:     &user,
 		AuthType: "account",
-		AuthName: data.UserName,
-		AuthCode: &passWord,
+		AuthName: data.Username,
+		AuthCode: &password,
 	}
 	if err := tx.Create(&auth).Error; err != nil {
 		tx.Rollback()

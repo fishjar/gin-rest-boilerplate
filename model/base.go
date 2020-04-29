@@ -38,7 +38,16 @@ type PaginRes struct {
 	Page  uint        `json:"page" binding:"required"`
 	Size  uint        `json:"size" binding:"required"`
 	Total uint        `json:"total" binding:"required"`
-	Rows  interface{} `json:"rows" binding:"required"`
+	Rows  interface{} `json:"rows"`
+}
+
+// Pagin 分页
+func (req PaginReq) Pagin(total uint) PaginRes {
+	return PaginRes{
+		Page:  req.Page,
+		Size:  req.Size,
+		Total: total,
+	}
 }
 
 // BulkDelete 批量删除
@@ -52,18 +61,38 @@ type BulkUpdate struct {
 	Obj map[string]interface{} `form:"obj" json:"obj" binding:"required"`
 }
 
+// // HTTP 返回信息
+// type HTTP struct {
+// 	Code    int    `json:"code" binding:"required"`    // 状态码
+// 	Message string `json:"message" binding:"required"` // 提示
+// }
+
 // HTTPError 错误
 type HTTPError struct {
-	Code    int           `json:"code" binding:"required default:1"`        // 错误码
-	Message string        `json:"message" binding:"required default:error"` // 错误提示
-	Errors  []interface{} `json:"errors"`                                   // 详细错误信息
+	Code    int     `json:"code" binding:"required"`    // 状态码
+	Message string  `json:"message" binding:"required"` // 提示
+	Errors  []error `json:"errors"`                     // 详细错误信息
 }
 
-// HTTPSuccess http返回
+// HTTPSuccess 成功
 type HTTPSuccess struct {
-	Code    int         `json:"code" binding:"required default:0"`          // 状态码
-	Message string      `json:"message" binding:"required default:success"` // 提示
-	Data    interface{} `json:"data"`                                       // 返回数据
+	Code    int         `json:"code" binding:"required"`    // 状态码
+	Message string      `json:"message" binding:"required"` // 提示
+	Data    interface{} `json:"data"`                       // 返回数据
+}
+
+// HTTPDeleteSuccess 成功
+type HTTPDeleteSuccess struct {
+	Code    int       `json:"code" binding:"required"`    // 状态码
+	Message string    `json:"message" binding:"required"` // 提示
+	Data    uuid.UUID `json:"data"`                       // 返回数据
+}
+
+// HTTPBulkSuccess 成功
+type HTTPBulkSuccess struct {
+	Code    int         `json:"code" binding:"required"`    // 状态码
+	Message string      `json:"message" binding:"required"` // 提示
+	Data    []uuid.UUID `json:"data"`                       // 返回数据
 }
 
 // BeforeUpdate 钩子

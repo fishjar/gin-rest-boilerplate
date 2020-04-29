@@ -29,8 +29,8 @@ type AuthPublic struct {
 
 // AuthAccountLoginReq 帐号登录表单
 type AuthAccountLoginReq struct {
-	UserName string `json:"username" form:"username" binding:"required"`
-	PassWord string `json:"password" form:"password" binding:"required"`
+	Username string `json:"username" form:"username" binding:"required" example:"gabe"`   // 用户名
+	Password string `json:"password" form:"password" binding:"required" example:"123456"` // 密码
 }
 
 // AuthAccountLoginRes 登录成功返回数据
@@ -43,8 +43,8 @@ type AuthAccountLoginRes struct {
 
 // AuthAccountCreateReq 创建帐号
 type AuthAccountCreateReq struct {
-	UserName string `form:"username" binding:"required"` // 帐号
-	PassWord string `form:"password" binding:"required"` // 密码
+	Username string `form:"username" binding:"required"` // 帐号
+	Password string `form:"password" binding:"required"` // 密码
 	Nickname string `form:"nickname" binding:"required"` // 昵称
 	Mobile   string `form:"mobile" binding:"required"`   // 手机
 }

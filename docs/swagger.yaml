@@ -40,8 +40,12 @@ definitions:
   model.AuthAccountLoginReq:
     properties:
       password:
+        description: 密码
+        example: "123456"
         type: string
       username:
+        description: 用户名
+        example: gabe
         type: string
     required:
     - password
@@ -63,6 +67,28 @@ definitions:
     - expiresIn
     - message
     - tokenType
+    type: object
+  model.BulkDelete:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    required:
+    - ids
+    type: object
+  model.BulkUpdate:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+      obj:
+        additionalProperties: true
+        type: object
+    required:
+    - ids
+    - obj
     type: object
   model.Group:
     properties:
@@ -91,19 +117,54 @@ definitions:
           $ref: '#/definitions/model.User'
         type: array
     type: object
+  model.HTTPBulkSuccess:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        description: 返回数据
+        items:
+          type: string
+        type: array
+      message:
+        description: 提示
+        type: string
+    required:
+    - code
+    - message
+    type: object
+  model.HTTPDeleteSuccess:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        description: 返回数据
+        type: string
+      message:
+        description: 提示
+        type: string
+    required:
+    - code
+    - message
+    type: object
   model.HTTPError:
     properties:
       code:
-        description: 错误码
+        description: 状态码
         type: integer
       errors:
         description: 详细错误信息
         items:
-          type: object
+          type: error
         type: array
       message:
-        description: 错误提示
+        description: 提示
         type: string
+    required:
+    - code
+    - message
     type: object
   model.Menu:
     properties:
@@ -146,6 +207,27 @@ definitions:
         description: 更新时间
         type: string
     type: object
+  model.MenuListRes:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.Menu'
+        type: array
+      message:
+        description: 提示
+        type: string
+      pagin:
+        $ref: '#/definitions/model.PaginRes'
+        type: object
+    required:
+    - code
+    - data
+    - message
+    - pagin
+    type: object
   model.PaginReq:
     properties:
       page:
@@ -154,6 +236,21 @@ definitions:
         type: integer
       sort:
         type: string
+    type: object
+  model.PaginRes:
+    properties:
+      page:
+        type: integer
+      rows:
+        type: object
+      size:
+        type: integer
+      total:
+        type: integer
+    required:
+    - page
+    - size
+    - total
     type: object
   model.Role:
     properties:
@@ -179,6 +276,27 @@ definitions:
         items:
           $ref: '#/definitions/model.User'
         type: array
+    type: object
+  model.RoleListRes:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.Role'
+        type: array
+      message:
+        description: 提示
+        type: string
+      pagin:
+        $ref: '#/definitions/model.PaginRes'
+        type: object
+    required:
+    - code
+    - data
+    - message
+    - pagin
     type: object
   model.User:
     properties:
@@ -268,21 +386,40 @@ definitions:
     type: object
   model.UserListRes:
     properties:
-      page:
+      code:
+        description: 状态码
         type: integer
-      rows:
+      data:
         items:
           $ref: '#/definitions/model.User'
         type: array
-      size:
-        type: integer
-      total:
-        type: integer
+      message:
+        description: 提示
+        type: string
+      pagin:
+        $ref: '#/definitions/model.PaginRes'
+        type: object
     required:
-    - page
-    - rows
-    - size
-    - total
+    - code
+    - data
+    - message
+    - pagin
+    type: object
+  model.UserRes:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        $ref: '#/definitions/model.User'
+        type: object
+      message:
+        description: 提示
+        type: string
+    required:
+    - code
+    - data
+    - message
     type: object
 host: localhost:4000
 info:
@@ -320,21 +457,118 @@ paths:
       summary: 帐号登录
       tags:
       - admin
-  /admin/users:
+  /admin/user:
+    post:
+      consumes:
+      - application/json
+      description: 查询或创建单条信息...
+      parameters:
+      - description: 查询或创建单条信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询或创建单条信息
+      tags:
+      - user
+  /admin/user/menus:
     get:
       consumes:
       - application/json
-      description: 用户列表...
+      description: 查找本人菜单...
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MenuListRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 查找本人菜单
+      tags:
+      - user
+  /admin/user/roles:
+    get:
+      consumes:
+      - application/json
+      description: 查找本人角色...
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RoleListRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 查找本人角色
+      tags:
+      - user
+  /admin/users:
+    delete:
+      consumes:
+      - application/json
+      description: 批量删除...
       parameters:
-      - in: query
-        name: page
-        type: integer
+      - description: 批量删除
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.BulkDelete'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HTTPBulkSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: 查询多条信息...
+      parameters:
       - in: query
         name: size
         type: integer
       - in: query
         name: sort
         type: string
+      - in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:
@@ -342,17 +576,152 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.UserListRes'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.HTTPError'
-        "404":
-          description: Not Found
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/model.HTTPError'
       security:
       - ApiKeyAuth: []
-      summary: 用户列表
+      summary: 查询多条信息
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      description: 批量更新...
+      parameters:
+      - description: 批量更新
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.BulkUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HTTPBulkSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量更新
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: 创建单条信息...
+      parameters:
+      - description: 参数
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建单条信息
+      tags:
+      - user
+  /admin/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除单条信息...
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HTTPDeleteSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除单条信息
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: 查询单条信息...
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询单条信息
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      description: 更新单条信息...
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新单条信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新单条信息
       tags:
       - user
 securityDefinitions:

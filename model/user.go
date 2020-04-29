@@ -33,20 +33,20 @@ type User struct {
 	Groups       []*Group   `json:"groups" gorm:"many2many:usergroup;"`                                                                           // 组
 }
 
-// UserUpdate 更新用户信息
-type UserUpdate struct {
-	*User
-	Name *string `json:"name" form:"-"`
-}
+// // UserUpdate 更新用户信息
+// type UserUpdate struct {
+// 	*User
+// 	Name *string `json:"name" form:"-"`
+// }
 
-// UserPublic 公开用户信息
-type UserPublic struct {
-	*User
-	// Nickname *string `json:"nickname" binding:"-"`
-	// Gender   *int    `json:"gender,omitempty"`
-	// Nickname *string `json:"nickname,omitempty"`
-	Name string `json:"name" binding:"-"`
-}
+// // UserPublic 公开用户信息
+// type UserPublic struct {
+// 	*User
+// 	// Nickname *string `json:"nickname" binding:"-"`
+// 	// Gender   *int    `json:"gender,omitempty"`
+// 	// Nickname *string `json:"nickname,omitempty"`
+// 	Name string `json:"name" binding:"-"`
+// }
 
 // UserJWT JWT用户数据
 type UserJWT struct {
@@ -54,10 +54,17 @@ type UserJWT struct {
 	UserID string `json:"uid" binding:"required"`
 }
 
+// UserRes 用户列表
+type UserRes struct {
+	HTTPSuccess
+	Data User `json:"data" binding:"required"`
+}
+
 // UserListRes 用户列表
 type UserListRes struct {
-	PaginRes
-	Rows []User `json:"rows"`
+	HTTPSuccess
+	Pagin PaginRes `json:"pagin" binding:"required"`
+	Data  []User   `json:"data" binding:"required"`
 }
 
 // TableName 自定义用户表名

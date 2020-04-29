@@ -11,15 +11,14 @@ import (
 )
 
 // UserFindAndCountAll 查询多条信息
-// @Summary				用户列表
-// @Description			用户列表...
+// @Summary				查询多条信息
+// @Description			查询多条信息...
 // @Tags				user
 // @Accept				json
 // @Produce				json
-// @Param				q query model.PaginReq false "name search by q"
+// @Param				q query model.PaginReq false "参数"
 // @Success				200 {object} model.UserListRes
-// @Failure 			400 {object} httputil.HTTPError
-// @Failure 			404 {object} httputil.HTTPError
+// @Failure 			500 {object} model.HTTPError
 // @Router				/admin/users [get]
 // @Security			ApiKeyAuth
 func UserFindAndCountAll(c *gin.Context) {
@@ -27,10 +26,12 @@ func UserFindAndCountAll(c *gin.Context) {
 	// 参数绑定
 	var q *model.PaginReq
 	if err := c.ShouldBindQuery(&q); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err.Error(),
-			"message": "参数有误",
-		})
+		// c.JSON(http.StatusBadRequest, model.HTTPError{
+		// 	Code:    http.StatusBadRequest,
+		// 	Message: "参数有误",
+		// 	Errors:  []error{err},
+		// })
+		service.HTTPError(c, "参数有误", http.StatusBadRequest, err)
 		return
 	}
 
@@ -61,31 +62,28 @@ func UserFindAndCountAll(c *gin.Context) {
 
 	// 查询数据
 	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").Find(&rows).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "查询多条信息失败",
-		})
+		service.HTTPError(c, "查询多条信息失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	// c.JSON(http.StatusOK, model.PaginRes{
-	// 	Page:  q.Page,
-	// 	Size:  q.Size,
-	// 	Total: total,
-	// 	Rows:  rows,
-	// })
 	c.JSON(http.StatusOK, model.UserListRes{
-		PaginRes: model.PaginRes{
-			Page:  q.Page,
-			Size:  q.Size,
-			Total: total,
-		},
-		Rows: rows,
+		Pagin: q.Pagin(total),
+		Data:  rows,
 	})
 }
 
 // UserFindByPk 根据主键查询单条信息
+// @Summary				查询单条信息
+// @Description			查询单条信息...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				id path string true "ID"
+// @Success				200 {object} model.UserRes
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/users/{id} [get]
+// @Security			ApiKeyAuth
 func UserFindByPk(c *gin.Context) {
 
 	// 获取参数
@@ -94,44 +92,60 @@ func UserFindByPk(c *gin.Context) {
 	// 查询
 	var data model.User
 	if err := db.DB.Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").First(&data, "id = ?", id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"err":     err.Error(),
-			"message": "查询失败",
-		})
+		service.HTTPError(c, "查询失败", http.StatusNotFound, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, model.UserRes{
+		Data: data,
+	})
 }
 
 // UserSingleCreate 创建单条信息
+// @Summary				创建单条信息
+// @Description			创建单条信息...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				user body model.User true "参数"
+// @Success				200 {object} model.UserRes
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/users [post]
+// @Security			ApiKeyAuth
 func UserSingleCreate(c *gin.Context) {
 
 	// 绑定数据
 	var data model.User
 	if err := c.ShouldBind(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err.Error(),
-			"message": "数据绑定失败",
-		})
+		service.HTTPError(c, "数据绑定失败", http.StatusBadRequest, err)
 		return
 	}
 
 	// 插入数据
 	if err := db.DB.Create(&data).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "插入数据失败",
-		})
+		service.HTTPError(c, "插入数据失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, model.UserRes{
+		Data: data,
+	})
 }
 
 // UserUpdateByPk 更新单条信息
+// @Summary				更新单条信息
+// @Description			更新单条信息...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				id path string true "ID"
+// @Param				user body model.User true "更新单条信息"
+// @Success				200 {object} model.UserRes
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/users/{id} [patch]
+// @Security			ApiKeyAuth
 func UserUpdateByPk(c *gin.Context) {
 
 	// 获取参数
@@ -140,37 +154,40 @@ func UserUpdateByPk(c *gin.Context) {
 	// 查询
 	var data model.User
 	if err := db.DB.First(&data, "id = ?", id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"err":     err.Error(),
-			"message": "查询失败",
-		})
+		service.HTTPError(c, "查询失败", http.StatusNotFound, err)
 		return
 	}
 
 	// 绑定新数据
 	var obj map[string]interface{}
 	if err := c.ShouldBind(&obj); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err.Error(),
-			"message": "数据绑定失败",
-		})
+		service.HTTPError(c, "数据绑定失败", http.StatusBadRequest, err)
 		return
 	}
 
 	// 更新数据
 	if err := db.DB.Model(&data).Updates(obj).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "更新失败",
-		})
+		service.HTTPError(c, "更新失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, model.UserRes{
+		Data: data,
+	})
 }
 
 // UserDestroyByPk 删除单条信息
+// @Summary				删除单条信息
+// @Description			删除单条信息...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				id path string true "ID"
+// @Success				200 {object} model.HTTPDeleteSuccess
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/users/{id} [delete]
+// @Security			ApiKeyAuth
 func UserDestroyByPk(c *gin.Context) {
 
 	// 获取参数
@@ -179,142 +196,171 @@ func UserDestroyByPk(c *gin.Context) {
 	// 查询
 	var data model.User
 	if err := db.DB.Where("id = ?", id).First(&data).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"err":     err.Error(),
-			"message": "查询失败",
-		})
+		service.HTTPError(c, "查询失败", http.StatusNotFound, err)
 		return
 	}
 
 	// 删除
 	if err := db.DB.Delete(&data).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "删除失败",
-		})
+		service.HTTPError(c, "删除失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, model.HTTPDeleteSuccess{
+		Data: data.ID,
+	})
 }
 
 // UserFindOrCreate 查询或创建单条信息
+// @Summary				查询或创建单条信息
+// @Description			查询或创建单条信息...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				user body model.User true "查询或创建单条信息"
+// @Success				200 {object} model.UserRes
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/user [post]
+// @Security			ApiKeyAuth
 func UserFindOrCreate(c *gin.Context) {
 
 	// 绑定数据
 	var data model.User
 	if err := c.ShouldBind(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err.Error(),
-			"message": "数据绑定失败",
-		})
+		service.HTTPError(c, "数据绑定失败", http.StatusBadRequest, err)
 		return
 	}
 
 	// 插入数据
 	if err := db.DB.FirstOrCreate(&data, data).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "查询或创建数据失败",
-		})
+		service.HTTPError(c, "查询或创建数据失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, model.UserRes{
+		Data: data,
+	})
 }
 
 // UserUpdateBulk 批量更新
+// @Summary				批量更新
+// @Description			批量更新...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				user body model.BulkUpdate true "批量更新"
+// @Success				200 {object} model.HTTPBulkSuccess
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/users [patch]
+// @Security			ApiKeyAuth
 func UserUpdateBulk(c *gin.Context) {
 
 	var data model.BulkUpdate
 
 	// 绑定数据
 	if err := c.ShouldBind(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err.Error(),
-			"message": "数据绑定失败",
-		})
+		service.HTTPError(c, "数据绑定失败", http.StatusBadRequest, err)
 		return
 	}
 
 	// 判断ID列表是否为空
 	// if len(data.IDs) == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"message": "ids列表不能空",
-	// 	})
+	// 	service.HTTPError(c, "ids列表不能空", http.StatusBadRequest, nil)
 	// 	return
 	// }
 
 	// 更新数据
 	if err := db.DB.Model(model.User{}).Where("id IN (?)", data.IDs).Updates(data.Obj).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "更新失败",
-		})
+		service.HTTPError(c, "更新失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, model.HTTPBulkSuccess{
+		Data: data.IDs,
+	})
 }
 
 // UserDestroyBulk 批量删除
+// @Summary				批量删除
+// @Description			批量删除...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Param				user body model.BulkDelete true "批量删除"
+// @Success				200 {object} model.HTTPBulkSuccess
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/users [delete]
+// @Security			ApiKeyAuth
 func UserDestroyBulk(c *gin.Context) {
 
 	var data model.BulkDelete
 
 	// 绑定数据
 	if err := c.ShouldBind(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err":     err.Error(),
-			"message": "数据绑定失败",
-		})
+		service.HTTPError(c, "数据绑定失败", http.StatusBadRequest, err)
 		return
 	}
 
 	// 删除数据
 	if err := db.DB.Delete(model.User{}, "id IN (?)", data.IDs).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "删除失败",
-		})
+		service.HTTPError(c, "删除失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, model.HTTPBulkSuccess{
+		Data: data.IDs,
+	})
 }
 
 // UserFindMyRoles 查找本人角色
+// @Summary				查找本人角色
+// @Description			查找本人角色...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Success				200 {object} model.RoleListRes
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/user/roles [get]
+// @Security			ApiKeyAuth
 func UserFindMyRoles(c *gin.Context) {
 	// 获取当前用户角色列表
 	roles, err := service.GetCurrentUserRoles(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "查询角色失败",
-		})
+		service.HTTPError(c, "查询角色失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, roles)
+	// c.JSON(http.StatusOK, roles)
+	c.JSON(http.StatusOK, model.RoleListRes{
+		Data: roles,
+	})
 }
 
 // UserFindMyMenus 查找本人菜单
+// @Summary				查找本人菜单
+// @Description			查找本人菜单...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Success				200 {object} model.MenuListRes
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/user/menus [get]
+// @Security			ApiKeyAuth
 func UserFindMyMenus(c *gin.Context) {
 	// 获取当前用户菜单列表
 	menus, err := service.GetCurrentUserMenus(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":     err.Error(),
-			"message": "查询菜单失败",
-		})
+		service.HTTPError(c, "查询菜单失败", http.StatusInternalServerError, err)
 		return
 	}
 
 	// 返回数据
-	c.JSON(http.StatusOK, menus)
+	c.JSON(http.StatusOK, model.MenuListRes{
+		Data: menus,
+	})
 }

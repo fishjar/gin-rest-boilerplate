@@ -12,6 +12,13 @@ type Role struct {
 	Menus []*Menu `json:"menus" gorm:"many2many:rolemenu;"`                                                // 菜单
 }
 
+// RoleListRes 角色列表
+type RoleListRes struct {
+	HTTPSuccess
+	Pagin PaginRes `json:"pagin" binding:"required"`
+	Data  []Role   `json:"data" binding:"required"`
+}
+
 // TableName 自定义表名
 func (Role) TableName() string {
 	return "role"

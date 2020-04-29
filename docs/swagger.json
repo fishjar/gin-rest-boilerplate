@@ -52,14 +52,14 @@
                 }
             }
         },
-        "/admin/users": {
-            "get": {
+        "/admin/user": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "用户列表...",
+                "description": "查询或创建单条信息...",
                 "consumes": [
                     "application/json"
                 ],
@@ -69,13 +69,121 @@
                 "tags": [
                     "user"
                 ],
-                "summary": "用户列表",
+                "summary": "查询或创建单条信息",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "name": "page",
-                        "in": "query"
+                        "description": "查询或创建单条信息",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRes"
+                        }
                     },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/menus": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查找本人菜单...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "查找本人菜单",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MenuListRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/roles": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查找本人角色...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "查找本人角色",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.RoleListRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询多条信息...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "查询多条信息",
+                "parameters": [
                     {
                         "type": "integer",
                         "name": "size",
@@ -84,6 +192,11 @@
                     {
                         "type": "string",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -94,14 +207,271 @@
                             "$ref": "#/definitions/model.UserListRes"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/model.HTTPError"
                         }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建单条信息...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "创建单条信息",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRes"
+                        }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "批量删除...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "批量删除",
+                "parameters": [
+                    {
+                        "description": "批量删除",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BulkDelete"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPBulkSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "批量更新...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "批量更新",
+                "parameters": [
+                    {
+                        "description": "批量更新",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BulkUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPBulkSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询单条信息...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "查询单条信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除单条信息...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "删除单条信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPDeleteSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "更新单条信息...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "更新单条信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新单条信息",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/model.HTTPError"
                         }
@@ -169,10 +539,14 @@
             ],
             "properties": {
                 "password": {
-                    "type": "string"
+                    "description": "密码",
+                    "type": "string",
+                    "example": "123456"
                 },
                 "username": {
-                    "type": "string"
+                    "description": "用户名",
+                    "type": "string",
+                    "example": "gabe"
                 }
             }
         },
@@ -197,6 +571,39 @@
                 },
                 "tokenType": {
                     "type": "string"
+                }
+            }
+        },
+        "model.BulkDelete": {
+            "type": "object",
+            "required": [
+                "ids"
+            ],
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.BulkUpdate": {
+            "type": "object",
+            "required": [
+                "ids",
+                "obj"
+            ],
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "obj": {
+                    "type": "object",
+                    "additionalProperties": true
                 }
             }
         },
@@ -237,22 +644,71 @@
                 }
             }
         },
-        "model.HTTPError": {
+        "model.HTTPBulkSuccess": {
             "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
             "properties": {
                 "code": {
-                    "description": "错误码",
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "返回数据",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "description": "提示",
+                    "type": "string"
+                }
+            }
+        },
+        "model.HTTPDeleteSuccess": {
+            "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "返回数据",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "提示",
+                    "type": "string"
+                }
+            }
+        },
+        "model.HTTPError": {
+            "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
                     "type": "integer"
                 },
                 "errors": {
                     "description": "详细错误信息",
                     "type": "array",
                     "items": {
-                        "type": "object"
+                        "type": "error"
                     }
                 },
                 "message": {
-                    "description": "错误提示",
+                    "description": "提示",
                     "type": "string"
                 }
             }
@@ -313,6 +769,35 @@
                 }
             }
         },
+        "model.MenuListRes": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "message",
+                "pagin"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Menu"
+                    }
+                },
+                "message": {
+                    "description": "提示",
+                    "type": "string"
+                },
+                "pagin": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.PaginRes"
+                }
+            }
+        },
         "model.PaginReq": {
             "type": "object",
             "properties": {
@@ -324,6 +809,28 @@
                 },
                 "sort": {
                     "type": "string"
+                }
+            }
+        },
+        "model.PaginRes": {
+            "type": "object",
+            "required": [
+                "page",
+                "size",
+                "total"
+            ],
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "rows": {
+                    "type": "object"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
@@ -359,6 +866,35 @@
                     "items": {
                         "$ref": "#/definitions/model.User"
                     }
+                }
+            }
+        },
+        "model.RoleListRes": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "message",
+                "pagin"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Role"
+                    }
+                },
+                "message": {
+                    "description": "提示",
+                    "type": "string"
+                },
+                "pagin": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.PaginRes"
                 }
             }
         },
@@ -482,26 +1018,51 @@
         "model.UserListRes": {
             "type": "object",
             "required": [
-                "page",
-                "rows",
-                "size",
-                "total"
+                "code",
+                "data",
+                "message",
+                "pagin"
             ],
             "properties": {
-                "page": {
+                "code": {
+                    "description": "状态码",
                     "type": "integer"
                 },
-                "rows": {
+                "data": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.User"
                     }
                 },
-                "size": {
+                "message": {
+                    "description": "提示",
+                    "type": "string"
+                },
+                "pagin": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.PaginRes"
+                }
+            }
+        },
+        "model.UserRes": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
                     "type": "integer"
                 },
-                "total": {
-                    "type": "integer"
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.User"
+                },
+                "message": {
+                    "description": "提示",
+                    "type": "string"
                 }
             }
         }
