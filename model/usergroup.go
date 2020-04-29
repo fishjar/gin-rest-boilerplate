@@ -18,6 +18,19 @@ type UserGroup struct {
 	JoinTime *time.Time `json:"joinTime" gorm:"column:join_time;type:DATETIME" binding:"omitempty"`   // 加入时间
 }
 
+// UserGroupRes 返回单个
+type UserGroupRes struct {
+	HTTPSuccess
+	Data UserGroup `json:"data" binding:"required"`
+}
+
+// UserGroupListRes 返回列表
+type UserGroupListRes struct {
+	HTTPSuccess
+	Pagin PaginRes    `json:"pagin" binding:"required"`
+	Data  []UserGroup `json:"data" binding:"required"`
+}
+
 // TableName 自定义表名
 func (UserGroup) TableName() string {
 	return "usergroup"

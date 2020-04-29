@@ -12,6 +12,12 @@ type Role struct {
 	Menus []*Menu `json:"menus" gorm:"many2many:rolemenu;"`                                                // 菜单
 }
 
+// RoleRes 返回单个
+type RoleRes struct {
+	HTTPSuccess
+	Data Role `json:"data" binding:"required"`
+}
+
 // RoleListRes 角色列表
 type RoleListRes struct {
 	HTTPSuccess

@@ -55,20 +55,20 @@ type UserJWT struct {
 	UserID string `json:"uid" binding:"required"`
 }
 
-// UserRes 用户列表
+// UserRes 返回单个
 type UserRes struct {
 	HTTPSuccess
 	Data User `json:"data" binding:"required"`
 }
 
-// UserListRes 用户列表
+// UserListRes 返回列表
 type UserListRes struct {
 	HTTPSuccess
 	Pagin PaginRes `json:"pagin" binding:"required"`
 	Data  []User   `json:"data" binding:"required"`
 }
 
-// GetRoles 获取角色列表
+// GetRoles 获取用户角色列表
 func (user User) GetRoles() ([]Role, error) {
 	var roles []Role
 	if err := db.DB.Model(&user).Preload("Menus").Related(&roles, "Roles").Error; err != nil {
@@ -77,7 +77,7 @@ func (user User) GetRoles() ([]Role, error) {
 	return roles, nil
 }
 
-// GetMenus 获取菜单列表
+// GetMenus 获取用户菜单列表
 func (user User) GetMenus() ([]Menu, error) {
 	var menus []Menu
 	var tmpMenus []utils.IFUniqueItem

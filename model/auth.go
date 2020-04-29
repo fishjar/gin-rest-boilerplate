@@ -21,12 +21,25 @@ type Auth struct {
 	IsEnabled  bool       `json:"isEnabled" gorm:"column:is_enabled;default:true" binding:"omitempty"`    // 是否启用
 }
 
-// AuthPublic 公开模型
-type AuthPublic struct {
-	*Auth
-	AuthName string  `json:"-" binding:"-"`
-	AuthCode *string `json:"-" binding:"-"`
+// AuthRes 返回单个
+type AuthRes struct {
+	HTTPSuccess
+	Data Auth `json:"data" binding:"required"`
 }
+
+// AuthListRes 返回列表
+type AuthListRes struct {
+	HTTPSuccess
+	Pagin PaginRes `json:"pagin" binding:"required"`
+	Data  []Auth   `json:"data" binding:"required"`
+}
+
+// // AuthPublic 公开模型
+// type AuthPublic struct {
+// 	*Auth
+// 	AuthName string  `json:"-" binding:"-"`
+// 	AuthCode *string `json:"-" binding:"-"`
+// }
 
 // AuthAccountLoginReq 帐号登录表单
 type AuthAccountLoginReq struct {
