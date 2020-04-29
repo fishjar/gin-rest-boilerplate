@@ -1208,6 +1208,10 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
+      - description: 排序
+        in: query
+        name: sort
+        type: string
       - description: 页码
         in: query
         name: page
@@ -1216,10 +1220,6 @@ paths:
         in: query
         name: size
         type: integer
-      - description: 排序
-        in: query
-        name: sort
-        type: string
       produces:
       - application/json
       responses:
@@ -1436,10 +1436,6 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1448,6 +1444,10 @@ paths:
         in: query
         name: sort
         type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:

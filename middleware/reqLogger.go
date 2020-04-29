@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/fishjar/gin-rest-boilerplate/logger"
+	"github.com/fishjar/gin-rest-boilerplate/service"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -12,9 +13,7 @@ import (
 func LoggerToFile() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		startTime := time.Now()                    // 开始时间
-		reqMethod := c.Request.Method              // 请求方式
-		reqURI := c.Request.RequestURI             // 请求路由
-		clientIP := c.ClientIP()                   // 请求IP
+		reqInfo := service.GetReqInfo(c)           // 请求信息
 		c.Next()                                   // 处理请求
 		statusCode := c.Writer.Status()            // 返回状态码
 		endTime := time.Now()                      // 结束时间
@@ -22,9 +21,9 @@ func LoggerToFile() gin.HandlerFunc {
 		go logger.LogReq.WithFields(logrus.Fields{ // 日志记录
 			"status_code":  statusCode,
 			"latency_time": latencyTime,
-			"client_ip":    clientIP,
-			"req_method":   reqMethod,
-			"req_uri":      reqURI,
+			"client_ip":    reqInfo.IP,
+			"req_method":   reqInfo.Method,
+			"req_uri":      reqInfo.URI,
 		}).Info()
 	}
 }

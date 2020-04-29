@@ -5,16 +5,15 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/db"
-	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/service"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 // LoginAccount 登录处理函数
@@ -57,11 +56,7 @@ func LoginAccount(c *gin.Context) {
 
 	// 验证密码
 	if password != *auth.AuthCode {
-		go logger.Log.WithFields(logrus.Fields{
-			"username": loginForm.Username,
-			"password": loginForm.Password,
-		}).Warn("登录失败，密码错误")
-		service.HTTPError(c, "登录失败，密码错误", http.StatusUnauthorized, nil)
+		service.HTTPError(c, "登录失败，密码错误", http.StatusUnauthorized, fmt.Errorf("username:%s, password:%s", loginForm.Username, loginForm.Password))
 		return
 	}
 

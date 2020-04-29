@@ -9,10 +9,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/sirupsen/logrus"
-
-	"github.com/fishjar/gin-rest-boilerplate/logger"
-	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/service"
 
 	"github.com/gin-gonic/gin"
@@ -30,10 +26,7 @@ func JWTAuth() gin.HandlerFunc {
 		// token 为空
 		if len(accessToken) == 0 {
 			// 验证失败
-			c.AbortWithStatusJSON(http.StatusUnauthorized, model.HTTPError{
-				Code:    401,
-				Message: "没有权限：token不能为空!",
-			})
+			service.HTTPAbortError(c, "没有权限：token不能为空", http.StatusUnauthorized, nil)
 			return
 		}
 
@@ -41,12 +34,7 @@ func JWTAuth() gin.HandlerFunc {
 		claims, err := service.ParseToken(accessToken)
 		if claims == nil || err != nil {
 			// 验证失败
-			go logger.Log.WithFields(logrus.Fields{
-				"accessToken": accessToken,
-			}).Warn("JWTAuth 认证失败")
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "没有权限：JWT验证失败",
-			})
+			service.HTTPAbortError(c, "没有权限：JWT验证失败", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
 		}
 
@@ -56,21 +44,15 @@ func JWTAuth() gin.HandlerFunc {
 		// 从数据库验证 AuthID 和 UserID 有效性
 		auth, err := service.GetAuthWithRoles(AuthID)
 		if err != nil { // 帐号不存在
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "没有权限：帐号不存在",
-			})
+			service.HTTPAbortError(c, "没有权限：帐号不存在", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
 		}
 		if err := auth.CheckEnabled(); err != nil { // 禁用或过期
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "没有权限：禁用或过期",
-			})
+			service.HTTPAbortError(c, "没有权限：禁用或过期", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
 		}
 		if auth.User.ID.String() != UserID { // 用户数据有误
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "没有权限：用户数据有误",
-			})
+			service.HTTPAbortError(c, "没有权限：用户数据有误", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
 		}
 		// 获取用户角色列表
@@ -83,10 +65,10 @@ func JWTAuth() gin.HandlerFunc {
 
 		// 验证成功
 		// 挂载到全局
-		fmt.Println("----token auth info----")
-		fmt.Println(AuthID)
-		fmt.Println(UserID)
-		fmt.Println(roles)
+		// fmt.Println("----token auth info----")
+		// fmt.Println(AuthID)
+		// fmt.Println(UserID)
+		// fmt.Println(roles)
 		c.Set("AuthID", AuthID)
 		c.Set("UserID", UserID)
 		c.Set("UserRoles", roles)

@@ -94,6 +94,13 @@ type HTTPBulkSuccess struct {
 	Data    []uuid.UUID `json:"data"`                       // 返回数据
 }
 
+// ReqInfo 请求信息
+type ReqInfo struct {
+	IP     string // IP地址
+	Method string // 请求方式
+	URI    string // 请求地址
+}
+
 // BeforeUpdate 钩子
 func (base *Base) BeforeUpdate() (err error) {
 	fmt.Println("-------BeforeUpdate Hooks--------")
