@@ -1,10 +1,11 @@
-package utils
+package service
 
 import (
 	"fmt"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
+	"github.com/fishjar/gin-rest-boilerplate/utils"
 )
 
 // InitDB 数据库初始化
@@ -28,7 +29,7 @@ func InitDB() {
 
 	// 创建认证帐号
 	authType := "account"
-	authCode := MD5Pwd("gabe", "123456")
+	authCode := utils.MD5Pwd("gabe", "123456")
 	auth := model.Auth{
 		UserID:   user.ID,
 		AuthType: authType,

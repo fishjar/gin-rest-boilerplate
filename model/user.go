@@ -79,7 +79,7 @@ func (user User) GetRoles() ([]Role, error) {
 
 // GetMenus 获取菜单列表
 func (user User) GetMenus() ([]Menu, error) {
-	var menus []model.Menu
+	var menus []Menu
 	var tmpMenus []utils.IFUniqueItem
 
 	roles, err := user.GetRoles()
@@ -94,7 +94,7 @@ func (user User) GetMenus() ([]Menu, error) {
 	}
 	tmpMenus = utils.RemoveDuplicateElemt(tmpMenus) // 去重
 	for _, v := range tmpMenus {
-		menus = append(menus, v.(model.Menu))
+		menus = append(menus, v.(Menu))
 	}
 
 	return menus, nil

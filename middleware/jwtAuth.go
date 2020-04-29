@@ -15,7 +15,6 @@ import (
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/service"
 
-	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,7 +38,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 
 		// 解析token
-		claims, err := utils.ParseToken(accessToken)
+		claims, err := service.ParseToken(accessToken)
 		if claims == nil || err != nil {
 			// 验证失败
 			go logger.Log.WithFields(logrus.Fields{
@@ -93,7 +92,7 @@ func JWTAuth() gin.HandlerFunc {
 		c.Set("UserRoles", roles)
 
 		// 返回一个新token给客户端(暂不需要)
-		// if newToken, err := utils.MakeToken(&model.UserJWT{
+		// if newToken, err := service.MakeToken(&model.UserJWT{
 		// 	AuthID: AuthID,
 		// 	UserID: UserID,
 		// }); err == nil {

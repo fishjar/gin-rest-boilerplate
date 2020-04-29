@@ -82,7 +82,7 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 生成token
-	accessToken, err := utils.MakeToken(&model.UserJWT{
+	accessToken, err := service.MakeToken(&model.UserJWT{
 		AuthID: auth.ID.String(),
 		UserID: auth.UserID.String(),
 	})
@@ -106,10 +106,17 @@ func LoginAccount(c *gin.Context) {
 }
 
 // TokenRefresh 刷新token
+// @Summary 刷新token
+// @Description 刷新token...
+// @Tags admin
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} model.AuthAccountLoginRes
+// @Router /admin/token/refresh [post]
 func TokenRefresh(c *gin.Context) {
 	AuthID := c.MustGet("AuthID").(string)
 	UserID := c.MustGet("UserID").(string)
-	newToken, err := utils.MakeToken(&model.UserJWT{
+	newToken, err := service.MakeToken(&model.UserJWT{
 		AuthID: AuthID,
 		UserID: UserID,
 	})

@@ -457,6 +457,21 @@ paths:
       summary: 帐号登录
       tags:
       - admin
+  /admin/token/refresh:
+    post:
+      consumes:
+      - application/json
+      description: 刷新token...
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AuthAccountLoginRes'
+      summary: 刷新token
+      tags:
+      - admin
   /admin/user:
     post:
       consumes:
@@ -561,14 +576,14 @@ paths:
       description: 查询多条信息...
       parameters:
       - in: query
+        name: page
+        type: integer
+      - in: query
         name: size
         type: integer
       - in: query
         name: sort
         type: string
-      - in: query
-        name: page
-        type: integer
       produces:
       - application/json
       responses:
