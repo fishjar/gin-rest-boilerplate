@@ -28,17 +28,16 @@ func (base *Base) BeforeCreate(scope *gorm.Scope) error {
 
 // PaginReq 分页查询参数
 type PaginReq struct {
-	Page uint   `form:"page,default=1"`
-	Size uint   `form:"size,default=10"`
-	Sort string `form:"sort,default=created_at desc"`
+	Page uint   `form:"page,default=1"`               // 页码
+	Size uint   `form:"size,default=10"`              // 每页数量
+	Sort string `form:"sort,default=created_at desc"` // 排序
 }
 
 // PaginRes 分页查询结果
 type PaginRes struct {
-	Page  uint        `json:"page" binding:"required"`
-	Size  uint        `json:"size" binding:"required"`
-	Total uint        `json:"total" binding:"required"`
-	Rows  interface{} `json:"rows"`
+	Page  uint `json:"page" binding:"required"`  // 页码
+	Size  uint `json:"size" binding:"required"`  // 每页数量
+	Total uint `json:"total" binding:"required"` // 总数
 }
 
 // Pagin 分页

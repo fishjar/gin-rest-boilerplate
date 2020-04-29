@@ -33,9 +33,7 @@ func LoginAccount(c *gin.Context) {
 
 	// 绑定数据
 	if err := c.ShouldBind(&loginForm); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，参数有误",
-		})
+		service.HTTPError(c, "登录失败，参数有误", http.StatusUnauthorized, err)
 		return
 	}
 
@@ -47,17 +45,13 @@ func LoginAccount(c *gin.Context) {
 		AuthName: loginForm.Username,
 		AuthType: authType,
 	}).First(&auth).Error; err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，用户名不存在",
-		})
+		service.HTTPError(c, "登录失败，用户名不存在", http.StatusUnauthorized, err)
 		return
 	}
 
 	// 检查禁用或过期
 	if err := auth.CheckEnabled(); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，帐号禁用或过期",
-		})
+		service.HTTPError(c, "登录失败，帐号禁用或过期", http.StatusUnauthorized, err)
 		return
 	}
 
@@ -67,17 +61,13 @@ func LoginAccount(c *gin.Context) {
 			"username": loginForm.Username,
 			"password": loginForm.Password,
 		}).Warn("登录失败，密码错误")
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，密码错误",
-		})
+		service.HTTPError(c, "登录失败，密码错误", http.StatusUnauthorized, nil)
 		return
 	}
 
 	// 查询用户是否存在
 	if _, err := service.GetUser(auth.UserID.String()); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，用户数据有误",
-		})
+		service.HTTPError(c, "登录失败，用户数据有误", http.StatusUnauthorized, err)
 		return
 	}
 
@@ -87,9 +77,7 @@ func LoginAccount(c *gin.Context) {
 		UserID: auth.UserID.String(),
 	})
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "登录失败，获取token失败",
-		})
+		service.HTTPError(c, "登录失败，获取token失败", http.StatusUnauthorized, err)
 		return
 	}
 
@@ -121,9 +109,7 @@ func TokenRefresh(c *gin.Context) {
 		UserID: UserID,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "刷新token失败",
-		})
+		service.HTTPError(c, "刷新token失败", http.StatusInternalServerError, err)
 		return
 	}
 

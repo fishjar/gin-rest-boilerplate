@@ -5,6 +5,8 @@
 package service
 
 import (
+	"net/http"
+
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/gin-gonic/gin"
 )
@@ -15,5 +17,12 @@ func HTTPError(c *gin.Context, msg string, code int, err error) {
 		Code:    code,
 		Message: msg,
 		Errors:  []error{err},
+	})
+}
+
+// HTTPSuccess 返回成功
+func HTTPSuccess(c *gin.Context, msg string) {
+	c.JSON(http.StatusOK, model.HTTPSuccess{
+		Message: msg,
 	})
 }
