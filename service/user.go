@@ -5,7 +5,6 @@ import (
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
-	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,58 +40,24 @@ func GetCurrentUser(c *gin.Context) (model.User, error) {
 	return user, nil
 }
 
-// GetUserRoles 获取用户角色列表
-func GetUserRoles(user model.User) ([]model.Role, error) {
-	var roles []model.Role
-
-	if err := db.DB.Model(&user).Preload("Menus").Related(&roles, "Roles").Error; err != nil {
-		return roles, err
-	}
-
-	return roles, nil
-}
-
-// GetUserMenus 获取用户菜单列表
+// GetUserMenus 获取用户菜单（作废）
 func GetUserMenus(user model.User) ([]model.Menu, error) {
 	var menus []model.Menu
-	var tmpMenus []utils.IFUniqueItem
 
-	roles, err := GetUserRoles(user)
+	roles, err := user.GetRoles()
 	if err != nil {
 		return menus, err
 	}
 
 	for _, role := range roles {
 		for _, menu := range role.Menus {
-			tmpMenus = append(tmpMenus, *menu)
+			menus = append(menus, *menu)
 		}
 	}
-	// menus = RemoveDuplicateMenu(menus) // 去重
-	tmpMenus = utils.RemoveDuplicateElemt(tmpMenus)
-	for _, v := range tmpMenus {
-		menus = append(menus, v.(model.Menu))
-	}
+	menus = RemoveDuplicateMenu(menus) // 去重
 
 	return menus, nil
 }
-
-// func GetUserMenus(user model.User) ([]model.Menu, error) {
-// 	var menus []model.Menu
-
-// 	roles, err := GetUserRoles(user)
-// 	if err != nil {
-// 		return menus, err
-// 	}
-
-// 	for _, role := range roles {
-// 		for _, menu := range role.Menus {
-// 			menus = append(menus, *menu)
-// 		}
-// 	}
-// 	menus = RemoveDuplicateMenu(menus) // 去重
-
-// 	return menus, nil
-// }
 
 // GetCurrentUserRoles 获取当前用户角色列表
 func GetCurrentUserRoles(c *gin.Context) ([]model.Role, error) {
@@ -103,7 +68,7 @@ func GetCurrentUserRoles(c *gin.Context) ([]model.Role, error) {
 		return roles, err
 	}
 
-	roles, err = GetUserRoles(user)
+	roles, err = user.GetRoles()
 	if err != nil {
 		return roles, err
 	}
@@ -120,7 +85,7 @@ func GetCurrentUserMenus(c *gin.Context) ([]model.Menu, error) {
 		return menus, err
 	}
 
-	menus, err = GetUserMenus(user)
+	menus, err = user.GetMenus()
 	if err != nil {
 		return menus, err
 	}
@@ -128,8 +93,7 @@ func GetCurrentUserMenus(c *gin.Context) ([]model.Menu, error) {
 	return menus, nil
 }
 
-// RemoveDuplicateMenu Menu去重
-// 已用IFUniqueItem接口实现，此函数作废
+// RemoveDuplicateMenu Menu去重（作废，已用IFUniqueItem接口实现）
 func RemoveDuplicateMenu(menus []model.Menu) []model.Menu {
 	result := make([]model.Menu, 0, len(menus))
 	temp := map[string]struct{}{}

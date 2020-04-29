@@ -62,7 +62,7 @@ func JWTAuth() gin.HandlerFunc {
 			})
 			return
 		}
-		if err := service.AuthCheck(auth); err != nil { // 禁用或过期
+		if err := auth.CheckEnabled(); err != nil { // 禁用或过期
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "没有权限：禁用或过期",
 			})

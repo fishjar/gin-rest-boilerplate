@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
+	"github.com/fishjar/gin-rest-boilerplate/utils"
 )
 
 // User 用户模型
@@ -65,6 +66,38 @@ type UserListRes struct {
 	HTTPSuccess
 	Pagin PaginRes `json:"pagin" binding:"required"`
 	Data  []User   `json:"data" binding:"required"`
+}
+
+// GetRoles 获取角色列表
+func (user User) GetRoles() ([]Role, error) {
+	var roles []Role
+	if err := db.DB.Model(&user).Preload("Menus").Related(&roles, "Roles").Error; err != nil {
+		return roles, err
+	}
+	return roles, nil
+}
+
+// GetMenus 获取菜单列表
+func (user User) GetMenus() ([]Menu, error) {
+	var menus []model.Menu
+	var tmpMenus []utils.IFUniqueItem
+
+	roles, err := user.GetRoles()
+	if err != nil {
+		return menus, err
+	}
+
+	for _, role := range roles {
+		for _, menu := range role.Menus {
+			tmpMenus = append(tmpMenus, *menu)
+		}
+	}
+	tmpMenus = utils.RemoveDuplicateElemt(tmpMenus) // 去重
+	for _, v := range tmpMenus {
+		menus = append(menus, v.(model.Menu))
+	}
+
+	return menus, nil
 }
 
 // TableName 自定义用户表名

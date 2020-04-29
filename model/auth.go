@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
@@ -47,6 +48,18 @@ type AuthAccountCreateReq struct {
 	Password string `form:"password" binding:"required"` // 密码
 	Nickname string `form:"nickname" binding:"required"` // 昵称
 	Mobile   string `form:"mobile" binding:"required"`   // 手机
+}
+
+// CheckEnabled 检查帐号有效性
+func (auth Auth) CheckEnabled() error {
+	if !auth.IsEnabled {
+		return errors.New("帐号已禁用") // 禁用
+	}
+	// TODO 过期时间检查
+	// if (*auth.ExpireTime).Before(time.Now()) {
+	// 	return errors.New("帐号已过期") // 过期
+	// }
+	return nil
 }
 
 // TableName 自定义表名

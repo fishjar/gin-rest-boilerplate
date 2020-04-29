@@ -54,7 +54,7 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 检查禁用或过期
-	if err := service.AuthCheck(auth); err != nil {
+	if err := auth.CheckEnabled(); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "登录失败，帐号禁用或过期",
 		})
