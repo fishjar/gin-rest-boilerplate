@@ -130,6 +130,12 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -138,12 +144,6 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -492,12 +492,6 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "页码",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -506,6 +500,12 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -1660,7 +1660,7 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "查找本人角色...",
+                "description": "查找本人组...",
                 "consumes": [
                     "application/json"
                 ],
@@ -1670,12 +1670,12 @@
                 "tags": [
                     "user"
                 ],
-                "summary": "查找本人角色",
+                "summary": "查找本人组",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.RoleListRes"
+                            "$ref": "#/definitions/model.UserGroupListRes"
                         }
                     },
                     "500": {
@@ -1753,12 +1753,6 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "页码",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -1767,6 +1761,12 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -2070,12 +2070,6 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "页码",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -2084,6 +2078,12 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -2619,13 +2619,6 @@
                 "updatedAt": {
                     "description": "更新时间",
                     "type": "string"
-                },
-                "users": {
-                    "description": "队员",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.User"
-                    }
                 }
             }
         },
@@ -3047,13 +3040,6 @@
                     "description": "性别",
                     "type": "integer"
                 },
-                "groups": {
-                    "description": "组",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Group"
-                    }
-                },
                 "height": {
                     "description": "身高(cm)",
                     "type": "number"
@@ -3113,6 +3099,13 @@
                     "description": "更新时间",
                     "type": "string"
                 },
+                "userGroups": {
+                    "description": "用户组",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserGroup"
+                    }
+                },
                 "userNo": {
                     "description": "编号",
                     "type": "integer"
@@ -3122,6 +3115,10 @@
         "model.UserGroup": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
                 "group": {
                     "description": "组",
                     "type": "object",
@@ -3129,6 +3126,10 @@
                 },
                 "groupId": {
                     "description": "组ID",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
                     "type": "string"
                 },
                 "joinTime": {
@@ -3139,13 +3140,17 @@
                     "description": "级别",
                     "type": "integer"
                 },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string"
+                },
                 "user": {
                     "description": "用户",
                     "type": "object",
                     "$ref": "#/definitions/model.User"
                 },
                 "userId": {
-                    "description": "Base",
+                    "description": "用户ID",
                     "type": "string"
                 }
             }

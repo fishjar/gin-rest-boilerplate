@@ -183,11 +183,6 @@ definitions:
       updatedAt:
         description: 更新时间
         type: string
-      users:
-        description: 队员
-        items:
-          $ref: '#/definitions/model.User'
-        type: array
     type: object
   model.GroupListRes:
     properties:
@@ -491,11 +486,6 @@ definitions:
       gender:
         description: 性别
         type: integer
-      groups:
-        description: 组
-        items:
-          $ref: '#/definitions/model.Group'
-        type: array
       height:
         description: 身高(cm)
         type: number
@@ -540,12 +530,20 @@ definitions:
       updatedAt:
         description: 更新时间
         type: string
+      userGroups:
+        description: 用户组
+        items:
+          $ref: '#/definitions/model.UserGroup'
+        type: array
       userNo:
         description: 编号
         type: integer
     type: object
   model.UserGroup:
     properties:
+      createdAt:
+        description: 创建时间
+        type: string
       group:
         $ref: '#/definitions/model.Group'
         description: 组
@@ -553,18 +551,24 @@ definitions:
       groupId:
         description: 组ID
         type: string
+      id:
+        description: ID
+        type: string
       joinTime:
         description: 加入时间
         type: string
       level:
         description: 级别
         type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
       user:
         $ref: '#/definitions/model.User'
         description: 用户
         type: object
       userId:
-        description: Base
+        description: 用户ID
         type: string
     type: object
   model.UserGroupListRes:
@@ -745,6 +749,10 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -753,10 +761,6 @@ paths:
         in: query
         name: sort
         type: string
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       produces:
       - application/json
       responses:
@@ -973,10 +977,6 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -985,6 +985,10 @@ paths:
         in: query
         name: sort
         type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:
@@ -1688,21 +1692,21 @@ paths:
     get:
       consumes:
       - application/json
-      description: 查找本人角色...
+      description: 查找本人组...
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.RoleListRes'
+            $ref: '#/definitions/model.UserGroupListRes'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.HTTPError'
       security:
       - ApiKeyAuth: []
-      summary: 查找本人角色
+      summary: 查找本人组
       tags:
       - user
   /admin/usergroup:
@@ -1766,10 +1770,6 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1778,6 +1778,10 @@ paths:
         in: query
         name: sort
         type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:
@@ -1966,10 +1970,6 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1978,6 +1978,10 @@ paths:
         in: query
         name: sort
         type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:
