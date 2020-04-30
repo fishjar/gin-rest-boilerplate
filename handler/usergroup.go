@@ -61,7 +61,6 @@ func UserGroupFindAndCountAll(c *gin.Context) {
 	var rows []model.UserGroup
 
 	// 查询数据
-	q.Sort = ""
 	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("User").Preload("Group").Find(&rows).Error; err != nil {
 		service.HTTPError(c, "查询多条信息失败", http.StatusInternalServerError, err)
 		return
