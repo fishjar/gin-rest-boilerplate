@@ -12,7 +12,7 @@ import (
 	_ "github.com/fishjar/gin-rest-boilerplate/docs"
 	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/router"
-	"github.com/fishjar/gin-rest-boilerplate/service"
+	"github.com/fishjar/gin-rest-boilerplate/script"
 )
 
 // @title Swagger Example API
@@ -60,6 +60,6 @@ func main() {
 func init() {
 	env := config.GetEnv()
 	if env == "dev" {
-		service.InitDB() //数据初始化
+		script.InitDB() //数据初始化
 	}
 }
