@@ -1,9 +1,5 @@
 package model
 
-import (
-	"github.com/fishjar/gin-rest-boilerplate/db"
-)
-
 // Role 定义模型
 type Role struct {
 	Base
@@ -28,8 +24,4 @@ type RoleListRes struct {
 // TableName 自定义表名
 func (Role) TableName() string {
 	return "role"
-}
-
-func init() {
-	db.DB.AutoMigrate(&Role{}) // 同步表
 }

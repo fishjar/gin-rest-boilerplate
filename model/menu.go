@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/fishjar/gin-rest-boilerplate/db"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -39,8 +38,4 @@ func (Menu) TableName() string {
 // GetUniqueIndex 实现 IFUniqueItem 接口
 func (m Menu) GetUniqueIndex() string {
 	return m.ID.String()
-}
-
-func init() {
-	db.DB.AutoMigrate(&Menu{}) // 同步表
 }

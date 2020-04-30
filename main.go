@@ -60,6 +60,7 @@ func main() {
 func init() {
 	env := config.GetEnv()
 	if env == "dev" {
-		script.InitDB() //数据初始化
+		script.Migrate() // 同步数据表
+		script.InitDB()  // 数据初始化
 	}
 }

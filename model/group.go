@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/fishjar/gin-rest-boilerplate/db"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -31,8 +30,4 @@ type GroupListRes struct {
 // TableName 自定义表名
 func (Group) TableName() string {
 	return "group"
-}
-
-func init() {
-	db.DB.AutoMigrate(&Group{}) // 同步表
 }

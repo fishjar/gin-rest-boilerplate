@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/fishjar/gin-rest-boilerplate/db"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -89,7 +88,3 @@ func (Auth) TableName() string {
 // var bookableDate validator.Func = func(fl validator.FieldLevel) bool
 // v.RegisterValidation("bookabledate", bookableDate)
 // v.RegisterStructValidation(UserStructLevelValidation, User{})
-
-func init() {
-	db.DB.AutoMigrate(&Auth{}) // 同步表
-}

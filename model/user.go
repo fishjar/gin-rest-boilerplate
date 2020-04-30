@@ -114,8 +114,3 @@ func (user User) GetMenus() ([]Menu, error) {
 func (User) TableName() string {
 	return "user"
 }
-
-func init() {
-	db.DB.AutoMigrate(&User{})
-	// govalidator.SetFieldsRequiredByDefault(true)
-}

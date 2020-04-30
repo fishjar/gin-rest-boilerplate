@@ -3,7 +3,6 @@ package model
 import (
 	"time"
 
-	"github.com/fishjar/gin-rest-boilerplate/db"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -34,8 +33,4 @@ type UserGroupListRes struct {
 // TableName 自定义表名
 func (UserGroup) TableName() string {
 	return "usergroup"
-}
-
-func init() {
-	db.DB.AutoMigrate(&UserGroup{}) // 同步表
 }

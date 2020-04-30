@@ -18,7 +18,7 @@ func InitDB() {
 		Gender: &gender,
 	}
 	if err := db.DB.Where(&user).First(&user).Error; err == nil {
-		fmt.Println("默认用户已存在：", err)
+		fmt.Println("-------数据已存在-----")
 		return
 	}
 
