@@ -49,10 +49,15 @@ type AuthAccountLoginReq struct {
 
 // AuthAccountLoginRes 登录成功返回数据
 type AuthAccountLoginRes struct {
-	Message     string `json:"message" binding:"required"`
-	TokenType   string `json:"tokenType" binding:"required"`
-	AccessToken string `json:"accessToken" binding:"required"`
-	ExpiresIn   int    `json:"expiresIn" binding:"required"` // 过期时间（分钟）
+	TokenType   string `json:"tokenType" binding:"required"`   // token类型
+	AccessToken string `json:"accessToken" binding:"required"` // token
+	ExpiresIn   int    `json:"expiresIn" binding:"required"`   // 过期时间（分钟）
+}
+
+// AuthAccountLoginSuccess 登录成功
+type AuthAccountLoginSuccess struct {
+	HTTPSuccess
+	Data AuthAccountLoginRes `json:"data" binding:"required"`
 }
 
 // AuthAccountCreateReq 创建帐号

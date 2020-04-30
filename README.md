@@ -67,7 +67,7 @@ vi db/db.go
 
 # 如有需要，运行下列命令启动一个mysql数据库服务
 # 否则跳过此行
-sudo docker-compose -f db/docker-compose.mysql.yml up -d
+sudo docker-compose -f docker-compose.mysql.yml up -d
 
 # 安装依赖
 go get

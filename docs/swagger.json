@@ -130,12 +130,6 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "页码",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -144,6 +138,12 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -804,7 +804,7 @@
                 "parameters": [
                     {
                         "description": "登录",
-                        "name": "参数",
+                        "name": "q",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -816,7 +816,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.AuthAccountLoginRes"
+                            "$ref": "#/definitions/model.AuthAccountLoginSuccess"
                         }
                     }
                 }
@@ -887,12 +887,6 @@
                 "summary": "查询多条信息",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "排序",
-                        "name": "sort",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "description": "页码",
                         "name": "page",
@@ -902,6 +896,12 @@
                         "type": "integer",
                         "description": "每页数量",
                         "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序",
+                        "name": "sort",
                         "in": "query"
                     }
                 ],
@@ -1250,6 +1250,12 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -1258,12 +1264,6 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -1548,6 +1548,11 @@
         },
         "/admin/token/refresh": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "刷新token...",
                 "consumes": [
                     "application/json"
@@ -1563,7 +1568,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.AuthAccountLoginRes"
+                            "$ref": "#/definitions/model.AuthAccountLoginSuccess"
                         }
                     }
                 }
@@ -2065,6 +2070,12 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -2073,12 +2084,6 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -2464,21 +2469,41 @@
             "required": [
                 "accessToken",
                 "expiresIn",
-                "message",
                 "tokenType"
             ],
             "properties": {
                 "accessToken": {
+                    "description": "token",
                     "type": "string"
                 },
                 "expiresIn": {
                     "description": "过期时间（分钟）",
                     "type": "integer"
                 },
-                "message": {
-                    "type": "string"
-                },
                 "tokenType": {
+                    "description": "token类型",
+                    "type": "string"
+                }
+            }
+        },
+        "model.AuthAccountLoginSuccess": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.AuthAccountLoginRes"
+                },
+                "message": {
+                    "description": "提示",
                     "type": "string"
                 }
             }

@@ -18,14 +18,14 @@ import (
 
 // LoginAccount 登录处理函数
 // TODO：生产环境，错误信息不需要详细情况
-// @Summary 帐号登录
-// @Description 帐号登录...
-// @Tags admin
-// @Accept  json
-// @Produce  json
-// @Param 参数 body model.AuthAccountLoginReq true "登录"
-// @Success 200 {object} model.AuthAccountLoginRes
-// @Router /admin/login/account [post]
+// @Summary				帐号登录
+// @Description			帐号登录...
+// @Tags				admin
+// @Accept				json
+// @Produce				json
+// @Param				q body model.AuthAccountLoginReq true "登录"
+// @Success				200 {object} model.AuthAccountLoginSuccess
+// @Router				/admin/login/account [post]
 func LoginAccount(c *gin.Context) {
 
 	var loginForm model.AuthAccountLoginReq
@@ -79,23 +79,28 @@ func LoginAccount(c *gin.Context) {
 	// TODO：保存到redis
 
 	// 登录成功
-	c.JSON(http.StatusOK, model.AuthAccountLoginRes{
-		Message:     "登录成功",
-		TokenType:   "bearer",
-		AccessToken: accessToken,
-		ExpiresIn:   config.JWTExpiresIn,
+	c.JSON(http.StatusOK, model.AuthAccountLoginSuccess{
+		HTTPSuccess: model.HTTPSuccess{
+			Message: "登录成功",
+		},
+		Data: model.AuthAccountLoginRes{
+			TokenType:   "Bearer",
+			AccessToken: accessToken,
+			ExpiresIn:   config.JWTExpiresIn,
+		},
 	})
 
 }
 
 // TokenRefresh 刷新token
-// @Summary 刷新token
-// @Description 刷新token...
-// @Tags admin
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} model.AuthAccountLoginRes
-// @Router /admin/token/refresh [post]
+// @Summary				刷新token
+// @Description			刷新token...
+// @Tags				admin
+// @Accept				json
+// @Produce				json
+// @Success				200 {object} model.AuthAccountLoginSuccess
+// @Router				/admin/token/refresh [post]
+// @Security			ApiKeyAuth
 func TokenRefresh(c *gin.Context) {
 	AuthID := c.MustGet("AuthID").(string)
 	UserID := c.MustGet("UserID").(string)
@@ -111,10 +116,14 @@ func TokenRefresh(c *gin.Context) {
 	// TODO：保存到redis
 
 	// 更新成功
-	c.JSON(http.StatusOK, model.AuthAccountLoginRes{
-		Message:     "刷新成功",
-		TokenType:   "bearer",
-		AccessToken: newToken,
-		ExpiresIn:   config.JWTExpiresIn,
+	c.JSON(http.StatusOK, model.AuthAccountLoginSuccess{
+		HTTPSuccess: model.HTTPSuccess{
+			Message: "刷新成功",
+		},
+		Data: model.AuthAccountLoginRes{
+			TokenType:   "Bearer",
+			AccessToken: newToken,
+			ExpiresIn:   config.JWTExpiresIn,
+		},
 	})
 }
