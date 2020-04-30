@@ -90,6 +90,7 @@ func InitRouter() *gin.Engine {
 		admin.DELETE("/users", handler.UserDestroyBulk)                         // 批量删除
 		admin.GET("/user/roles", handler.UserFindMyRoles)                       // 获取角色列表
 		admin.GET("/user/menus", handler.UserFindMyMenus)                       // 获取菜单列表
+		admin.GET("/user/groups", handler.UserFindMyGroups)                     // 获取组列表
 	}
 	{
 		admin.GET("/usergroups", handler.UserGroupFindAndCountAll)    // 获取多条

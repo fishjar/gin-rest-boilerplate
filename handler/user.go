@@ -61,7 +61,7 @@ func UserFindAndCountAll(c *gin.Context) {
 	var rows []model.User
 
 	// 查询数据
-	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").Find(&rows).Error; err != nil {
+	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("Auths").Preload("Roles").Preload("UserGroups").Preload("Friends").Find(&rows).Error; err != nil {
 		service.HTTPError(c, "查询多条信息失败", http.StatusInternalServerError, err)
 		return
 	}
@@ -91,7 +91,7 @@ func UserFindByPk(c *gin.Context) {
 
 	// 查询
 	var data model.User
-	if err := db.DB.Preload("Auths").Preload("Roles").Preload("Groups").Preload("Friends").First(&data, "id = ?", id).Error; err != nil {
+	if err := db.DB.Preload("Auths").Preload("Roles").Preload("UserGroups").Preload("Friends").First(&data, "id = ?", id).Error; err != nil {
 		service.HTTPError(c, "查询失败", http.StatusNotFound, err)
 		return
 	}
@@ -335,9 +335,32 @@ func UserFindMyRoles(c *gin.Context) {
 	}
 
 	// 返回数据
-	// c.JSON(http.StatusOK, roles)
 	c.JSON(http.StatusOK, model.RoleListRes{
 		Data: roles,
+	})
+}
+
+// UserFindMyGroups 查找本人组
+// @Summary				查找本人组
+// @Description			查找本人组...
+// @Tags				user
+// @Accept				json
+// @Produce				json
+// @Success				200 {object} model.UserGroupListRes
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/user/roles [get]
+// @Security			ApiKeyAuth
+func UserFindMyGroups(c *gin.Context) {
+	// 获取当前用户组列表
+	groups, err := service.GetCurrentUserGroups(c)
+	if err != nil {
+		service.HTTPError(c, "查询角色失败", http.StatusInternalServerError, err)
+		return
+	}
+
+	// 返回数据
+	c.JSON(http.StatusOK, model.UserGroupListRes{
+		Data: groups,
 	})
 }
 

@@ -9,7 +9,7 @@ import (
 
 // UserGroup 定义模型
 type UserGroup struct {
-	// Base
+	Base
 	UserID   uuid.UUID  `json:"userId" gorm:"column:user_id;not null"`                                // 用户ID
 	User     *User      `json:"user" gorm:"foreignkey:UserID"`                                        // 用户
 	GroupID  uuid.UUID  `json:"groupId" gorm:"column:group_id;not null"`                              // 组ID

@@ -113,15 +113,15 @@ func InitDB() {
 	db.DB.Model(&rose).Association("Roles").Append([]model.Role{guestRole})
 
 	// 关联用户团队
-	db.DB.Model(&user).Association("Groups").Append([]model.Group{titanicGroup})
-	db.DB.Model(&jack).Association("Groups").Append([]model.Group{titanicGroup, rayjarGroup})
-	db.DB.Model(&rose).Association("Groups").Append([]model.Group{titanicGroup, rayjarGroup})
-	// level1 := 1
-	// db.DB.Create(&model.UserGroup{
-	// 	User:  &user,
-	// 	Group: &titanicGroup,
-	// 	Level: &level1,
-	// })
+	// db.DB.Model(&user).Association("Groups").Append([]model.Group{titanicGroup})
+	// db.DB.Model(&jack).Association("Groups").Append([]model.Group{titanicGroup, rayjarGroup})
+	// db.DB.Model(&rose).Association("Groups").Append([]model.Group{titanicGroup, rayjarGroup})
+	level1 := 1
+	db.DB.Create(&model.UserGroup{
+		User:  &user,
+		Group: &titanicGroup,
+		Level: &level1,
+	})
 
 	// 关联用户友谊
 	db.DB.Model(&user).Association("Friends").Append(jack)

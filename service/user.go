@@ -76,6 +76,23 @@ func GetCurrentUserRoles(c *gin.Context) ([]model.Role, error) {
 	return roles, nil
 }
 
+// GetCurrentUserGroups 获取当前用户组列表
+func GetCurrentUserGroups(c *gin.Context) ([]model.UserGroup, error) {
+	var userGroup []model.UserGroup
+
+	user, err := GetCurrentUser(c)
+	if err != nil {
+		return userGroup, err
+	}
+
+	userGroup, err = user.GetGroups()
+	if err != nil {
+		return userGroup, err
+	}
+
+	return userGroup, nil
+}
+
 // GetCurrentUserMenus 获取当前用户菜单列表
 func GetCurrentUserMenus(c *gin.Context) ([]model.Menu, error) {
 	var menus []model.Menu
