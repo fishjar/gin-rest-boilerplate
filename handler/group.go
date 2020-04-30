@@ -61,7 +61,7 @@ func GroupFindAndCountAll(c *gin.Context) {
 	var rows []model.Group
 
 	// 查询数据
-	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("Leader").Preload("Users").Find(&rows).Error; err != nil {
+	if err := db.DB.Model(&rows).Where(where).Count(&total).Limit(q.Size).Offset(offset).Order(q.Sort).Preload("Leader").Preload("Members").Find(&rows).Error; err != nil {
 		service.HTTPError(c, "查询多条信息失败", http.StatusInternalServerError, err)
 		return
 	}
@@ -91,7 +91,7 @@ func GroupFindByPk(c *gin.Context) {
 
 	// 查询
 	var data model.Group
-	if err := db.DB.Preload("Leader").Preload("Users").First(&data, "id = ?", id).Error; err != nil {
+	if err := db.DB.Preload("Leader").Preload("Members").First(&data, "id = ?", id).Error; err != nil {
 		service.HTTPError(c, "查询失败", http.StatusNotFound, err)
 		return
 	}

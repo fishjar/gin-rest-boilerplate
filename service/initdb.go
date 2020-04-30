@@ -119,6 +119,26 @@ func InitDB() {
 	level1 := 1
 	db.DB.Create(&model.UserGroup{
 		User:  &user,
+		Group: &rayjarGroup,
+		Level: &level1,
+	})
+	db.DB.Create(&model.UserGroup{
+		User:  &user,
+		Group: &titanicGroup,
+		Level: &level1,
+	})
+	db.DB.Create(&model.UserGroup{
+		User:  &jack,
+		Group: &rayjarGroup,
+		Level: &level1,
+	})
+	db.DB.Create(&model.UserGroup{
+		User:  &jack,
+		Group: &titanicGroup,
+		Level: &level1,
+	})
+	db.DB.Create(&model.UserGroup{
+		User:  &rose,
 		Group: &titanicGroup,
 		Level: &level1,
 	})
