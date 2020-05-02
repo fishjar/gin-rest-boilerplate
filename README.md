@@ -124,6 +124,11 @@ curl http://localhost:8000/foos \
 - https://github.com/asaskevich/govalidator
 - 统一返回code
 - readonly clomn
+- swagger 结构体校验
+- 任务队列，定时任务
+- 秒杀抢购
+- 日志搜集
+- ES
 
 ## Done
 
