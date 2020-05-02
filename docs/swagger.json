@@ -426,6 +426,93 @@
                 }
             }
         },
+        "/admin/files/upload": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "文件上传，单文件...",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "files"
+                ],
+                "summary": "文件上传，单文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UploadSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/files/upload/multi": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "文件上传，多文件...",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "files"
+                ],
+                "summary": "文件上传，多文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "format": "multi",
+                        "description": "文件",
+                        "name": "files",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UploadMultiSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/group": {
             "post": {
                 "security": [
@@ -1575,49 +1662,6 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.AuthAccountLoginSuccess"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/upload/file": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "文件上传，单文件...",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "admin"
-                ],
-                "summary": "文件上传，单文件",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "文件",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.UploadSuccess"
                         }
                     },
                     "500": {
@@ -3057,16 +3101,45 @@
                 }
             }
         },
+        "model.UploadMultiSuccess": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UploadRes"
+                    }
+                },
+                "message": {
+                    "description": "提示",
+                    "type": "string"
+                }
+            }
+        },
         "model.UploadRes": {
             "type": "object",
             "required": [
                 "ext",
+                "file",
                 "name",
                 "path"
             ],
             "properties": {
                 "ext": {
                     "description": "扩展名",
+                    "type": "string"
+                },
+                "file": {
+                    "description": "原始文件名",
                     "type": "string"
                 },
                 "name": {

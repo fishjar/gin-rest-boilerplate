@@ -35,8 +35,9 @@ func InitRouter() *gin.Engine {
 	admin.Use(middleware.JWTAuth()) // JWT验证中间件
 	rc := middleware.RoleCheck      // 角色检查中间件，TODO:角色权限可以做到数据库里面管理
 	{
-		admin.POST("/token/refresh", handler.TokenRefresh) // 刷新token
-		admin.POST("/upload/file", handler.UploudFile)     // 上传文件
+		admin.POST("/token/refresh", handler.TokenRefresh)         // 刷新token
+		admin.POST("/files/upload", handler.UploudFile)            // 上传单文件
+		admin.POST("/files/upload/multi", handler.UploudMultiFile) // 上传多文件
 	}
 	{
 

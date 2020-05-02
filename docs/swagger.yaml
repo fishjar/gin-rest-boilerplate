@@ -458,10 +458,30 @@ definitions:
     - data
     - message
     type: object
+  model.UploadMultiSuccess:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.UploadRes'
+        type: array
+      message:
+        description: 提示
+        type: string
+    required:
+    - code
+    - data
+    - message
+    type: object
   model.UploadRes:
     properties:
       ext:
         description: 扩展名
+        type: string
+      file:
+        description: 原始文件名
         type: string
       name:
         description: 文件名
@@ -471,6 +491,7 @@ definitions:
         type: string
     required:
     - ext
+    - file
     - name
     - path
     type: object
@@ -953,6 +974,61 @@ paths:
       summary: 更新单条信息
       tags:
       - auth
+  /admin/files/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 文件上传，单文件...
+      parameters:
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UploadSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 文件上传，单文件
+      tags:
+      - files
+  /admin/files/upload/multi:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 文件上传，多文件...
+      parameters:
+      - description: 文件
+        format: multi
+        in: formData
+        name: files
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UploadMultiSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 文件上传，多文件
+      tags:
+      - files
   /admin/group:
     post:
       consumes:
@@ -1682,33 +1758,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 刷新token
-      tags:
-      - admin
-  /admin/upload/file:
-    post:
-      consumes:
-      - multipart/form-data
-      description: 文件上传，单文件...
-      parameters:
-      - description: 文件
-        in: formData
-        name: file
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.UploadSuccess'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.HTTPError'
-      security:
-      - ApiKeyAuth: []
-      summary: 文件上传，单文件
       tags:
       - admin
   /admin/user:
