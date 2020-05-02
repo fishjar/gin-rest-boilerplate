@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/db"
@@ -58,6 +59,12 @@ func main() {
 }
 
 func init() {
+	// 目录
+	if err := os.MkdirAll(config.GetFileDir(), 0755); err != nil {
+		panic("上传目录创建失败")
+	}
+
+	// 数据
 	env := config.GetEnv()
 	if env == "dev" {
 		script.Migrate() // 同步数据表

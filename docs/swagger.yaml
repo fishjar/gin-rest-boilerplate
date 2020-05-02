@@ -177,6 +177,11 @@ definitions:
       leaderId:
         description: 队长ID
         type: string
+      members:
+        description: 成员
+        items:
+          $ref: '#/definitions/model.UserGroup'
+        type: array
       name:
         description: 组名称
         type: string
@@ -453,6 +458,38 @@ definitions:
     - data
     - message
     type: object
+  model.UploadRes:
+    properties:
+      ext:
+        description: 扩展名
+        type: string
+      name:
+        description: 文件名
+        type: string
+      path:
+        description: 文件路径
+        type: string
+    required:
+    - ext
+    - name
+    - path
+    type: object
+  model.UploadSuccess:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        $ref: '#/definitions/model.UploadRes'
+        type: object
+      message:
+        description: 提示
+        type: string
+    required:
+    - code
+    - data
+    - message
+    type: object
   model.User:
     properties:
       address:
@@ -486,6 +523,11 @@ definitions:
       gender:
         description: 性别
         type: integer
+      groups:
+        description: 用户组
+        items:
+          $ref: '#/definitions/model.UserGroup'
+        type: array
       height:
         description: 身高(cm)
         type: number
@@ -530,11 +572,6 @@ definitions:
       updatedAt:
         description: 更新时间
         type: string
-      userGroups:
-        description: 用户组
-        items:
-          $ref: '#/definitions/model.UserGroup'
-        type: array
       userNo:
         description: 编号
         type: integer
@@ -977,6 +1014,10 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -985,10 +1026,6 @@ paths:
         in: query
         name: sort
         type: string
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       produces:
       - application/json
       responses:
@@ -1163,6 +1200,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.AuthAccountLoginSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
       summary: 帐号登录
       tags:
       - admin
@@ -1634,9 +1675,40 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.AuthAccountLoginSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
       security:
       - ApiKeyAuth: []
       summary: 刷新token
+      tags:
+      - admin
+  /admin/upload/file:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 文件上传，单文件...
+      parameters:
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UploadSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 文件上传，单文件
       tags:
       - admin
   /admin/user:
@@ -1770,6 +1842,10 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1778,10 +1854,6 @@ paths:
         in: query
         name: sort
         type: string
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       produces:
       - application/json
       responses:
@@ -1970,6 +2042,10 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1978,10 +2054,6 @@ paths:
         in: query
         name: sort
         type: string
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       produces:
       - application/json
       responses:

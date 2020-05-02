@@ -25,6 +25,7 @@ import (
 // @Produce				json
 // @Param				q body model.AuthAccountLoginReq true "登录"
 // @Success				200 {object} model.AuthAccountLoginSuccess
+// @Failure 			500 {object} model.HTTPError
 // @Router				/admin/login/account [post]
 func LoginAccount(c *gin.Context) {
 
@@ -99,6 +100,7 @@ func LoginAccount(c *gin.Context) {
 // @Accept				json
 // @Produce				json
 // @Success				200 {object} model.AuthAccountLoginSuccess
+// @Failure 			500 {object} model.HTTPError
 // @Router				/admin/token/refresh [post]
 // @Security			ApiKeyAuth
 func TokenRefresh(c *gin.Context) {

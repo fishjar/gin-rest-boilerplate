@@ -27,7 +27,7 @@ func init() {
 	if env := config.GetEnv(); env == "dev" {
 		dbDriver = "sqlite3" // dev环境使用sqlite
 		rootPath, _ := os.Getwd()
-		dbDir := path.Join(rootPath, "tmp/db")
+		dbDir := path.Join(rootPath, "tmp", "db")
 		if err := os.MkdirAll(dbDir, 0755); err != nil {
 			panic("创建数据库目录失败")
 		}

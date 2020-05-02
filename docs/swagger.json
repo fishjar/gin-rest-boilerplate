@@ -492,6 +492,12 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -500,12 +506,6 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -817,6 +817,12 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.AuthAccountLoginSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
                         }
                     }
                 }
@@ -1570,6 +1576,55 @@
                         "schema": {
                             "$ref": "#/definitions/model.AuthAccountLoginSuccess"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/upload/file": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "文件上传，单文件...",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "文件上传，单文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UploadSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
                     }
                 }
             }
@@ -1753,6 +1808,12 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -1761,12 +1822,6 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -2070,6 +2125,12 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -2078,12 +2139,6 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -2612,6 +2667,13 @@
                     "description": "队长ID",
                     "type": "string"
                 },
+                "members": {
+                    "description": "成员",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserGroup"
+                    }
+                },
                 "name": {
                     "description": "组名称",
                     "type": "string"
@@ -2995,6 +3057,50 @@
                 }
             }
         },
+        "model.UploadRes": {
+            "type": "object",
+            "required": [
+                "ext",
+                "name",
+                "path"
+            ],
+            "properties": {
+                "ext": {
+                    "description": "扩展名",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "文件名",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "文件路径",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UploadSuccess": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.UploadRes"
+                },
+                "message": {
+                    "description": "提示",
+                    "type": "string"
+                }
+            }
+        },
         "model.User": {
             "type": "object",
             "properties": {
@@ -3039,6 +3145,13 @@
                 "gender": {
                     "description": "性别",
                     "type": "integer"
+                },
+                "groups": {
+                    "description": "用户组",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserGroup"
+                    }
                 },
                 "height": {
                     "description": "身高(cm)",
@@ -3098,13 +3211,6 @@
                 "updatedAt": {
                     "description": "更新时间",
                     "type": "string"
-                },
-                "userGroups": {
-                    "description": "用户组",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.UserGroup"
-                    }
                 },
                 "userNo": {
                     "description": "编号",

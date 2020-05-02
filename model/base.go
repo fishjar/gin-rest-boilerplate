@@ -101,6 +101,19 @@ type ReqInfo struct {
 	URI    string // 请求地址
 }
 
+// UploadRes 上传文件
+type UploadRes struct {
+	Ext  string `json:"ext" binding:"required"`  // 扩展名
+	Name string `json:"name" binding:"required"` // 文件名
+	Path string `json:"path" binding:"required"` // 文件路径
+}
+
+// UploadSuccess 上传文件
+type UploadSuccess struct {
+	HTTPSuccess
+	Data UploadRes `json:"data" binding:"required"`
+}
+
 // BeforeUpdate 钩子
 func (base *Base) BeforeUpdate() (err error) {
 	fmt.Println("-------BeforeUpdate Hooks--------")

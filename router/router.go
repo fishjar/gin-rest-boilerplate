@@ -36,6 +36,7 @@ func InitRouter() *gin.Engine {
 	rc := middleware.RoleCheck      // 角色检查中间件，TODO:角色权限可以做到数据库里面管理
 	{
 		admin.POST("/token/refresh", handler.TokenRefresh) // 刷新token
+		admin.POST("/upload/file", handler.UploudFile)     // 上传文件
 	}
 	{
 

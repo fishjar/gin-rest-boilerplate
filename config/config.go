@@ -6,6 +6,7 @@ package config
 
 import (
 	"os"
+	"path"
 	"strconv"
 )
 
@@ -42,6 +43,13 @@ func GetEnv() string {
 		env = ginEnv
 	}
 	return env
+}
+
+// GetFileDir 获取文件上传目录
+func GetFileDir() string {
+	rootPath, _ := os.Getwd()
+	fileDir := path.Join(rootPath, "tmp", "files")
+	return fileDir
 }
 
 // // 返回的状态码
