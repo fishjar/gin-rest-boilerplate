@@ -129,6 +129,7 @@ curl http://localhost:8000/foos \
 - 秒杀抢购
 - 日志搜集
 - ES
+- 缓存
 
 ## Done
 
