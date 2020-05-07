@@ -39,6 +39,7 @@ import (
 // @x-extension-openapi {"example": "value on a json format"}
 func main() {
 	defer db.DB.Close()             // 关闭数据库连接
+	defer db.Redis.Close()          // 关闭Redis连接
 	defer logger.LogFile.Close()    // 关闭日志文件
 	defer logger.LogGinFile.Close() // 关闭日志文件
 	defer logger.LogReqFile.Close() // 关闭日志文件
