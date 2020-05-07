@@ -29,27 +29,27 @@ func InitRouter() *gin.Engine {
 	r.GET("/swagger/*any", gin.BasicAuth(gin.Accounts{
 		"foo": "bar",
 	}), ginSwagger.WrapHandler(swaggerFiles.Handler)) // swagger
-	r.POST("/admin/login/account", handler.LoginAccount) //登录
+	r.POST("/admin/account/login", handler.LoginAccount) //登录
 
 	admin := r.Group("/admin")      // JWT验证路由组
 	admin.Use(middleware.JWTAuth()) // JWT验证中间件
 	rc := middleware.RoleCheck      // 角色检查中间件，TODO:角色权限可以做到数据库里面管理
 	{
+		admin.POST("/account/create", handler.AuthAccountCreate)   // 创建帐号
 		admin.POST("/token/refresh", handler.TokenRefresh)         // 刷新token
 		admin.POST("/files/upload", handler.UploudFile)            // 上传单文件
 		admin.POST("/files/upload/multi", handler.UploudMultiFile) // 上传多文件
 	}
 	{
 
-		admin.GET("/auths", handler.AuthFindAndCountAll)              // 获取多条
-		admin.GET("/auths/:id", handler.AuthFindByPk)                 // 按ID查找
-		admin.POST("/auths", handler.AuthSingleCreate)                // 创建单条
-		admin.PATCH("/auths/:id", handler.AuthUpdateByPk)             // 按ID更新
-		admin.DELETE("/auths/:id", handler.AuthDestroyByPk)           // 按ID删除
-		admin.POST("/auth", handler.AuthFindOrCreate)                 // 查询或创建
-		admin.PATCH("/auths", handler.AuthUpdateBulk)                 // 批量更新
-		admin.DELETE("/auths", handler.AuthDestroyBulk)               // 批量删除
-		admin.POST("/auth/account/create", handler.AuthAccountCreate) // 创建帐号
+		admin.GET("/auths", handler.AuthFindAndCountAll)    // 获取多条
+		admin.GET("/auths/:id", handler.AuthFindByPk)       // 按ID查找
+		admin.POST("/auths", handler.AuthSingleCreate)      // 创建单条
+		admin.PATCH("/auths/:id", handler.AuthUpdateByPk)   // 按ID更新
+		admin.DELETE("/auths/:id", handler.AuthDestroyByPk) // 按ID删除
+		admin.POST("/auth", handler.AuthFindOrCreate)       // 查询或创建
+		admin.PATCH("/auths", handler.AuthUpdateBulk)       // 批量更新
+		admin.DELETE("/auths", handler.AuthDestroyBulk)     // 批量删除
 	}
 	{
 		admin.GET("/groups", handler.GroupFindAndCountAll)    // 获取多条

@@ -39,12 +39,6 @@ definitions:
     type: object
   model.AuthAccountCreateReq:
     properties:
-      mobile:
-        description: 手机
-        type: string
-      nickname:
-        description: 昵称
-        type: string
       password:
         description: 密码
         type: string
@@ -52,8 +46,6 @@ definitions:
         description: 帐号
         type: string
     required:
-    - mobile
-    - nickname
     - password
     - username
     type: object

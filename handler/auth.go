@@ -336,6 +336,17 @@ func AuthAccountCreate(c *gin.Context) {
 		return
 	}
 
+	// 判断重复帐号
+	var count uint
+	db.DB.Model(&model.Auth{}).Where(map[string]interface{}{
+		"auth_type": "account",
+		"auth_name": data.Username,
+	}).Count(&count)
+	if count > 0 {
+		service.HTTPError(c, "帐号已被占用", http.StatusBadRequest, nil)
+		return
+	}
+
 	// 创建帐号
 	if err := service.CreateAuthAccount(&data); err != nil {
 		service.HTTPError(c, "帐号创建失败", http.StatusInternalServerError, err)

@@ -2520,20 +2520,10 @@
         "model.AuthAccountCreateReq": {
             "type": "object",
             "required": [
-                "mobile",
-                "nickname",
                 "password",
                 "username"
             ],
             "properties": {
-                "mobile": {
-                    "description": "手机",
-                    "type": "string"
-                },
-                "nickname": {
-                    "description": "昵称",
-                    "type": "string"
-                },
                 "password": {
                     "description": "密码",
                     "type": "string"
