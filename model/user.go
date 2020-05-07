@@ -10,8 +10,8 @@ import (
 // User 用户模型
 type User struct {
 	Base
-	Name         string       `json:"name" gorm:"column:name;type:VARCHAR(32);not null" binding:"min=3,max=20"`                                     // 姓名
-	Nickname     *string      `json:"nickname" gorm:"column:nickname" binding:"omitempty"`                                                          // 昵称
+	Name         *string      `json:"name" gorm:"column:name;type:VARCHAR(32)" binding:"min=3,max=20"`                                              // 姓名
+	Nickname     string       `json:"nickname" gorm:"column:nickname;not null"`                                                                     // 昵称
 	Gender       *int         `json:"gender" gorm:"column:gender;type:TINYINT;default:0" binding:"omitempty,eq=0|eq=1|eq=2"`                        // 性别
 	Avatar       *string      `json:"avatar" gorm:"column:avatar" binding:"omitempty"`                                                              // 昵称
 	Mobile       *string      `json:"mobile" gorm:"column:mobile;type:VARCHAR(16)" binding:"omitempty"`                                             // 手机

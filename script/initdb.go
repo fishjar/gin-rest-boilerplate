@@ -2,6 +2,7 @@ package script
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
@@ -14,8 +15,8 @@ func InitDB() {
 	name := "gabe"
 	gender := 1
 	user := model.User{
-		Name:   name,
-		Gender: &gender,
+		Nickname: name,
+		Gender:   &gender,
 	}
 	if err := db.DB.Where(&user).First(&user).Error; err == nil {
 		fmt.Println("-------数据已存在-----")
@@ -30,17 +31,19 @@ func InitDB() {
 	// 创建认证帐号
 	authType := "account"
 	authCode := utils.MD5Pwd("gabe", "123456")
+	now := time.Now()
 	auth := model.Auth{
-		UserID:   user.ID,
-		AuthType: authType,
-		AuthName: name,
-		AuthCode: &authCode,
+		UserID:     user.ID,
+		AuthType:   authType,
+		AuthName:   name,
+		AuthCode:   &authCode,
+		VerifyTime: &now,
 	}
 	db.DB.Create(&auth)
 
 	// 创建测试用户
-	jack := model.User{Name: "jack"}
-	rose := model.User{Name: "rose"}
+	jack := model.User{Nickname: "jack"}
+	rose := model.User{Nickname: "rose"}
 	db.DB.Create(&jack)
 	db.DB.Create(&rose)
 

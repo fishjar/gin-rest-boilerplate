@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
@@ -53,9 +55,7 @@ func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
 
 	// 创建用户
 	user := model.User{
-		Name:     data.Username,
-		Nickname: &data.Nickname,
-		Mobile:   &data.Mobile,
+		Nickname: data.Username,
 	}
 	if err := tx.Create(&user).Error; err != nil {
 		tx.Rollback()
@@ -64,11 +64,13 @@ func CreateAuthAccount(data *model.AuthAccountCreateReq) error {
 
 	// 创建帐号
 	password := utils.MD5Pwd(data.Username, data.Password)
+	now := time.Now()
 	auth := model.Auth{
-		User:     &user,
-		AuthType: "account",
-		AuthName: data.Username,
-		AuthCode: &password,
+		User:       &user,
+		AuthType:   "account",
+		AuthName:   data.Username,
+		AuthCode:   &password,
+		VerifyTime: &now,
 	}
 	if err := tx.Create(&auth).Error; err != nil {
 		tx.Rollback()
