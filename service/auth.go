@@ -26,6 +26,15 @@ func GetAuthWithRoles(id string) (model.Auth, error) {
 	return auth, nil
 }
 
+// GetAuthWithUser 获取指定ID认证帐号及用户资料
+func GetAuthWithUser(id string) (model.Auth, error) {
+	var auth model.Auth
+	if err := db.DB.Preload("User").First(&auth, "id = ?", id).Error; err != nil {
+		return auth, err
+	}
+	return auth, nil
+}
+
 // // AuthAndUserCheck 从数据库检查authID和userID有效性
 // func AuthAndUserCheck(authID string, userID string) bool {
 // 	if auth, err := GetAuth(authID); err != nil {

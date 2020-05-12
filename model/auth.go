@@ -50,7 +50,7 @@ type AuthAccountLoginReq struct {
 type AuthAccountLoginRes struct {
 	TokenType   string `json:"tokenType" binding:"required"`   // token类型
 	AccessToken string `json:"accessToken" binding:"required"` // token
-	ExpiresIn   int    `json:"expiresIn" binding:"required"`   // 过期时间（分钟）
+	ExpiresIn   int64  `json:"expiresIn" binding:"required"`   // 过期时间（毫秒）
 }
 
 // AuthAccountLoginSuccess 登录成功

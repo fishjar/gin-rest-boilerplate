@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,8 @@ import (
 // TODO:角色权限可以做到数据库里面管理
 func RoleCheck(allowedRoles []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userRoles := c.MustGet("UserRoles").([]string)
+		userInfo := c.MustGet("UserInfo").(model.UserCurrent)
+		userRoles := userInfo.Roles
 		fmt.Println("allowedRoles", allowedRoles)
 		fmt.Println("userRoles", userRoles)
 

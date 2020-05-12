@@ -62,22 +62,37 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 查询用户是否存在
-	if _, err := service.GetUser(auth.UserID.String()); err != nil {
+	user, err := service.GetUser(auth.UserID.String())
+	if err != nil {
 		service.HTTPError(c, "登录失败，用户数据有误", http.StatusUnauthorized, err)
 		return
 	}
 
+	// 查询角色列表
+	roles, err := user.GetRoles()
+	if err != nil {
+		service.HTTPError(c, "登录失败，获取角色列表失败", http.StatusUnauthorized, err)
+		return
+	}
+	roleNames := service.RolesToNames(roles)
+	aid := auth.ID.String()
+	uid := auth.UserID.String()
+
 	// 生成token
 	accessToken, err := service.MakeToken(&model.UserJWT{
-		AuthID: auth.ID.String(),
-		UserID: auth.UserID.String(),
+		AuthID: aid,
+		UserID: uid,
 	})
 	if err != nil {
 		service.HTTPError(c, "登录失败，获取token失败", http.StatusUnauthorized, err)
 		return
 	}
 
-	// TODO：保存到redis
+	// 保存登录信息到redis
+	if err := service.SetUserToRedis(uid, aid, roleNames); err != nil {
+		service.HTTPError(c, "保存登录信息到redis失败", http.StatusInternalServerError, err)
+		return
+	}
 
 	// 登录成功
 	c.JSON(http.StatusOK, model.AuthAccountLoginSuccess{
@@ -87,7 +102,7 @@ func LoginAccount(c *gin.Context) {
 		Data: model.AuthAccountLoginRes{
 			TokenType:   "Bearer",
 			AccessToken: accessToken,
-			ExpiresIn:   config.JWTExpiresIn,
+			ExpiresIn:   config.JWTExpiresIn.Milliseconds(),
 		},
 	})
 
@@ -104,18 +119,27 @@ func LoginAccount(c *gin.Context) {
 // @Router				/admin/token/refresh [post]
 // @Security			ApiKeyAuth
 func TokenRefresh(c *gin.Context) {
-	AuthID := c.MustGet("AuthID").(string)
-	UserID := c.MustGet("UserID").(string)
+	// 获取当前用户信息
+	userInfo := c.MustGet("UserInfo").(model.UserCurrent)
+	aid := userInfo.AuthID
+	uid := userInfo.UserID
+	roles := userInfo.Roles
+
+	// 生成token
 	newToken, err := service.MakeToken(&model.UserJWT{
-		AuthID: AuthID,
-		UserID: UserID,
+		AuthID: aid,
+		UserID: uid,
 	})
 	if err != nil {
 		service.HTTPError(c, "刷新token失败", http.StatusInternalServerError, err)
 		return
 	}
 
-	// TODO：保存到redis
+	// 保存登录信息到redis
+	if err := service.SetUserToRedis(uid, aid, roles); err != nil {
+		service.HTTPError(c, "保存登录信息到redis失败", http.StatusInternalServerError, err)
+		return
+	}
 
 	// 更新成功
 	c.JSON(http.StatusOK, model.AuthAccountLoginSuccess{
@@ -125,7 +149,7 @@ func TokenRefresh(c *gin.Context) {
 		Data: model.AuthAccountLoginRes{
 			TokenType:   "Bearer",
 			AccessToken: newToken,
-			ExpiresIn:   config.JWTExpiresIn,
+			ExpiresIn:   config.JWTExpiresIn.Milliseconds(),
 		},
 	})
 }

@@ -56,6 +56,13 @@ type UserJWT struct {
 	UserID string `json:"uid" binding:"required"`
 }
 
+// UserCurrent JWT用户数据
+type UserCurrent struct {
+	AuthID string   `json:"aid" binding:"required"`
+	UserID string   `json:"uid" binding:"required"`
+	Roles  []string `json:"roles" binding:"required"`
+}
+
 // UserRes 返回单个
 type UserRes struct {
 	HTTPSuccess

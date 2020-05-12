@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/gin-gonic/gin"
@@ -19,20 +17,10 @@ func GetUser(id string) (model.User, error) {
 
 // GetCurrentUser 获取当前用户
 func GetCurrentUser(c *gin.Context) (model.User, error) {
-	var user model.User
+	userInfo := c.MustGet("UserInfo").(model.UserCurrent)
+	uid := userInfo.UserID
 
-	// id := c.MustGet("UserID").(string) // 不存在的key会引发panic
-	UserID, ok := c.Get("UserID")
-	if !ok {
-		return user, errors.New("没有登录")
-	}
-
-	id, ok := UserID.(string)
-	if !ok {
-		return user, errors.New("用户ID错误")
-	}
-
-	user, err := GetUser(id)
+	user, err := GetUser(uid)
 	if err != nil {
 		return user, err
 	}
@@ -122,4 +110,13 @@ func RemoveDuplicateMenu(menus []model.Menu) []model.Menu {
 		}
 	}
 	return result
+}
+
+// RolesToNames 获取角色名列表
+func RolesToNames(roles []model.Role) []string {
+	roleNames := make([]string, len(roles))
+	for i, role := range roles {
+		roleNames[i] = role.Name
+	}
+	return roleNames
 }
