@@ -126,6 +126,7 @@ func TokenRefresh(c *gin.Context) {
 	roles := userInfo.Roles
 
 	// 生成token
+	// TODO: 返回JWT过期时间，并与redis 过期时间保持一致
 	newToken, err := service.MakeToken(&model.UserJWT{
 		AuthID: aid,
 		UserID: uid,
