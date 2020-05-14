@@ -69,7 +69,7 @@ definitions:
         description: token
         type: string
       expiresIn:
-        description: 过期时间（分钟）
+        description: 过期时间（毫秒）
         type: integer
       tokenType:
         description: token类型
@@ -1082,10 +1082,6 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1094,6 +1090,10 @@ paths:
         in: query
         name: sort
         type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:
@@ -1564,10 +1564,6 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1576,6 +1572,10 @@ paths:
         in: query
         name: sort
         type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:

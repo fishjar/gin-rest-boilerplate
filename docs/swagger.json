@@ -579,12 +579,6 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "页码",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -593,6 +587,12 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -1343,12 +1343,6 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "页码",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -1357,6 +1351,12 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -2566,7 +2566,7 @@
                     "type": "string"
                 },
                 "expiresIn": {
-                    "description": "过期时间（分钟）",
+                    "description": "过期时间（毫秒）",
                     "type": "integer"
                 },
                 "tokenType": {
