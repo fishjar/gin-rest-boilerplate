@@ -79,7 +79,7 @@ func LoginAccount(c *gin.Context) {
 	uid := auth.UserID.String()
 
 	// 生成token
-	accessToken, err := service.MakeToken(&model.UserJWT{
+	issuedAt, accessToken, err := service.MakeToken(&model.UserJWT{
 		AuthID: aid,
 		UserID: uid,
 	})
@@ -89,7 +89,12 @@ func LoginAccount(c *gin.Context) {
 	}
 
 	// 保存登录信息到redis
-	if err := service.SetUserToRedis(uid, aid, roleNames); err != nil {
+	err = service.SetUserToRedis(&model.UserCurrent{
+		UserID: uid,
+		AuthID: aid,
+		Roles:  roleNames,
+	}, issuedAt)
+	if err != nil {
 		service.HTTPError(c, "保存登录信息到redis失败", http.StatusInternalServerError, err)
 		return
 	}
@@ -123,11 +128,10 @@ func TokenRefresh(c *gin.Context) {
 	userInfo := c.MustGet("UserInfo").(model.UserCurrent)
 	aid := userInfo.AuthID
 	uid := userInfo.UserID
-	roles := userInfo.Roles
 
 	// 生成token
 	// TODO: 返回JWT过期时间，并与redis 过期时间保持一致
-	newToken, err := service.MakeToken(&model.UserJWT{
+	issuedAt, newToken, err := service.MakeToken(&model.UserJWT{
 		AuthID: aid,
 		UserID: uid,
 	})
@@ -137,7 +141,7 @@ func TokenRefresh(c *gin.Context) {
 	}
 
 	// 保存登录信息到redis
-	if err := service.SetUserToRedis(uid, aid, roles); err != nil {
+	if err := service.SetUserToRedis(&userInfo, issuedAt); err != nil {
 		service.HTTPError(c, "保存登录信息到redis失败", http.StatusInternalServerError, err)
 		return
 	}

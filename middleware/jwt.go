@@ -7,6 +7,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/fishjar/gin-rest-boilerplate/db"
@@ -42,6 +43,7 @@ func JWTAuth() gin.HandlerFunc {
 
 		aid := claims.Subject
 		uid := claims.UserID
+		iss := claims.IssuedAt
 
 		// // 从数据库验证 aid 和 uid 有效性
 		// auth, err := service.GetAuthWithUser(aid)
@@ -66,7 +68,6 @@ func JWTAuth() gin.HandlerFunc {
 
 		// 从redis认证 aid 和 uid 有效性
 		userInfo, err := db.Redis.HGetAll("user:" + uid).Result()
-		roleNames := strings.Split(userInfo["roles"], ",")
 		if err != nil {
 			service.HTTPAbortError(c, "没有权限：缓存信息不存在", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
@@ -75,10 +76,15 @@ func JWTAuth() gin.HandlerFunc {
 			service.HTTPAbortError(c, "没有权限：帐号ID不一致", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
 		}
-		// TODO: 校验JWT签发时间
+		// 校验JWT签发时间
+		if userInfo["iss"] != strconv.FormatInt(iss, 10) {
+			service.HTTPAbortError(c, "没有权限：签发时间不一致", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
+			return
+		}
 
 		// 验证成功
 		// 当前用户信息挂载到内存
+		roleNames := strings.Split(userInfo["roles"], ",")
 		c.Set("UserInfo", model.UserCurrent{
 			AuthID: aid,
 			UserID: uid,

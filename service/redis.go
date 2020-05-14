@@ -1,19 +1,22 @@
 package service
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/db"
+	"github.com/fishjar/gin-rest-boilerplate/model"
 )
 
 // SetUserToRedis 保存用户登录信息到redis
-func SetUserToRedis(uid string, aid string, roles []string) error {
+func SetUserToRedis(user *model.UserCurrent, issuedAt int64) error {
 	// 保存登录信息到redis
-	userKey := "user:" + uid
+	userKey := "user:" + user.UserID
 	err := db.Redis.HSet(userKey, map[string]interface{}{
-		"aid":   aid,
-		"roles": strings.Join(roles, ","),
+		"aid":   user.AuthID,
+		"iss":   strconv.FormatInt(issuedAt, 10),
+		"roles": strings.Join(user.Roles, ","),
 	}).Err()
 	if err != nil {
 		return err
