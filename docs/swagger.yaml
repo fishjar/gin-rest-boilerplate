@@ -741,14 +741,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 创建帐号...
-      parameters:
-      - description: 参数
-        in: body
-        name: auth
-        required: true
-        schema:
-          $ref: '#/definitions/model.AuthAccountCreateReq'
+      description: 退出登录...
       produces:
       - application/json
       responses:
@@ -762,9 +755,8 @@ paths:
             $ref: '#/definitions/model.HTTPError'
       security:
       - ApiKeyAuth: []
-      summary: 创建帐号
+      summary: 退出登录
       tags:
-      - auth
       - admin
   /admin/auths:
     delete:
@@ -1082,6 +1074,10 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
       - description: 每页数量
         in: query
         name: size
@@ -1090,10 +1086,6 @@ paths:
         in: query
         name: sort
         type: string
-      - description: 页码
-        in: query
-        name: page
-        type: integer
       produces:
       - application/json
       responses:
@@ -1564,10 +1556,6 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
-      - description: 每页数量
-        in: query
-        name: size
-        type: integer
       - description: 排序
         in: query
         name: sort
@@ -1575,6 +1563,10 @@ paths:
       - description: 页码
         in: query
         name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: size
         type: integer
       produces:
       - application/json

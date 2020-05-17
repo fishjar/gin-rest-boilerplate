@@ -90,10 +90,11 @@ func LoginAccount(c *gin.Context) {
 
 	// 保存登录信息到redis
 	err = service.SetUserToRedis(&model.UserCurrent{
-		UserID: uid,
-		AuthID: aid,
-		Roles:  roleNames,
-	}, issuedAt)
+		IssuedAt: issuedAt,
+		UserID:   uid,
+		AuthID:   aid,
+		Roles:    roleNames,
+	})
 	if err != nil {
 		service.HTTPError(c, "保存登录信息到redis失败", http.StatusInternalServerError, err)
 		return
@@ -125,9 +126,10 @@ func LoginAccount(c *gin.Context) {
 // @Security			ApiKeyAuth
 func TokenRefresh(c *gin.Context) {
 	// 获取当前用户信息
-	userInfo := c.MustGet("UserInfo").(model.UserCurrent)
-	aid := userInfo.AuthID
-	uid := userInfo.UserID
+	user := c.MustGet("UserInfo").(model.UserCurrent)
+	aid := user.AuthID
+	uid := user.UserID
+	roles := user.Roles
 
 	// 生成token
 	// TODO: 返回JWT过期时间，并与redis 过期时间保持一致
@@ -141,7 +143,12 @@ func TokenRefresh(c *gin.Context) {
 	}
 
 	// 保存登录信息到redis
-	if err := service.SetUserToRedis(&userInfo, issuedAt); err != nil {
+	if err := service.SetUserToRedis(&model.UserCurrent{
+		IssuedAt: issuedAt,
+		UserID:   uid,
+		AuthID:   aid,
+		Roles:    roles,
+	}); err != nil {
 		service.HTTPError(c, "保存登录信息到redis失败", http.StatusInternalServerError, err)
 		return
 	}
@@ -157,4 +164,22 @@ func TokenRefresh(c *gin.Context) {
 			ExpiresIn:   config.JWTExpiresIn.Milliseconds(),
 		},
 	})
+}
+
+// LogoutAccount 登出
+// @Summary				退出登录
+// @Description			退出登录...
+// @Tags				admin
+// @Accept				json
+// @Produce				json
+// @Success				200 {object} model.HTTPSuccess
+// @Failure 			500 {object} model.HTTPError
+// @Router				/admin/auth/account/create [post]
+// @Security			ApiKeyAuth
+func LogoutAccount(c *gin.Context) {
+	user := c.MustGet("UserInfo").(model.UserCurrent)
+	if err := service.ClearUserFromRedis(user.UserID); err != nil {
+		service.HTTPError(c, "退出登录失败", http.StatusInternalServerError, err)
+	}
+	service.HTTPSuccess(c, "退出成功")
 }

@@ -7,11 +7,8 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 
-	"github.com/fishjar/gin-rest-boilerplate/db"
-	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/service"
 
 	"github.com/gin-gonic/gin"
@@ -41,11 +38,10 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 
-		aid := claims.Subject
-		uid := claims.UserID
-		iss := claims.IssuedAt
-
-		// // 从数据库验证 aid 和 uid 有效性
+		// // 从数据库验证token有效性
+		// aid := claims.Subject
+		// uid := claims.UserID
+		// iss := claims.IssuedAt
 		// auth, err := service.GetAuthWithUser(aid)
 		// if err != nil { // 帐号不存在
 		// 	service.HTTPAbortError(c, "没有权限：帐号不存在", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
@@ -66,38 +62,24 @@ func JWTAuth() gin.HandlerFunc {
 		// }
 		// roleNames := service.RolesToNames(roles)
 
-		// 从redis认证 aid 和 uid 有效性
-		userInfo, err := db.Redis.HGetAll("user:" + uid).Result()
+		// 从redis认证token有效性
+		user, err := service.GetUserFromRedis(claims.UserID)
 		if err != nil {
-			service.HTTPAbortError(c, "没有权限：缓存信息不存在", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
+			service.HTTPAbortError(c, "没有权限：获取用户缓存信息失败", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
-		}
-		if userInfo["aid"] != aid {
+		} else if user.AuthID != claims.Subject {
 			service.HTTPAbortError(c, "没有权限：帐号ID不一致", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
-		}
-		// 校验JWT签发时间
-		if userInfo["iss"] != strconv.FormatInt(iss, 10) {
+		} else if user.IssuedAt != claims.IssuedAt {
 			service.HTTPAbortError(c, "没有权限：签发时间不一致", http.StatusUnauthorized, fmt.Errorf("token:%s", accessToken))
 			return
 		}
 
 		// 验证成功
 		// 当前用户信息挂载到内存
-		roleNames := strings.Split(userInfo["roles"], ",")
-		c.Set("UserInfo", model.UserCurrent{
-			AuthID: aid,
-			UserID: uid,
-			Roles:  roleNames,
-		})
+		c.Set("UserInfo", user)
 
-		// 返回一个新token给客户端(每次自动刷新token)
-		// if newToken, err := service.MakeToken(&model.UserJWT{
-		// 	aid: aid,
-		// 	uid: uid,
-		// }); err == nil {
-		// 	c.Writer.Header().Set("X-Authorization", newToken)
-		// }
+		// TODO: 返回一个新token给客户端(每次自动刷新token)
 
 		c.Next()
 

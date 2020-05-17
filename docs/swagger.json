@@ -70,7 +70,7 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "创建帐号...",
+                "description": "退出登录...",
                 "consumes": [
                     "application/json"
                 ],
@@ -78,21 +78,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth",
                     "admin"
                 ],
-                "summary": "创建帐号",
-                "parameters": [
-                    {
-                        "description": "参数",
-                        "name": "auth",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.AuthAccountCreateReq"
-                        }
-                    }
-                ],
+                "summary": "退出登录",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -579,6 +567,12 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "每页数量",
                         "name": "size",
                         "in": "query"
@@ -587,12 +581,6 @@
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -1342,12 +1330,6 @@
                 "summary": "查询多条信息",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "每页数量",
-                        "name": "size",
-                        "in": "query"
-                    },
-                    {
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
@@ -1357,6 +1339,12 @@
                         "type": "integer",
                         "description": "页码",
                         "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "size",
                         "in": "query"
                     }
                 ],

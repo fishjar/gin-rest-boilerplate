@@ -37,6 +37,7 @@ func InitRouter() *gin.Engine {
 	{
 		admin.POST("/account/create", handler.AuthAccountCreate)   // 创建帐号
 		admin.POST("/token/refresh", handler.TokenRefresh)         // 刷新token
+		admin.POST("/account/logout", handler.LogoutAccount)       // 退出登录
 		admin.POST("/files/upload", handler.UploudFile)            // 上传单文件
 		admin.POST("/files/upload/multi", handler.UploudMultiFile) // 上传多文件
 	}
