@@ -11,6 +11,7 @@ import (
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/h2non/bimg.v1"
 )
 
 // SaveFile 保存文件
@@ -19,54 +20,66 @@ func SaveFile(c *gin.Context, file *multipart.FileHeader) (model.UploadRes, erro
 	contentType := GetFileHeaderContentType(file)
 
 	// 获取文件扩展名
-	srcName := file.Filename
-	extName := path.Ext(srcName)
+	orginName := file.Filename
+	extName := path.Ext(orginName)
 	if len(extName) == 0 { // 限制没有文件扩展名的文件
 		return model.UploadRes{}, errors.New("文件扩展名有误")
 	}
 
 	// 计算文件md5
-	md5str, err := utils.MD5File(file)
+	fileName, err := utils.MD5File(file)
 	if err != nil {
 		return model.UploadRes{}, err
 	}
 
+	// 组装返回数据
+	rootPath := config.GetFileDir()
+	filePath := path.Join(fileName[0:2], fileName[2:4])
+	fullPath := path.Join(rootPath, filePath)
+	fullName := fileName + extName
+	pathName := path.Join(fullPath, fullName)
+	url := path.Join(filePath, fullName)
+	res := model.UploadRes{
+		Origin: orginName,
+		Type:   contentType,
+		URL:    url,
+		Isnew:  true,
+	}
+
+	// 判断是否图片
+	if contentType == "image/png" || contentType == "image/jpg" {
+		thumbName := fileName + "_256x256" + extName
+		thumb := path.Join(filePath, thumbName)
+		res.Thumb = thumb
+	}
+
 	// 判断文件是否已经存在
-	dstPath := path.Join(config.GetFileDir(), md5str[0:2], md5str[2:4])
-	fileName := md5str + extName
-	filePath := path.Join(md5str[0:2], md5str[2:4], fileName)
-	dst := path.Join(dstPath, fileName)
-	if FileExist(dst) {
-		return model.UploadRes{
-			File:  srcName,
-			Ext:   extName,
-			Name:  fileName,
-			Path:  filePath,
-			Type:  contentType,
-			Isnew: false,
-		}, nil
+	if FileExist(pathName) {
+		res.Isnew = false
+		return res, nil
 	}
 
 	// 创建目录
-	if err := os.MkdirAll(dstPath, 0755); err != nil {
+	if err := os.MkdirAll(fullPath, 0755); err != nil {
 		return model.UploadRes{}, err
 	}
 
 	// 保存文件
-	if err := c.SaveUploadedFile(file, dst); err != nil {
+	if err := c.SaveUploadedFile(file, pathName); err != nil {
 		return model.UploadRes{}, err
 	}
 
-	// TODO: 如果是图片格式，压缩及剪裁
+	// 如果是图片格式，生成256*256缩略图
+	// 其他大小的图片，在nginx中利用image_filter动态生成缩略图
+	if contentType == "image/png" || contentType == "image/jpg" {
+		thumbName := fileName + "_256x256" + extName
+		thumbPathName := path.Join(fullPath, thumbName)
+		if err := ImageResize(pathName, thumbPathName); err != nil {
+			return model.UploadRes{}, err
+		}
+	}
 
-	return model.UploadRes{
-		File:  srcName,
-		Ext:   extName,
-		Name:  fileName,
-		Path:  filePath,
-		Type:  contentType,
-		Isnew: true,
-	}, nil
+	return res, nil
 }
 
 // GetFileContentType 获取文件类型
@@ -92,6 +105,7 @@ func GetFileHeaderContentType(file *multipart.FileHeader) string {
 	buffer := make([]byte, 512)
 	tmpFile, _ := file.Open()
 	defer tmpFile.Close()
+
 	tmpFile.Read(buffer)
 	contentType := http.DetectContentType(buffer)
 	return contentType
@@ -101,4 +115,24 @@ func GetFileHeaderContentType(file *multipart.FileHeader) string {
 func FileExist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil || os.IsExist(err)
+}
+
+// ImageResize 图片处理
+// https://github.com/h2non/bimg
+func ImageResize(srcPath string, outPath string) error {
+	buffer, err := bimg.Read(srcPath)
+	if err != nil {
+		return err
+	}
+
+	newImage, err := bimg.NewImage(buffer).Thumbnail(256)
+	if err != nil {
+		return err
+	}
+
+	if err := bimg.Write(outPath, newImage); err != nil {
+		return err
+	}
+
+	return nil
 }

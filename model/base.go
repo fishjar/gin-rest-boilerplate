@@ -103,12 +103,11 @@ type ReqInfo struct {
 
 // UploadRes 上传文件
 type UploadRes struct {
-	File  string `json:"file" binding:"required"`  // 原始文件名
-	Ext   string `json:"ext" binding:"required"`   // 扩展名
-	Name  string `json:"name" binding:"required"`  // 文件名
-	Path  string `json:"path" binding:"required"`  // 文件路径
-	Type  string `json:"type" binding:"required"`  // 文件类型
-	Isnew bool   `json:"isnew" binding:"required"` // 是否新文件
+	Origin string `json:"origin" binding:"required"` // 原始文件名
+	Type   string `json:"type" binding:"required"`   // 文件类型
+	URL    string `json:"url" binding:"required"`    // 文件全路径
+	Thumb  string `json:"thumb" binding:"required"`  // 图片缩略图
+	Isnew  bool   `json:"isnew" binding:"required"`  // 是否新文件
 }
 
 // UploadSuccess 上传单文件

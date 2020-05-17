@@ -122,7 +122,7 @@ curl http://localhost:8000/foos \
   - https://github.com/swaggo/gin-swagger
   - https://github.com/swaggo/swag
 - https://github.com/asaskevich/govalidator
-- 统一返回code
+- 统一返回 code
 - readonly clomn
 - swagger 结构体校验
 - 任务队列，定时任务
@@ -154,6 +154,12 @@ curl http://localhost:8000/foos \
 // 模型定义中全部使用指针类型，是为了可以插入 null 值到数据库，但这样会造成一些使用的麻烦
 // 也可以使用"database/sql"或"github.com/guregu/null"包中封装的类型
 // 但是这样会造成 binding 验证失效，目前没有更好的实现办法，所以暂时全部使用指针类型
+
+```sh
+go get -u gopkg.in/h2non/bimg.v1
+# 出错，需先安装
+sudo apt-get install libvips-dev
+```
 
 ## sql
 
