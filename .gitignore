@@ -17,3 +17,5 @@
 
 tmp
 *.sql3
+main
+gin-rest-boilerplate

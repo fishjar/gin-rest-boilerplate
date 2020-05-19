@@ -22,10 +22,10 @@ var DB *gorm.DB
 
 func init() {
 	// 获取数据库参数
-	dbDriver := "mysql"       // 数据库驱动，默认MYSQL
-	dbPath := config.MySQLURL // 数据库地址
-	if env := config.GetEnv(); env == "dev" {
-		dbDriver = "sqlite3" // dev环境使用sqlite
+	dbDriver := "mysql"                       // 数据库驱动，默认MYSQL
+	dbPath := config.MySQLURL                 // 数据库地址
+	if env := config.GetEnv(); env == "dev" { // dev环境使用sqlite
+		dbDriver = "sqlite3"
 		rootPath, _ := os.Getwd()
 		dbDir := path.Join(rootPath, "tmp", "db")
 		if err := os.MkdirAll(dbDir, 0755); err != nil {
