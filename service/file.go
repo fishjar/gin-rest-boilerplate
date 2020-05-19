@@ -7,11 +7,11 @@ import (
 	"os"
 	"path"
 
+	"github.com/disintegration/imaging"
 	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/utils"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/h2non/bimg.v1"
 )
 
 // SaveFile 保存文件
@@ -119,18 +119,35 @@ func FileExist(filename string) bool {
 
 // ImageResize 图片处理
 // https://github.com/h2non/bimg
+// https://github.com/disintegration/imaging
 func ImageResize(srcPath string, outPath string) error {
-	buffer, err := bimg.Read(srcPath)
+	// buffer, err := bimg.Read(srcPath)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// newImage, err := bimg.NewImage(buffer).Thumbnail(256)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// if err := bimg.Write(outPath, newImage); err != nil {
+	// 	return err
+	// }
+
+	// return nil
+
+	src, err := imaging.Open(srcPath)
 	if err != nil {
 		return err
 	}
 
-	newImage, err := bimg.NewImage(buffer).Thumbnail(256)
-	if err != nil {
-		return err
-	}
+	// Crop the original image
+	src = imaging.Thumbnail(src, 256, 256, imaging.Lanczos)
 
-	if err := bimg.Write(outPath, newImage); err != nil {
+	// Save the resulting image.
+	err = imaging.Save(src, outPath)
+	if err != nil {
 		return err
 	}
 
