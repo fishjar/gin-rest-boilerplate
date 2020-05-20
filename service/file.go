@@ -118,8 +118,8 @@ func FileExist(filename string) bool {
 }
 
 // ImageResize 图片处理
-// https://github.com/h2non/bimg
-// https://github.com/disintegration/imaging
+// https://github.com/h2non/bimg（依赖libvips，不推荐）
+// https://github.com/disintegration/imaging（推荐）
 func ImageResize(srcPath string, outPath string) error {
 	// buffer, err := bimg.Read(srcPath)
 	// if err != nil {

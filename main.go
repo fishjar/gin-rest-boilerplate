@@ -60,15 +60,20 @@ func main() {
 }
 
 func init() {
+	fmt.Println("------ GOPATH: ", os.Getenv("GOPATH"))
+
 	// 目录
 	if err := os.MkdirAll(config.GetFileDir(), 0755); err != nil {
 		panic("上传目录创建失败")
 	}
 
 	// 数据
-	env := config.GetEnv()
-	if env == "dev" {
-		script.Migrate() // 同步数据表
-		script.InitDB()  // 数据初始化
-	}
+	// TODO 生产环境注意数据
+	// env := config.GetEnv()
+	// if env == "dev" {
+	// 	script.Migrate() // 同步数据表
+	// 	script.InitDB()  // 数据初始化
+	// }
+	script.Migrate() // 同步数据表
+	script.InitDB()  // 数据初始化
 }

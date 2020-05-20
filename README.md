@@ -132,6 +132,7 @@ curl http://localhost:8000/foos \
 - 缓存
 - https://github.com/ClawHub/go-gin-demo
 - https://github.com/eddycjy/go-gin-example
+- 开发和生产环境的配置细节
 
 ## Done
 

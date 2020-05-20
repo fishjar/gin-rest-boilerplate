@@ -37,7 +37,7 @@ func init() {
 	// 创建数据库连接
 	db, err := gorm.Open(dbDriver, dbPath)
 	if err != nil {
-		fmt.Println("打开数据库错误：", err)
+		fmt.Println("打开数据库错误：", err.Error())
 		panic("连接数据库失败")
 	}
 	db.LogMode(true) // 生产环境建议关闭
@@ -48,7 +48,7 @@ func init() {
 		panic("连接数据库失败")
 	}
 	if err := db.DB().Ping(); err != nil {
-		fmt.Println("Ping数据库错误：", err)
+		fmt.Println("Ping数据库错误：", err.Error())
 		panic("连接数据库失败")
 	}
 
