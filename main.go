@@ -60,7 +60,8 @@ func main() {
 }
 
 func init() {
-	fmt.Println("------ GOPATH: ", os.Getenv("GOPATH"))
+	fmt.Println("------ GOPATH----------")
+	fmt.Println(os.Getenv("GOPATH"))
 
 	// 目录
 	if err := os.MkdirAll(config.GetFileDir(), 0755); err != nil {

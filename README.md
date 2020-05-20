@@ -89,6 +89,11 @@ curl -X POST http://localhost:8000/foos \
 # 测试：查询记录，注意替换<token>为实际值
 curl http://localhost:8000/foos \
 -H "Authorization: Bearer <token>"
+
+# build
+GOOS=linux GOARCH=amd64 go build
+# alpine build
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 ```
 
 ## TODO

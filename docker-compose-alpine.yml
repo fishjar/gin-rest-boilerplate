@@ -2,9 +2,11 @@ version: "3.1"
 
 services:
   gin-app:
-    image: gin-rest-boilerplate:v1.0.0
-    build: .
-    container_name: gin-rest-boilerplate
+    image: gin-rest-boilerplate-alpine:v1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile-alpine
+    container_name: gin-rest-boilerplate-alpine
     restart: always
     ports:
       - 4000:4000
