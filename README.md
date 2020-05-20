@@ -45,6 +45,8 @@
 
 ## 使用指引
 
+### 开发
+
 ```sh
 # 确保已安装go，及$GOPATH环境变量已配置
 # Go 1.13 and above
@@ -66,43 +68,43 @@ vi config/config.go
 vi db/db.go
 
 # 如有需要，运行下列命令启动一个mysql数据库服务
-# 否则跳过此行
-sudo docker-compose -f docker-compose.mysql.yml up -d
+docker-compose -f docker-compose-mysql.yml up -d
+
+# 启动redis
+docker-compose -f docker-compose-redis.yml up -d
 
 # 安装依赖
 go get
 
-# 启动
+# 开发启动
 go run main.go
 
 # 测试：登录
-curl -X POST http://localhost:4000/admin/login/account \
+curl -X POST http://localhost:4000/admin/account/login \
 -H "Content-Type: application/json" \
 -d '{"username":"gabe","password":"123456"}'
 
-# 测试：创建记录，注意替换<token>为实际值
-curl -X POST http://localhost:8000/foos \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
--d '{"name":"gabe","good_time":"2019-06-06T00:00:00Z","status":1}'
-
 # 测试：查询记录，注意替换<token>为实际值
-curl http://localhost:8000/foos \
+curl http://localhost:4000/admin/users \
 -H "Authorization: Bearer <token>"
+```
 
+### 部署
+
+```sh
 # build
 GOOS=linux GOARCH=amd64 go build
+
 # alpine build
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+# docker启动
+docker-compose -f docker-compose-alpine.yml up
 ```
 
 ## TODO
 
-- logout
-- redis
 - 文件上传/下载，从 reader 读取数据
 - 静态文件服务
-- req，res 记录
 - 原始 SQL 查询
 - 部署
 - 定义路由日志的格式
@@ -141,6 +143,9 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
 ## Done
 
+- req，res 记录
+- redis
+- logout
 - fresh token
 - 角色中间件
 - 在中间件中使用 Goroutine
