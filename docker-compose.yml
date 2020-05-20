@@ -11,8 +11,8 @@ services:
     depends_on:
       - mysql
       - redis
-    # volumes:
-    #   - "gin-tmp:/go/src/github.com/fishjar/gin-rest-boilerplate/tmp"
+    volumes:
+      - "./tmp:/go/src/github.com/fishjar/gin-rest-boilerplate/tmp"
 
   mysql:
     image: mysql
