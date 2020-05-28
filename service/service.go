@@ -15,6 +15,10 @@ import (
 
 // NewError 创建错误对象
 func NewError(msg string, code int, errs []error, c *gin.Context) model.HTTPError {
+	var errStrs []string
+	for _, err := range errs {
+		errStrs = append(errStrs, err.Error())
+	}
 	if c == nil {
 		go logger.Log.WithFields(logrus.Fields{
 			"code": code,
@@ -30,7 +34,7 @@ func NewError(msg string, code int, errs []error, c *gin.Context) model.HTTPErro
 	return model.HTTPError{
 		Code:    code,
 		Message: msg,
-		Errors:  errs,
+		Errors:  errStrs,
 	}
 
 }

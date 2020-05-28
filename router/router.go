@@ -5,6 +5,7 @@
 package router
 
 import (
+	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/handler"
 	"github.com/fishjar/gin-rest-boilerplate/middleware"
 
@@ -27,7 +28,7 @@ func InitRouter() *gin.Engine {
 	})
 
 	r.GET("/swagger/*any", gin.BasicAuth(gin.Accounts{
-		"foo": "bar",
+		config.SwagName: config.SwagPwd,
 	}), ginSwagger.WrapHandler(swaggerFiles.Handler)) // swagger
 	r.POST("/admin/account/login", handler.LoginAccount) //登录
 

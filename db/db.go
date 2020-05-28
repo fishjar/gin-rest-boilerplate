@@ -29,6 +29,7 @@ func init() {
 		rootPath, _ := os.Getwd()
 		dbDir := path.Join(rootPath, "tmp", "db")
 		if err := os.MkdirAll(dbDir, 0755); err != nil {
+			fmt.Println(err.Error())
 			panic("创建数据库目录失败")
 		}
 		dbPath = path.Join(dbDir, "sqlite.db")

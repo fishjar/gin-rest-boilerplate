@@ -258,7 +258,7 @@ definitions:
       errors:
         description: 详细错误信息
         items:
-          type: error
+          type: string
         type: array
       message:
         description: 提示
@@ -469,23 +469,27 @@ definitions:
     type: object
   model.UploadRes:
     properties:
-      ext:
-        description: 扩展名
-        type: string
-      file:
+      isnew:
+        description: 是否新文件
+        type: boolean
+      origin:
         description: 原始文件名
         type: string
-      name:
-        description: 文件名
+      thumb:
+        description: 图片缩略图
         type: string
-      path:
-        description: 文件路径
+      type:
+        description: 文件类型
+        type: string
+      url:
+        description: 文件全路径
         type: string
     required:
-    - ext
-    - file
-    - name
-    - path
+    - isnew
+    - origin
+    - thumb
+    - type
+    - url
     type: object
   model.UploadSuccess:
     properties:
@@ -709,6 +713,53 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /admin/account/login:
+    post:
+      consumes:
+      - application/json
+      description: 帐号登录...
+      parameters:
+      - description: 登录
+        in: body
+        name: q
+        required: true
+        schema:
+          $ref: '#/definitions/model.AuthAccountLoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AuthAccountLoginSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      summary: 帐号登录
+      tags:
+      - admin
+  /admin/account/logout:
+    post:
+      consumes:
+      - application/json
+      description: 退出登录...
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HTTPSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 退出登录
+      tags:
+      - admin
   /admin/auth:
     post:
       consumes:
@@ -741,7 +792,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: 退出登录...
+      description: 创建帐号...
+      parameters:
+      - description: 参数
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/model.AuthAccountCreateReq'
       produces:
       - application/json
       responses:
@@ -755,8 +813,9 @@ paths:
             $ref: '#/definitions/model.HTTPError'
       security:
       - ApiKeyAuth: []
-      summary: 退出登录
+      summary: 创建帐号
       tags:
+      - auth
       - admin
   /admin/auths:
     delete:
@@ -1241,32 +1300,6 @@ paths:
       summary: 更新单条信息
       tags:
       - group
-  /admin/login/account:
-    post:
-      consumes:
-      - application/json
-      description: 帐号登录...
-      parameters:
-      - description: 登录
-        in: body
-        name: q
-        required: true
-        schema:
-          $ref: '#/definitions/model.AuthAccountLoginReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.AuthAccountLoginSuccess'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.HTTPError'
-      summary: 帐号登录
-      tags:
-      - admin
   /admin/menu:
     post:
       consumes:
@@ -1556,6 +1589,10 @@ paths:
       - application/json
       description: 查询多条信息...
       parameters:
+      - description: 每页数量
+        in: query
+        name: size
+        type: integer
       - description: 排序
         in: query
         name: sort
@@ -1563,10 +1600,6 @@ paths:
       - description: 页码
         in: query
         name: page
-        type: integer
-      - description: 每页数量
-        in: query
-        name: size
         type: integer
       produces:
       - application/json

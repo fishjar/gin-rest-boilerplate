@@ -39,6 +39,9 @@ docker-compose -f docker-compose-redis.yml up -d
 # 安装依赖
 go get
 
+# 生成Swagger文档
+swag init
+
 # 开发启动
 go run main.go
 

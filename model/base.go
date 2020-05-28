@@ -68,9 +68,9 @@ type BulkUpdate struct {
 
 // HTTPError 错误
 type HTTPError struct {
-	Code    int     `json:"code" binding:"required"`    // 状态码
-	Message string  `json:"message" binding:"required"` // 提示
-	Errors  []error `json:"errors"`                     // 详细错误信息
+	Code    int      `json:"code" binding:"required"`    // 状态码
+	Message string   `json:"message" binding:"required"` // 提示
+	Errors  []string `json:"errors"`                     // 详细错误信息
 }
 
 // HTTPSuccess 成功

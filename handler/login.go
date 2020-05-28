@@ -26,7 +26,7 @@ import (
 // @Param				q body model.AuthAccountLoginReq true "登录"
 // @Success				200 {object} model.AuthAccountLoginSuccess
 // @Failure 			500 {object} model.HTTPError
-// @Router				/admin/login/account [post]
+// @Router				/admin/account/login [post]
 func LoginAccount(c *gin.Context) {
 
 	var loginForm model.AuthAccountLoginReq
@@ -174,7 +174,7 @@ func TokenRefresh(c *gin.Context) {
 // @Produce				json
 // @Success				200 {object} model.HTTPSuccess
 // @Failure 			500 {object} model.HTTPError
-// @Router				/admin/auth/account/create [post]
+// @Router				/admin/account/logout [post]
 // @Security			ApiKeyAuth
 func LogoutAccount(c *gin.Context) {
 	user := c.MustGet("UserInfo").(model.UserCurrent)

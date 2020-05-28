@@ -24,6 +24,8 @@ const (
 	JWTSignKey   string        = "123456"                                                                      // JWT加密用的密钥
 	JWTExpiresIn time.Duration = 60 * 24 * time.Minute                                                         // JWT过期时间
 	PWDSalt      string        = "123456"                                                                      // 密码哈希盐
+	SwagName     string        = "admin"                                                                       // swagger 用户名
+	SwagPwd      string        = "123456"                                                                      // swagger 密码
 )
 
 // GetPort 获取端口号

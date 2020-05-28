@@ -18,6 +18,80 @@
     "host": "localhost:4000",
     "basePath": "/",
     "paths": {
+        "/admin/account/login": {
+            "post": {
+                "description": "帐号登录...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "帐号登录",
+                "parameters": [
+                    {
+                        "description": "登录",
+                        "name": "q",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthAccountLoginReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthAccountLoginSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/account/logout": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "退出登录...",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "退出登录",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPSuccess"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/auth": {
             "post": {
                 "security": [
@@ -70,7 +144,7 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "退出登录...",
+                "description": "创建帐号...",
                 "consumes": [
                     "application/json"
                 ],
@@ -78,9 +152,21 @@
                     "application/json"
                 ],
                 "tags": [
+                    "auth",
                     "admin"
                 ],
-                "summary": "退出登录",
+                "summary": "创建帐号",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthAccountCreateReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -863,46 +949,6 @@
                 }
             }
         },
-        "/admin/login/account": {
-            "post": {
-                "description": "帐号登录...",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "admin"
-                ],
-                "summary": "帐号登录",
-                "parameters": [
-                    {
-                        "description": "登录",
-                        "name": "q",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.AuthAccountLoginReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.AuthAccountLoginSuccess"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/menu": {
             "post": {
                 "security": [
@@ -1330,6 +1376,12 @@
                 "summary": "查询多条信息",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "排序",
                         "name": "sort",
@@ -1339,12 +1391,6 @@
                         "type": "integer",
                         "description": "页码",
                         "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "每页数量",
-                        "name": "size",
                         "in": "query"
                     }
                 ],
@@ -2817,7 +2863,7 @@
                     "description": "详细错误信息",
                     "type": "array",
                     "items": {
-                        "type": "error"
+                        "type": "string"
                     }
                 },
                 "message": {
@@ -3106,26 +3152,31 @@
         "model.UploadRes": {
             "type": "object",
             "required": [
-                "ext",
-                "file",
-                "name",
-                "path"
+                "isnew",
+                "origin",
+                "thumb",
+                "type",
+                "url"
             ],
             "properties": {
-                "ext": {
-                    "description": "扩展名",
-                    "type": "string"
+                "isnew": {
+                    "description": "是否新文件",
+                    "type": "boolean"
                 },
-                "file": {
+                "origin": {
                     "description": "原始文件名",
                     "type": "string"
                 },
-                "name": {
-                    "description": "文件名",
+                "thumb": {
+                    "description": "图片缩略图",
                     "type": "string"
                 },
-                "path": {
-                    "description": "文件路径",
+                "type": {
+                    "description": "文件类型",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "文件全路径",
                     "type": "string"
                 }
             }
