@@ -66,7 +66,7 @@ docker-compose -f docker-compose-alpine.yml up
 
 ## TODO
 
-- 按级别及日期分开多文件
+- 日志按级别及日期分开多文件
 - 文件上传/下载，从 reader 读取数据
 - 静态文件服务
 - 原始 SQL 查询
