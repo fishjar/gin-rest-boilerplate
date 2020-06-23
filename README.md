@@ -69,16 +69,15 @@ docker-compose -f docker-compose-alpine.yml up
 
 ## TODO
 
-- 日志按级别及日期分开多文件
 - 文件上传/下载，从 reader 读取数据
 - 静态文件服务
 - 原始 SQL 查询
-- 定义路由日志的格式
 - 模型的空字段
 - 内部、外部重定向
 - 单元测试
 - 批量更新时 Hooks 不会运行
-- 自动记录 createBy/updateBy/DeletedBy
+- 自动记录 createdBy/updatedBy/DeletedBy
+  - https://github.com/qor/audited
 - swagger 结构体校验
 - 任务队列，定时任务
 - 秒杀抢购

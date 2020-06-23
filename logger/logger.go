@@ -8,8 +8,11 @@ import (
 	"io"
 	"os"
 	"path"
+	"time"
 
+	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/gin-gonic/gin"
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/sirupsen/logrus"
 )
 
@@ -40,17 +43,37 @@ func init() {
 	}
 
 	// 创建日志文件
-	LogFile, err := os.Create(path.Join(logDir, "log.log"))
+	// LogFile, err := os.Create(path.Join(logDir, "log.log"))
+	LogFile, err := rotatelogs.New(
+		path.Join(logDir, "log.%Y%m%d.log"),
+		rotatelogs.WithLinkName(path.Join(logDir, "log.log")),
+		rotatelogs.WithMaxAge(30*24*time.Hour),
+		rotatelogs.WithRotationTime(24*time.Hour),
+	)
 	if err != nil {
 		panic("创建日志文件失败")
 	}
+
 	// 创建GIN日志文件
-	LogGinFile, err := os.Create(path.Join(logDir, "gin.log"))
+	// LogGinFile, err := os.Create(path.Join(logDir, "gin.log"))
+	LogGinFile, err := rotatelogs.New(
+		path.Join(logDir, "gin.%Y%m%d.log"),
+		rotatelogs.WithLinkName(path.Join(logDir, "gin.log")),
+		rotatelogs.WithMaxAge(30*24*time.Hour),
+		rotatelogs.WithRotationTime(24*time.Hour),
+	)
 	if err != nil {
 		panic("创建GIN日志文件失败")
 	}
+
 	// 创建REQ日志文件
-	LogReqFile, err := os.Create(path.Join(logDir, "req.log"))
+	// LogReqFile, err := os.Create(path.Join(logDir, "req.log"))
+	LogReqFile, err := rotatelogs.New(
+		path.Join(logDir, "req.%Y%m%d.log"),
+		rotatelogs.WithLinkName(path.Join(logDir, "req.log")),
+		rotatelogs.WithMaxAge(30*24*time.Hour),
+		rotatelogs.WithRotationTime(24*time.Hour),
+	)
 	if err != nil {
 		panic("创建REQ日志文件失败")
 	}
@@ -60,8 +83,11 @@ func init() {
 	LogReq.Out = LogReqFile
 
 	// 配置GIN日志文件
-	// gin.DefaultWriter = io.MultiWriter(LogGinFile)
-	gin.DefaultWriter = io.MultiWriter(LogGinFile, os.Stdout)
-	// gin.DebugPrintRouteFunc
-
+	env := config.GetEnv()
+	if env == "dev" {
+		gin.DefaultWriter = io.MultiWriter(LogGinFile, os.Stdout)
+	} else {
+		gin.DefaultWriter = io.MultiWriter(LogGinFile)
+	}
+	// TODO: 定义路由日志的格式 gin.DebugPrintRouteFunc
 }
