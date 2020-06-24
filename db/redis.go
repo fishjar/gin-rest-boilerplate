@@ -11,7 +11,7 @@ import (
 var Redis *redis.Client
 
 func init() {
-	redisAddr := config.RedisURL              // redis 地址
+	redisAddr := config.RedisAddr             // redis 地址
 	if env := config.GetEnv(); env == "dev" { // dev 环境使用本地redis
 		redisAddr = "localhost:6379"
 	}

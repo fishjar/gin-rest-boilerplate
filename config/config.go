@@ -17,8 +17,8 @@ import (
 // 想要完全的支持 UTF-8 编码，你需要修改charset=utf8 为 charset=utf8mb4。
 // 如果你想指定主机，你需要使用 ()
 const (
-	MySQLURL     string        = "root:123456@tcp(mysql:3306)/testdb?charset=utf8mb4&parseTime=True&loc=Local" // 数据库链接
-	RedisURL     string        = "redis:6379"                                                                  // redis数据库链接
+	MySQLAddr    string        = "root:123456@tcp(mysql:3306)/testdb?charset=utf8mb4&parseTime=True&loc=Local" // 数据库链接
+	RedisAddr    string        = "redis:6379"                                                                  // redis数据库链接
 	RedisPWD     string        = ""                                                                            // redis密码
 	HTTPPort     int           = 4000                                                                          // 端口号
 	JWTSignKey   string        = "123456"                                                                      // JWT加密用的密钥

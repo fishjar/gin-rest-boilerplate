@@ -80,6 +80,8 @@ docker-compose -f docker-compose-alpine.yml up
   - https://github.com/qor/audited
 - swagger 结构体校验
 - 任务队列，定时任务
+  - https://github.com/hibiken/asynq
+  - https://github.com/robfig/cron
 - 秒杀抢购
 - 日志搜集
 - ES
