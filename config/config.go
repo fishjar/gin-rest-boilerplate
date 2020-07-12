@@ -50,6 +50,14 @@ func GetEnv() string {
 	return env
 }
 
+// GetRedisAddr 获取Redis地址
+func GetRedisAddr() string {
+	if env := GetEnv(); env == "dev" { // dev 环境使用本地redis
+		return "localhost:6379"
+	}
+	return RedisAddr
+}
+
 // GetFileDir 获取文件上传目录
 func GetFileDir() string {
 	rootPath, _ := os.Getwd()
