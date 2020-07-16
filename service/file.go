@@ -33,7 +33,7 @@ func SaveFile(c *gin.Context, file *multipart.FileHeader) (model.UploadRes, erro
 	}
 
 	// 组装返回数据
-	rootPath := config.GetFileDir()
+	rootPath := config.UploadPath
 	filePath := path.Join(fileName[0:2], fileName[2:4])
 	fullPath := path.Join(rootPath, filePath)
 	fullName := fileName + extName

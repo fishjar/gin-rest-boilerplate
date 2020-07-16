@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/hibiken/asynq"
 )
 
@@ -8,6 +9,6 @@ import (
 var Client *asynq.Client
 
 func init() {
-	r := asynq.RedisClientOpt{Addr: redisAddr}
+	r := asynq.RedisClientOpt{Addr: config.RedisAddr}
 	Client = asynq.NewClient(r)
 }

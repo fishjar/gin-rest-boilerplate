@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	_ "github.com/fishjar/gin-rest-boilerplate/docs"
 	"github.com/fishjar/gin-rest-boilerplate/logger"
@@ -58,14 +57,9 @@ func init() {
 	fmt.Println("------ GOPATH----------")
 	fmt.Println(os.Getenv("GOPATH"))
 
-	// 目录
-	if err := os.MkdirAll(config.GetFileDir(), 0755); err != nil {
-		panic("上传目录创建失败")
-	}
-
 	// 数据
 	// TODO 生产环境注意数据
-	// env := config.GetEnv()
+	// env := config.GINENV
 	// if env == "dev" {
 	// 	script.Migrate() // 同步数据表
 	// 	script.InitDB()  // 数据初始化

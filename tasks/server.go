@@ -3,12 +3,13 @@ package tasks
 import (
 	"log"
 
+	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/hibiken/asynq"
 )
 
 // Server 启动服务
 func Server() error {
-	r := asynq.RedisClientOpt{Addr: redisAddr}
+	r := asynq.RedisClientOpt{Addr: config.RedisAddr}
 	srv := asynq.NewServer(r, asynq.Config{
 		// Specify how many concurrent workers to use
 		Concurrency: 10,
