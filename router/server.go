@@ -21,7 +21,7 @@ func RunGinServer(taskDone, allDone chan bool) {
 
 	r := InitRouter()
 	server := &http.Server{
-		Addr:           fmt.Sprintf(":%d", config.HTTPPort),
+		Addr:           fmt.Sprintf(":%d", config.Config.HTTPPort),
 		Handler:        r,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,

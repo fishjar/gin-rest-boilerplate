@@ -5,73 +5,100 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"os"
 	"path"
 	"strconv"
 	"time"
+
+	"github.com/jinzhu/configor"
 )
 
-// 配置参数设置
-// MySQL注意：
-// 想要能正确的处理 time.Time，你需要添加 parseTime 参数。
-// 想要完全的支持 UTF-8 编码，你需要修改charset=utf8 为 charset=utf8mb4。
-// 如果你想指定主机，你需要使用 ()
-const (
-	MySQLAddr    string        = "root:123456@tcp(mysql:3306)/testdb?charset=utf8mb4&parseTime=True&loc=Local" // 数据库链接
-	RedisPWD     string        = ""                                                                            // redis密码
-	JWTSignKey   string        = "123456"                                                                      // JWT加密用的密钥
-	JWTExpiresIn time.Duration = 60 * 24 * time.Minute                                                         // JWT过期时间
-	PWDSalt      string        = "123456"                                                                      // 密码哈希盐
-	SwagName     string        = "admin"                                                                       // swagger 用户名
-	SwagPwd      string        = "123456"                                                                      // swagger 密码
-)
+// Config 项目配置
+var Config = struct {
+	APPName          string        `default:"app name"`                       // 项目名称
+	APPEnv           string        `default:"development" env:"CONFIGOR_ENV"` // 运行环境
+	HTTPPort         uint          `default:"4000"`                           // 运行端口
+	JWTSignKey       string        `default:"123456"`                         // JWT加密用的密钥
+	JWTExpiresMinute time.Duration `default:"60"`                             // JWT过期时间(分钟)
+	PasswordSalt     string        `default:"123456"`                         // 加密密钥
+	SwaggerName      string        `default:"admin"`                          // swagger 用户名
+	SwaggerPassword  string        `default:"123456"`                         // swagger 密码
+	FilesPath        string        `default:"tmp"`                            // 临时文件目录
+	UploadPath       string        `default:"upload"`                         // 上传文件目录
+	LogPath          string        `default:"log"`                            // 日志文件目录
 
-// HTTPPort 端口号
-var HTTPPort int = 4000
+	RootPath       string        // 项目根目录
+	FilesFullPath  string        // 临时文件完整目录
+	UploadFullPath string        // 上传文件完整目录
+	LogFullPath    string        // 日志文件完整目录
+	JWTExpiresIn   time.Duration // JWT过期时间
+	DBDriver       string        // 数据库驱动
+	DBPath         string        // 数据库地址
 
-// GINENV 运行环境
-var GINENV string = "dev"
+	MySQL struct {
+		Host     string `default:"localhost"`
+		Port     uint   `default:"3306"`
+		User     string `default:"root"`
+		Password string `default:"123456"`
+		Name     string `default:"testdb"`
+	}
 
-// RedisAddr redis数据库链接
-var RedisAddr string = "redis:6379"
+	Redis struct {
+		Host     string `default:"localhost"`
+		Port     uint   `default:"6379"`
+		Password string
+		Name     int `default:"0"`
+		Addr     string
+	}
 
-// RootPath 项目根目录
-var RootPath string
-
-// UploadPath 项目根目录
-var UploadPath string
+	SQLite struct {
+		FilePath string `default:"db"`
+		FileName string `default:"sqlite.db"`
+		FullPath string
+	}
+}{}
 
 func init() {
-	if envPort := os.Getenv("GINPORT"); len(envPort) > 0 {
-		portInt, err := strconv.Atoi(envPort)
-		if err != nil {
-			panic("获取端口失败")
+	Config.RootPath, _ = os.Getwd()
+	configor.Load(&Config, path.Join(Config.RootPath, "config", "config.yml"))
+	// fmt.Printf("config: %#v", Config)
+}
+
+func init() {
+	Config.FilesFullPath = path.Join(Config.RootPath, Config.FilesPath)
+	Config.UploadFullPath = path.Join(Config.FilesFullPath, Config.UploadPath)
+	Config.LogFullPath = path.Join(Config.FilesFullPath, Config.LogPath)
+	Config.SQLite.FullPath = path.Join(Config.FilesFullPath, Config.SQLite.FilePath)
+
+	Config.JWTExpiresIn = Config.JWTExpiresMinute * time.Minute
+	Config.Redis.Addr = Config.Redis.Host + ":" + strconv.Itoa(int(Config.Redis.Port))
+
+	if Config.APPEnv == "development" {
+		Config.DBDriver = "sqlite3"
+		Config.DBPath = path.Join(Config.SQLite.FullPath, Config.SQLite.FileName)
+	} else {
+		Config.DBDriver = "mysql"
+		Config.DBPath = Config.MySQL.User + ":" + Config.MySQL.Password + "@tcp(" + Config.MySQL.Host + ":" + strconv.Itoa(int(Config.MySQL.Port)) + ")/" + Config.MySQL.Name + "?charset=utf8mb4&parseTime=True&loc=Local"
+	}
+
+	// fmt.Printf("full config: %#v", Config)
+	data, err := json.MarshalIndent(Config, "", "    ")
+	if err != nil {
+		log.Fatalf("JSON marshaling failed: %s", err)
+	}
+	fmt.Println("-------------配置信息------------")
+	fmt.Printf("%s\n", data)
+}
+
+func init() {
+	fullPaths := []string{Config.UploadFullPath, Config.LogFullPath, Config.SQLite.FullPath}
+	for _, p := range fullPaths {
+		if err := os.MkdirAll(p, 0755); err != nil {
+			fmt.Println(err)
+			panic("目录创建失败")
 		}
-		HTTPPort = portInt
-	}
-}
-
-func init() {
-	if ginEnv := os.Getenv("GINENV"); len(ginEnv) > 0 {
-		GINENV = ginEnv
-	}
-}
-
-func init() {
-	if GINENV == "dev" { // dev 环境使用本地redis
-		RedisAddr = "localhost:6379"
-	}
-}
-
-func init() {
-	if rootPath, err := os.Getwd(); err != nil {
-		RootPath = rootPath
-	}
-}
-
-func init() {
-	UploadPath := path.Join(RootPath, "tmp", "files")
-	if err := os.MkdirAll(UploadPath, 0755); err != nil {
-		panic("上传目录创建失败")
 	}
 }

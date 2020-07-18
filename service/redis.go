@@ -25,8 +25,8 @@ func SetUserToRedis(user *model.UserCurrent) error {
 	}
 
 	// 设置redis过期时间
-	// TODO: 还应判断帐号的过期时间是否小于 config.JWTExpiresIn
-	db.Redis.Expire(userKey, config.JWTExpiresIn)
+	// TODO: 还应判断帐号的过期时间是否小于 config.Config.JWTExpiresIn
+	db.Redis.Expire(userKey, config.Config.JWTExpiresIn)
 
 	return nil
 }

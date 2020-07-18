@@ -60,7 +60,7 @@ func init() {
 	// 数据
 	// TODO 生产环境注意数据
 	// env := config.GINENV
-	// if env == "dev" {
+	// if env == "development" {
 	// 	script.Migrate() // 同步数据表
 	// 	script.InitDB()  // 数据初始化
 	// }

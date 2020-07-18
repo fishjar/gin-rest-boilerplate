@@ -9,7 +9,11 @@ import (
 
 // Server 启动服务
 func Server() error {
-	r := asynq.RedisClientOpt{Addr: config.RedisAddr}
+	r := asynq.RedisClientOpt{
+		Addr:     config.Config.Redis.Addr,
+		Password: config.Config.Redis.Password,
+		DB:       config.Config.Redis.Name,
+	}
 	srv := asynq.NewServer(r, asynq.Config{
 		// Specify how many concurrent workers to use
 		Concurrency: 10,

@@ -9,6 +9,10 @@ import (
 var Client *asynq.Client
 
 func init() {
-	r := asynq.RedisClientOpt{Addr: config.RedisAddr}
+	r := asynq.RedisClientOpt{
+		Addr:     config.Config.Redis.Addr,
+		Password: config.Config.Redis.Password,
+		DB:       config.Config.Redis.Name,
+	}
 	Client = asynq.NewClient(r)
 }

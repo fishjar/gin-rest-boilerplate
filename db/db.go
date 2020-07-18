@@ -6,8 +6,6 @@ package db
 
 import (
 	"fmt"
-	"os"
-	"path"
 	"time"
 
 	"github.com/fishjar/gin-rest-boilerplate/config"
@@ -21,22 +19,8 @@ import (
 var DB *gorm.DB
 
 func init() {
-	// 获取数据库参数
-	dbDriver := "mysql"         // 数据库驱动，默认MYSQL
-	dbPath := config.MySQLAddr  // 数据库地址
-	if config.GINENV == "dev" { // dev环境使用sqlite
-		dbDriver = "sqlite3"
-		rootPath, _ := os.Getwd()
-		dbDir := path.Join(rootPath, "tmp", "db")
-		if err := os.MkdirAll(dbDir, 0755); err != nil {
-			fmt.Println(err.Error())
-			panic("创建数据库目录失败")
-		}
-		dbPath = path.Join(dbDir, "sqlite.db")
-	}
-
 	// 创建数据库连接
-	db, err := gorm.Open(dbDriver, dbPath)
+	db, err := gorm.Open(config.Config.DBDriver, config.Config.DBPath)
 	if err != nil {
 		fmt.Println("打开数据库错误：", err.Error())
 		panic("连接数据库失败")

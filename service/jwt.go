@@ -19,10 +19,10 @@ type JWTClaims struct {
 // MakeToken 创建JWT的TOKEN
 func MakeToken(user *model.UserJWT) (int64, string, error) {
 
-	signKey := config.JWTSignKey     // JWT加密用的密钥
-	expiresAt := config.JWTExpiresIn // JWT过期时间
-	mySigningKey := []byte(signKey)  // 密钥格式转换
-	issuedAt := time.Now().Unix()    // 签发时间
+	signKey := config.Config.JWTSignKey     // JWT加密用的密钥
+	expiresAt := config.Config.JWTExpiresIn // JWT过期时间
+	mySigningKey := []byte(signKey)         // 密钥格式转换
+	issuedAt := time.Now().Unix()           // 签发时间
 
 	claims := JWTClaims{
 		user.UserID,
@@ -43,8 +43,8 @@ func MakeToken(user *model.UserJWT) (int64, string, error) {
 // ParseToken 解析JWT的TOKEN
 func ParseToken(tokenString string) (*JWTClaims, error) {
 
-	signKey := config.JWTSignKey    // JWT加密用的密钥
-	mySigningKey := []byte(signKey) // 密钥格式转换
+	signKey := config.Config.JWTSignKey // JWT加密用的密钥
+	mySigningKey := []byte(signKey)     // 密钥格式转换
 
 	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return mySigningKey, nil

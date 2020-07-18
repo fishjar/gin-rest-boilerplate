@@ -83,8 +83,8 @@ func init() {
 	LogReq.Out = LogReqFile
 
 	// 配置GIN日志文件
-	env := config.GINENV
-	if env == "dev" {
+	env := config.Config.APPEnv
+	if env == "development" {
 		gin.DefaultWriter = io.MultiWriter(LogGinFile, os.Stdout)
 	} else {
 		gin.DefaultWriter = io.MultiWriter(LogGinFile)

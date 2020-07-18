@@ -12,9 +12,9 @@ var Redis *redis.Client
 
 func init() {
 	client := redis.NewClient(&redis.Options{
-		Addr:     config.RedisAddr, // redis 地址
-		Password: config.RedisPWD,  // redis 密码
-		DB:       0,                // use default DB
+		Addr:     config.Config.Redis.Addr,     // redis 地址
+		Password: config.Config.Redis.Password, // redis 密码
+		DB:       config.Config.Redis.Name,     // use default DB
 	})
 
 	if pong, err := client.Ping().Result(); err != nil {

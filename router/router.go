@@ -28,7 +28,7 @@ func InitRouter() *gin.Engine {
 	})
 
 	r.GET("/swagger/*any", gin.BasicAuth(gin.Accounts{
-		config.SwagName: config.SwagPwd,
+		config.Config.SwaggerName: config.Config.SwaggerPassword,
 	}), ginSwagger.WrapHandler(swaggerFiles.Handler)) // swagger
 	r.POST("/admin/account/login", handler.LoginAccount) //登录
 

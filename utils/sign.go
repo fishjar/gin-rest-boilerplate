@@ -11,7 +11,7 @@ import (
 
 // MD5Pwd 密码哈希函数
 func MD5Pwd(username string, password string) string {
-	salt := config.PWDSalt
+	salt := config.Config.PasswordSalt
 	m := md5.New()
 	m.Write([]byte(username))
 	m.Write([]byte(password))

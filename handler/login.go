@@ -108,7 +108,7 @@ func LoginAccount(c *gin.Context) {
 		Data: model.AuthAccountLoginRes{
 			TokenType:   "Bearer",
 			AccessToken: accessToken,
-			ExpiresIn:   config.JWTExpiresIn.Milliseconds(),
+			ExpiresIn:   config.Config.JWTExpiresIn.Milliseconds(),
 		},
 	})
 
@@ -161,7 +161,7 @@ func TokenRefresh(c *gin.Context) {
 		Data: model.AuthAccountLoginRes{
 			TokenType:   "Bearer",
 			AccessToken: newToken,
-			ExpiresIn:   config.JWTExpiresIn.Milliseconds(),
+			ExpiresIn:   config.Config.JWTExpiresIn.Milliseconds(),
 		},
 	})
 }
