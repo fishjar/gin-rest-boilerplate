@@ -11,7 +11,7 @@ require (
 	github.com/go-openapi/spec v0.19.7 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/go-redis/redis/v7 v7.2.0
-	github.com/hibiken/asynq v0.9.4
+	github.com/hibiken/asynq v0.10.0
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jinzhu/configor v1.2.0
 	github.com/jinzhu/gorm v1.9.12
@@ -20,6 +20,7 @@ require (
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rs/xid v1.2.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.5.0
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14

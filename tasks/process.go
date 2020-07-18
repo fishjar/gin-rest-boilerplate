@@ -3,7 +3,10 @@ package tasks
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"path"
 
+	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/hibiken/asynq"
 )
 
@@ -19,6 +22,23 @@ func handleEmailDeliveryTask(ctx context.Context, t *asynq.Task) error {
 	}
 	fmt.Printf("Send Email to User: user_id = %d, template_id = %s\n", userID, tmplID)
 	// Email delivery logic ...
+	// 测试用
+	// f, err := os.Create(path.Join(config.Config.UploadFullPath, "test.txt")) //创建文件
+	// defer f.Close()
+	// _, err = f.WriteString(tmplID)
+	// if err != nil {
+	// 	return err
+	// }
+	// f.Sync()
+	// if err != nil {
+	// 	return err
+	// }
+	var data = []byte(tmplID)
+	err = ioutil.WriteFile(path.Join(config.Config.UploadFullPath, "test.txt"), data, 0666) //写入文件(字节数组)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

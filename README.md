@@ -86,6 +86,7 @@ docker-compose -f docker-compose-alpine.yml up
 - 日志搜集
 - ES
 - 缓存
+- 分布式业务锁
 
 ## 模型问题
 

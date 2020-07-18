@@ -5,9 +5,12 @@
 package router
 
 import (
+	"fmt"
+
 	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/handler"
 	"github.com/fishjar/gin-rest-boilerplate/middleware"
+	"github.com/fishjar/gin-rest-boilerplate/tasks"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -21,9 +24,13 @@ func InitRouter() *gin.Engine {
 	r := gin.Default()               // Default 使用 Logger 和 Recovery 中间件
 	r.Use(middleware.LoggerToFile()) // 日志中间件
 	// r.Use(cors.Default())                 // 跨域中间件
-	r.GET("/ping", func(c *gin.Context) { // pingpong
+	r.GET("/ping", func(c *gin.Context) {
+		t := tasks.NewEmailDeliveryTask(42, "some:template:id") // 创建任务
+		if _, err := tasks.Client.Enqueue(t); err != nil {      // 添加到任务队列
+			fmt.Println("添加任务队列失败", err)
+		}
 		c.JSON(200, gin.H{
-			"message": "pong",
+			"message": "pong..",
 		})
 	})
 
