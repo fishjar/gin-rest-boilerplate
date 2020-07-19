@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/8treenet/gcache"
+	"github.com/8treenet/gcache/option"
 	"github.com/fishjar/gin-rest-boilerplate/config"
 
 	"github.com/jinzhu/gorm"
@@ -42,6 +44,20 @@ func init() {
 	db.DB().SetMaxOpenConns(100)          // 设置数据库的最大连接数量
 	db.DB().SetConnMaxLifetime(time.Hour) // 设置连接的最大可复用时间
 	// db.SetLogger(log.New(os.Stdout, "\r\n", 0)) // log设置
+
+	// 缓存设置
+	opt := option.DefaultOption{}
+	opt.Expires = 300             //缓存时间，默认120秒。范围 30-43200
+	opt.Level = option.LevelModel //缓存级别，默认LevelSearch。LevelDisable:关闭缓存，LevelModel:模型缓存， LevelSearch:查询缓存
+	opt.AsyncWrite = true         //异步缓存更新, 默认false。 insert update delete 成功后是否异步更新缓存。 ps: affected如果未0，不触发更新。
+	opt.PenetrationSafe = true    //开启防穿透, 默认false。 ps:防击穿强制全局开启。
+
+	//缓存中间件附加到gorm.DB
+	gcache.AttachDB(db, &opt, &option.RedisOption{
+		Addr:     config.Config.Redis.Addr,     // redis 地址
+		Password: config.Config.Redis.Password, // redis 密码
+		DB:       config.Config.Redis.Name,     // use default DB
+	})
 
 	DB = db
 }

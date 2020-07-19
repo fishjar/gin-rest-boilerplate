@@ -3,6 +3,7 @@ module github.com/fishjar/gin-rest-boilerplate
 go 1.13
 
 require (
+	github.com/8treenet/gcache v1.1.8
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
@@ -20,7 +21,6 @@ require (
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rs/xid v1.2.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.5.0
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
