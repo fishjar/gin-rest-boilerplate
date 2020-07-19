@@ -87,6 +87,13 @@ docker-compose -f docker-compose-alpine.yml up
 - ES
 - 缓存
 - 分布式业务锁
+  - https://github.com/bsm/redislock
+  - https://juejin.im/post/5d315f05e51d45775f516b35
+  - https://chai2010.cn/advanced-go-programming-book/ch6-cloud/ch6-02-lock.html
+  - https://gobyexample-cn.github.io/waitgroups
+  - https://anakinsun.com/post/golang-redis-lock/
+  - https://blog.didiyun.com/index.php/2019/01/14/redis-3/
+  - http://www.panooo.com/GoLang_Lock
 
 ## 模型问题
 
