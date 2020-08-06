@@ -11,9 +11,9 @@ import (
 	"github.com/bsm/redislock"
 	"github.com/fishjar/gin-rest-boilerplate/config"
 	"github.com/fishjar/gin-rest-boilerplate/handler"
+	"github.com/fishjar/gin-rest-boilerplate/locker"
 	"github.com/fishjar/gin-rest-boilerplate/middleware"
 	"github.com/fishjar/gin-rest-boilerplate/tasks"
-	"github.com/fishjar/gin-rest-boilerplate/utils"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -29,7 +29,7 @@ func InitRouter() *gin.Engine {
 	// r.Use(cors.Default())                 // 跨域中间件
 	r.GET("/ping", func(c *gin.Context) {
 		// 获取锁
-		lock, err := utils.Locker.Obtain("ping", 10*1000*time.Millisecond, nil)
+		lock, err := locker.Locker.Obtain(locker.Ping, 10*1000*time.Millisecond, nil)
 		if err == redislock.ErrNotObtained {
 			// fmt.Println("Could not obtain lock!")
 			c.JSON(200, gin.H{
