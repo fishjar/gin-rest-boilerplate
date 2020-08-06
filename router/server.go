@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/fishjar/gin-rest-boilerplate/config"
+	"github.com/fishjar/gin-rest-boilerplate/db"
+	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/tasks"
 )
 
@@ -16,8 +18,13 @@ func RunGinServer(taskDone, allDone chan bool) {
 		if r := recover(); r != nil {
 			fmt.Println("gin revocer")
 		}
-
 	}()
+
+	defer db.DB.Close()             // 关闭数据库连接
+	defer db.Redis.Close()          // 关闭Redis连接
+	defer logger.LogFile.Close()    // 关闭日志文件
+	defer logger.LogGinFile.Close() // 关闭日志文件
+	defer logger.LogReqFile.Close() // 关闭日志文件
 
 	r := InitRouter()
 	server := &http.Server{
@@ -57,6 +64,7 @@ func RunTaskServer(taskDone chan bool) {
 			fmt.Println("tasks sever revocer")
 		}
 	}()
+
 	defer tasks.Client.Close() // 关闭任务队列服务
 
 	if err := tasks.Server(); err != nil { // 阻塞，等待退出信号

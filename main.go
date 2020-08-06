@@ -8,9 +8,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fishjar/gin-rest-boilerplate/db"
 	_ "github.com/fishjar/gin-rest-boilerplate/docs"
-	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/router"
 	"github.com/fishjar/gin-rest-boilerplate/script"
 )
@@ -37,14 +35,8 @@ import (
 
 // @x-extension-openapi {"example": "value on a json format"}
 func main() {
-	defer db.DB.Close()             // 关闭数据库连接
-	defer db.Redis.Close()          // 关闭Redis连接
-	defer logger.LogFile.Close()    // 关闭日志文件
-	defer logger.LogGinFile.Close() // 关闭日志文件
-	defer logger.LogReqFile.Close() // 关闭日志文件
-
-	taskDone := make(chan bool, 1)
-	allDone := make(chan bool, 1)
+	taskDone := make(chan bool, 1) // 任务队列退出
+	allDone := make(chan bool, 1)  // 全部服务退出
 
 	go router.RunGinServer(taskDone, allDone) // 启动gin服务
 	go router.RunTaskServer(taskDone)         // 启动task服务

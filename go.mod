@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/8treenet/gcache v1.1.8
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/bsm/redislock v0.5.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
