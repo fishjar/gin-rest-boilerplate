@@ -29,7 +29,7 @@ func InitRouter() *gin.Engine {
 	// r.Use(cors.Default())                 // 跨域中间件
 	r.GET("/ping", func(c *gin.Context) {
 		// 获取锁
-		lock, err := locker.Locker.Obtain(locker.Ping, 10*1000*time.Millisecond, nil)
+		lock, err := locker.Locker.Obtain(locker.PING, 10*1000*time.Millisecond, nil)
 		if err == redislock.ErrNotObtained {
 			// fmt.Println("Could not obtain lock!")
 			c.JSON(200, gin.H{
