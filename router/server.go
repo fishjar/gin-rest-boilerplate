@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/fishjar/gin-rest-boilerplate/config"
+	"github.com/fishjar/gin-rest-boilerplate/crons"
 	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/logger"
 	"github.com/fishjar/gin-rest-boilerplate/tasks"
@@ -25,6 +26,7 @@ func RunGinServer(taskDone, allDone chan bool) {
 	defer logger.LogFile.Close()    // 关闭日志文件
 	defer logger.LogGinFile.Close() // 关闭日志文件
 	defer logger.LogReqFile.Close() // 关闭日志文件
+	defer crons.Cron.Stop()         // 关闭定时任务
 
 	r := InitRouter()
 	server := &http.Server{

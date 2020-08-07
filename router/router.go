@@ -10,6 +10,7 @@ import (
 
 	"github.com/bsm/redislock"
 	"github.com/fishjar/gin-rest-boilerplate/config"
+	"github.com/fishjar/gin-rest-boilerplate/crons"
 	"github.com/fishjar/gin-rest-boilerplate/handler"
 	"github.com/fishjar/gin-rest-boilerplate/locker"
 	"github.com/fishjar/gin-rest-boilerplate/middleware"
@@ -46,6 +47,7 @@ func InitRouter() *gin.Engine {
 		// 释放锁
 		defer lock.Release()
 
+		// 测试创建任务队列
 		t := tasks.NewEmailDeliveryTask(42, "some:template:id") // 创建任务
 		if _, err := tasks.Client.Enqueue(t); err != nil {      // 添加到任务队列
 			fmt.Println("添加任务队列失败", err)
@@ -54,6 +56,9 @@ func InitRouter() *gin.Engine {
 			})
 			return
 		}
+
+		// 测试创建定时任务
+		crons.Cron.AddJob(crons.EVERY3SENCOND, &crons.TestJob{Value: "3s"})
 
 		time.Sleep(5 * 1000 * time.Millisecond)
 
