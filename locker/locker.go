@@ -7,7 +7,7 @@ import (
 
 // 业务锁常量
 const (
-	PING = "ping" // ping
+	PING = "lock:ping" // ping
 )
 
 // Locker redis锁客户端
