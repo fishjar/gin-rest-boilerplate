@@ -6,7 +6,9 @@ import (
 
 	"github.com/bsm/redislock"
 	"github.com/fishjar/gin-rest-boilerplate/crons"
+	"github.com/fishjar/gin-rest-boilerplate/db"
 	"github.com/fishjar/gin-rest-boilerplate/locker"
+	"github.com/fishjar/gin-rest-boilerplate/model"
 	"github.com/fishjar/gin-rest-boilerplate/tasks"
 	"github.com/gin-gonic/gin"
 )
@@ -41,12 +43,34 @@ func Pong(c *gin.Context) {
 		return
 	}
 
+	// 测试原生SQL
+	var user model.User
+	db.DB.Raw("SELECT * FROM user WHERE nickname = ?", "gabe").Scan(&user)
+
+	rows, err := db.DB.Raw("SELECT * FROM menu").Rows()
+	if err != nil {
+		fmt.Println("sql", err)
+		c.JSON(200, gin.H{
+			"message": "SQL查询失败",
+		})
+		return
+	}
+	defer rows.Close()
+	var menus []model.Menu
+	for rows.Next() {
+		var menu model.Menu
+		db.DB.ScanRows(rows, &menu)
+		menus = append(menus, menu)
+	}
+
 	// 测试创建定时任务
-	crons.Cron.AddJob(crons.EVERY3SENCOND, &crons.TestJob{Value: "3s"})
+	crons.Cron.AddJob(crons.EVERY30SENCOND, &crons.TestJob{Value: "30s"})
 
 	time.Sleep(5 * 1000 * time.Millisecond)
 
 	c.JSON(200, gin.H{
 		"message": "pong..",
+		"user":    user,
+		"menus":   menus,
 	})
 }
